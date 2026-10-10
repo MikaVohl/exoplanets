@@ -1,0 +1,70 @@
+# %ECSV 1.0
+# ---
+# datatype:
+# - {name: intentType, datatype: string}
+# - {name: obs_collection, datatype: string}
+# - {name: provenance_name, datatype: string}
+# - {name: instrument_name, datatype: string}
+# - {name: project, datatype: string}
+# - {name: filters, datatype: string}
+# - {name: wave_region, datatype: string}
+# - {name: target_name, datatype: string}
+# - {name: target_classification, datatype: string}
+# - {name: obs_id, datatype: string}
+# - {name: s_ra, datatype: float64}
+# - {name: s_dec, datatype: float64}
+# - {name: dataproduct_type, datatype: string}
+# - {name: proposal_pi, datatype: string}
+# - {name: calib_level, datatype: int64}
+# - {name: t_min, datatype: float64}
+# - {name: t_max, datatype: float64}
+# - {name: t_exptime, datatype: float64}
+# - {name: wavelength_region, datatype: string}
+# - {name: em_min, datatype: float64}
+# - {name: em_max, datatype: float64}
+# - {name: obs_title, datatype: string}
+# - {name: t_obs_release, datatype: float64}
+# - {name: proposal_id, datatype: string}
+# - {name: proposal_type, datatype: string}
+# - {name: sequence_number, datatype: int64}
+# - {name: s_region, datatype: string}
+# - {name: jpegURL, datatype: string}
+# - {name: dataURL, datatype: string}
+# - {name: dataRights, datatype: string}
+# - {name: mtFlag, datatype: bool}
+# - {name: srcDen, datatype: float64}
+# - {name: obsid, datatype: string}
+# - {name: objID, datatype: string}
+# - {name: wave_min, datatype: float64}
+# - {name: wave_max, datatype: float64}
+# - {name: exptime, unit: s, datatype: float64, format: .0f}
+# - {name: distance, unit: arcsec, datatype: float64, format: .1f}
+# - {name: obsID, datatype: string}
+# - {name: obs_collection_products, datatype: string}
+# - {name: dataproduct_type_products, datatype: string}
+# - {name: description, datatype: string}
+# - {name: type, datatype: string}
+# - {name: dataURI, datatype: string}
+# - {name: productType, datatype: string}
+# - {name: productGroupDescription, datatype: string}
+# - {name: productSubGroupDescription, datatype: string}
+# - {name: productDocumentationURL, datatype: string}
+# - {name: project_products, datatype: string}
+# - {name: prvversion, datatype: string}
+# - {name: proposal_id_products, datatype: string}
+# - {name: productFilename, datatype: string}
+# - {name: size, datatype: int64}
+# - {name: parent_obsid, datatype: string}
+# - {name: dataRights_products, datatype: string}
+# - {name: calib_level_products, datatype: int64}
+# - {name: filters_products, datatype: string}
+# - {name: author, datatype: string}
+# - {name: mission, datatype: string, subtype: json}
+# - {name: '#', datatype: string, subtype: json}
+# - {name: year, datatype: int64}
+# - {name: sort_order, datatype: int64}
+# schema: astropy-2.0
+intentType obs_collection provenance_name instrument_name project filters wave_region target_name target_classification obs_id s_ra s_dec dataproduct_type proposal_pi calib_level t_min t_max t_exptime wavelength_region em_min em_max obs_title t_obs_release proposal_id proposal_type sequence_number s_region jpegURL dataURL dataRights mtFlag srcDen obsid objID wave_min wave_max exptime distance obsID obs_collection_products dataproduct_type_products description type dataURI productType productGroupDescription productSubGroupDescription productDocumentationURL project_products prvversion proposal_id_products productFilename size parent_obsid dataRights_products calib_level_products filters_products author mission # year sort_order
+science TESS SPOC Photometer TESS TESS Optical 261136679 "" tess2018206045859-s0001-0000000261136679-0120-s 84.2911879979852 -80.4691197969941 timeseries "Ricker, George" 3 58324.7940765625 58352.67695946759 120.0 Optical 600.0 1000.0 "" 58458.5833333 G011183_G011132_G011048_G011250 "" 1 "CIRCLE 84.291188 -80.4691198 0.00138889" "" mast:TESS/product/tess2018206045859-s0001-0000000261136679-0120-s_lc.fits PUBLIC False nan 60835895 110345495 600.0 1000.0 120.0 0.0 60835895 TESS timeseries "Light curves" S mast:TESS/product/tess2018206045859-s0001-0000000261136679-0120-s_lc.fits SCIENCE "Minimum Recommended Products" LC "" SPOC b11c787608 G011183_G011132_G011048_G011250 tess2018206045859-s0001-0000000261136679-0120-s_lc.fits 2039040 60835895 PUBLIC 3 TESS SPOC """TESS Sector 01""" null 2018 1
+science TESS SPOC Photometer TESS TESS Optical 261136679 "" tess2018292075959-s0004-0000000261136679-0124-s 84.2911879979852 -80.4691197969941 timeseries "Ricker, George" 3 58410.39922670139 58436.33343722222 120.0 Optical 600.0 1000.0 "" 58519.6666666 G011183_G011132_G011048_G011250 "" 4 "CIRCLE 84.291188 -80.4691198 0.00138889" "" mast:TESS/product/tess2018292075959-s0004-0000000261136679-0124-s_lc.fits PUBLIC False nan 61114378 117373640 600.0 1000.0 120.0 0.0 61114378 TESS timeseries "Light curves" S mast:TESS/product/tess2018292075959-s0004-0000000261136679-0124-s_lc.fits SCIENCE "Minimum Recommended Products" LC "" SPOC 60126d3480 G011183_G011132_G011048_G011250 tess2018292075959-s0004-0000000261136679-0124-s_lc.fits 1897920 61114378 PUBLIC 3 TESS SPOC """TESS Sector 04""" null 2018 1
+science TESS SPOC Photometer TESS TESS Optical 261136679 "" tess2019032160000-s0008-0000000261136679-0136-s 84.2911879979852 -80.4691197969941 timeseries "Ricker, George" 3 58516.861139479166 58541.49909662037 120.0 Optical 600.0 1000.0 "" 58584.5 G011183_G011132_G011048_G011250 "" 8 "CIRCLE 84.291188 -80.4691198 0.00138889" "" mast:TESS/product/tess2019032160000-s0008-0000000261136679-0136-s_lc.fits PUBLIC False nan 62459906 117309355 600.0 1000.0 120.0 0.0 62459906 TESS timeseries "Light curves" S mast:TESS/product/tess2019032160000-s0008-0000000261136679-0136-s_lc.fits SCIENCE "Minimum Recommended Products" LC "" SPOC 28fd1d169d G011183_G011132_G011048_G011250 tess2019032160000-s0008-0000000261136679-0136-s_lc.fits 1805760 62459906 PUBLIC 3 TESS SPOC """TESS Sector 08""" null 2019 1

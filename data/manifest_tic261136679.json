@@ -1,0 +1,113 @@
+{
+  "generated_at_utc": "2026-10-10T20:44:50.735792+00:00",
+  "target": "TIC 261136679",
+  "author": "SPOC",
+  "archive": "MAST",
+  "requested_sectors": [
+    1,
+    4,
+    8
+  ],
+  "missing_sectors": [],
+  "files": [
+    {
+      "tic_id": 261136679,
+      "sector": 1,
+      "rows": 20076,
+      "cadence_seconds": 120,
+      "date_obs": "2018-07-25T19:03:28.215",
+      "date_end": "2018-08-22T16:14:49.298",
+      "pipeline_version": "spoc-5.0.10-20200904",
+      "camera": 4,
+      "ccd": 2,
+      "fits_checksum_status": [
+        {
+          "extension": "PRIMARY",
+          "checksum": 1,
+          "datasum": 2
+        },
+        {
+          "extension": "LIGHTCURVE",
+          "checksum": 1,
+          "datasum": 2
+        },
+        {
+          "extension": "APERTURE",
+          "checksum": 1,
+          "datasum": 2
+        }
+      ],
+      "path": "data/raw/tess2018206045859-s0001-0000000261136679-0120-s_lc.fits",
+      "source_uri": "mast:TESS/product/tess2018206045859-s0001-0000000261136679-0120-s_lc.fits",
+      "download_url": "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:TESS/product/tess2018206045859-s0001-0000000261136679-0120-s_lc.fits",
+      "bytes": 2039040,
+      "sha256": "1eecffff3afa7e8c4ad763b6907e62447bacf339968292d86be45acd9bf1d609"
+    },
+    {
+      "tic_id": 261136679,
+      "sector": 4,
+      "rows": 18684,
+      "cadence_seconds": 120,
+      "date_obs": "2018-10-19T09:34:53.187",
+      "date_end": "2018-11-14T08:00:08.976",
+      "pipeline_version": "spoc-5.0.20-20201120",
+      "camera": 4,
+      "ccd": 3,
+      "fits_checksum_status": [
+        {
+          "extension": "PRIMARY",
+          "checksum": 1,
+          "datasum": 2
+        },
+        {
+          "extension": "LIGHTCURVE",
+          "checksum": 1,
+          "datasum": 2
+        },
+        {
+          "extension": "APERTURE",
+          "checksum": 1,
+          "datasum": 2
+        }
+      ],
+      "path": "data/raw/tess2018292075959-s0004-0000000261136679-0124-s_lc.fits",
+      "source_uri": "mast:TESS/product/tess2018292075959-s0004-0000000261136679-0124-s_lc.fits",
+      "download_url": "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:TESS/product/tess2018292075959-s0004-0000000261136679-0124-s_lc.fits",
+      "bytes": 1897920,
+      "sha256": "92a59bb156b927c5df6b4ab7c7e5bd7bdd884f523aeda2764c64712cfc27bfcf"
+    },
+    {
+      "tic_id": 261136679,
+      "sector": 8,
+      "rows": 17755,
+      "cadence_seconds": 120,
+      "date_obs": "2019-02-02T20:40:02.451",
+      "date_end": "2019-02-27T11:58:41.948",
+      "pipeline_version": "spoc-5.0.19-20201114",
+      "camera": 4,
+      "ccd": 4,
+      "fits_checksum_status": [
+        {
+          "extension": "PRIMARY",
+          "checksum": 1,
+          "datasum": 2
+        },
+        {
+          "extension": "LIGHTCURVE",
+          "checksum": 1,
+          "datasum": 2
+        },
+        {
+          "extension": "APERTURE",
+          "checksum": 1,
+          "datasum": 2
+        }
+      ],
+      "path": "data/raw/tess2019032160000-s0008-0000000261136679-0136-s_lc.fits",
+      "source_uri": "mast:TESS/product/tess2019032160000-s0008-0000000261136679-0136-s_lc.fits",
+      "download_url": "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:TESS/product/tess2019032160000-s0008-0000000261136679-0136-s_lc.fits",
+      "bytes": 1805760,
+      "sha256": "dd991df6f4a0a1ac0cd3c7c31e03feeb762dfe9274948191be94c7ebc758b89a"
+    }
+  ]
+}
