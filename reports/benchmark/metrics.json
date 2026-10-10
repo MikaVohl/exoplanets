@@ -1,0 +1,16 @@
+{
+  "completed_stars": 100,
+  "selected_stars": 100,
+  "known_transiting_hosts": 60,
+  "comparison_hosts": 40,
+  "known_hosts_with_exact_supported_period_match": 36,
+  "catalog_planets_in_nominal_range": 69,
+  "catalog_planets_with_exact_supported_match": 37,
+  "bls_planets_with_exact_supported_match": 37,
+  "tls_planets_with_exact_supported_match": 36,
+  "conclusion_counts": {
+    "signal_requires_review": 37,
+    "no_significant_signal_in_search_range": 34,
+    "supported_transit_like_signal": 29
+  }
+}

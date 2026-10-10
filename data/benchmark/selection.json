@@ -1,0 +1,25 @@
+{
+  "created_utc": "2026-10-10T22:42:14.888607+00:00",
+  "planet_catalog": "NASA Exoplanet Archive pscomppars (confirmed planets)",
+  "tap_endpoint": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+  "tap_query": "select pl_name,hostname,tic_id,tran_flag,pl_orbper,pl_tranmid,pl_trandur,pl_trandep,pl_rade,pl_bmasse,st_rad,st_mass,st_teff,sy_tmag,ra,dec,sy_pnum,discoverymethod,disc_year from pscomppars where tic_id is not null",
+  "candidate_hosts": 450,
+  "available_candidate_hosts": 440,
+  "selected_hosts": 100,
+  "seed": 42,
+  "catalog_groups": {
+    "known_transiting_host": 60,
+    "no_cataloged_transiting_planet": 40
+  },
+  "selection": "Tmag 4\u201311.5, radius 0.15\u20132.5 solar, mass 0.08\u20132.5 solar; public two-minute SPOC coverage. 20 hosts each with largest short-period planet \u22643, 3\u20138, >8 Earth radii; 40 hosts with no cataloged transiting planet. Latest available sector by archive observation end time. No selection on search outcomes.",
+  "limitations": [
+    "Comparison hosts are not proven transit-free.",
+    "Brightness/radius distributions are not matched between groups.",
+    "Availability and known-planet selection introduce selection bias.",
+    "Planet-table stellar parameters may combine heterogeneous references."
+  ],
+  "snapshot_sha256": {
+    "data/catalogs/confirmed_planets.csv": "2bccae8c39ff5e558ab080c55bb5f28468a8d3a2f03a14ffb45af290147b8476",
+    "data/catalogs/mast_observations.ecsv": "107e6f968fe0d015cf1a8ef7883ab83bf7ffb7b9bc9f27f483406ce6427f397a"
+  }
+}

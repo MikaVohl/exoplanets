@@ -1,0 +1,1184 @@
+{
+  "tic": 172954294,
+  "hostname": "HD 86728",
+  "sector": 48,
+  "created_utc": "2026-10-10T22:50:12.148866+00:00",
+  "fingerprint": "2eaef46ed441d183c291f67c0ff4587267b7e713e1266792edd720490d64f48b",
+  "source_sha256": "5ed32d49fb820c625823874ed89329c7b65041e8a97bc866e9b9c08059f45f87",
+  "source_uri": "mast:TESS/product/tess2022027120115-s0048-0000000172954294-0219-s_lc.fits",
+  "config": {
+    "seed": 42,
+    "transiting_hosts": 60,
+    "comparison_hosts": 40,
+    "transiting_hosts_per_radius_bin": 20,
+    "period_min_days": 0.5,
+    "period_max_days": 12.0,
+    "minimum_observed_transits": 2,
+    "bin_minutes": 10,
+    "trend_window_days": 1.0,
+    "split_gap_days": 0.5,
+    "trim_segment_edge_days": 0.1,
+    "minimum_points": 1000,
+    "minimum_span_days": 8,
+    "bls_min_sde": 6,
+    "tls_min_sde": 7,
+    "minimum_depth_snr": 7.1,
+    "period_agreement_fraction": 0.01,
+    "catalog_period_tolerance_fraction": 0.01,
+    "duration_min_days": 0.025,
+    "duration_max_days": 0.3,
+    "tls_oversampling": 3,
+    "tls_threads_per_worker": 1,
+    "tls_duration_grid_step": 1.1,
+    "maximum_candidates_per_method": 3,
+    "maximum_signals_per_star": 2,
+    "notes": "Fixed, heuristic screening thresholds; not calibrated false-alarm probabilities. One sector per star. Catalog periods/epochs are used only in post-search evaluation."
+  },
+  "versions": {
+    "astropy": "8.0.1",
+    "transitleastsquares": "2.0",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "lightkurve": "2.6.0"
+  },
+  "python": "3.12.13",
+  "preprocessing": {
+    "original_points": 20202,
+    "quality_kept_points": 15482,
+    "detrended_points": 15191,
+    "search_points": 3052,
+    "span_days": 25.861726984665438,
+    "error_scale": 1.6637085165803023,
+    "point_scatter_ppm": 56.48507433477217,
+    "quality_bitmask": 17087
+  },
+  "status": "ok",
+  "signals": [
+    {
+      "iteration": 1,
+      "bls": {
+        "method": "BLS",
+        "best": {
+          "period": 11.213475615175025,
+          "epoch_btjd": 2610.2342525858126,
+          "duration_days": 0.2475,
+          "sde": 6.482160754078604,
+          "model_depth": 7.412215034550722e-05,
+          "model_depth_snr": 12.966631214499403,
+          "vetting": {
+            "depth": 7.456229882596421e-05,
+            "depth_ppm": 74.5622988259642,
+            "depth_error": 5.71912925472183e-06,
+            "depth_snr": 13.037351580121056,
+            "pink_snr": 11.416058156372724,
+            "observed_transits": 3,
+            "significant_events": 2,
+            "odd_even_sigma": 5.163782617152858,
+            "secondary_snr": 0.11497928567095829,
+            "centroid_snr": 2.375342491906599,
+            "flags": [
+              "odd_even_depth_mismatch"
+            ],
+            "events": [
+              {
+                "cycle": 0,
+                "epoch_btjd": 2610.2342525858126,
+                "points": 35,
+                "depth_region": "central_half_of_transit",
+                "depth": 7.544188175157007e-05,
+                "depth_error": 1.5294076137221707e-05,
+                "snr": 4.932751810223086
+              },
+              {
+                "cycle": 1,
+                "epoch_btjd": 2621.4477282009875,
+                "points": 31,
+                "depth_region": "central_half_of_transit",
+                "depth": 0.00013784741323097371,
+                "depth_error": 1.495062257325163e-05,
+                "snr": 9.220178795604035
+              },
+              {
+                "cycle": 2,
+                "epoch_btjd": 2632.6612038161625,
+                "points": 36,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.6937732467581235e-05,
+                "depth_error": 1.4126355508289407e-05,
+                "snr": 1.1990164382909732
+              }
+            ]
+          }
+        },
+        "peaks": [
+          {
+            "period": 11.213475615175025,
+            "epoch_btjd": 2610.2342525858126,
+            "duration_days": 0.2475,
+            "sde": 6.482160754078604,
+            "model_depth": 7.412215034550722e-05,
+            "model_depth_snr": 12.966631214499403,
+            "vetting": {
+              "depth": 7.456229882596421e-05,
+              "depth_ppm": 74.5622988259642,
+              "depth_error": 5.71912925472183e-06,
+              "depth_snr": 13.037351580121056,
+              "pink_snr": 11.416058156372724,
+              "observed_transits": 3,
+              "significant_events": 2,
+              "odd_even_sigma": 5.163782617152858,
+              "secondary_snr": 0.11497928567095829,
+              "centroid_snr": 2.375342491906599,
+              "flags": [
+                "odd_even_depth_mismatch"
+              ],
+              "events": [
+                {
+                  "cycle": 0,
+                  "epoch_btjd": 2610.2342525858126,
+                  "points": 35,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 7.544188175157007e-05,
+                  "depth_error": 1.5294076137221707e-05,
+                  "snr": 4.932751810223086
+                },
+                {
+                  "cycle": 1,
+                  "epoch_btjd": 2621.4477282009875,
+                  "points": 31,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 0.00013784741323097371,
+                  "depth_error": 1.495062257325163e-05,
+                  "snr": 9.220178795604035
+                },
+                {
+                  "cycle": 2,
+                  "epoch_btjd": 2632.6612038161625,
+                  "points": 36,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.6937732467581235e-05,
+                  "depth_error": 1.4126355508289407e-05,
+                  "snr": 1.1990164382909732
+                }
+              ]
+            }
+          },
+          {
+            "period": 11.981132183984233,
+            "epoch_btjd": 2621.4842525858126,
+            "duration_days": 0.2475,
+            "sde": 5.680972805659119,
+            "model_depth": 9.189877639149429e-05,
+            "model_depth_snr": 12.396240767345793,
+            "vetting": {
+              "depth": 9.231124374153854e-05,
+              "depth_ppm": 92.31124374153853,
+              "depth_error": 7.414773984292129e-06,
+              "depth_snr": 12.449636892115096,
+              "pink_snr": 11.809005475568407,
+              "observed_transits": 2,
+              "significant_events": 2,
+              "odd_even_sigma": 3.598201195040594,
+              "secondary_snr": 0.9613043459754947,
+              "centroid_snr": 5.323866670276553,
+              "flags": [
+                "odd_even_depth_mismatch",
+                "centroid_shift_requires_pixel_review"
+              ],
+              "events": [
+                {
+                  "cycle": 0,
+                  "epoch_btjd": 2621.4842525858126,
+                  "points": 25,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 0.00013779600569607808,
+                  "depth_error": 1.5876670463450853e-05,
+                  "snr": 8.679150078304744
+                },
+                {
+                  "cycle": 1,
+                  "epoch_btjd": 2633.465384769797,
+                  "points": 35,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 6.132678181602902e-05,
+                  "depth_error": 1.4127342876432281e-05,
+                  "snr": 4.340999036580082
+                }
+              ]
+            }
+          },
+          {
+            "period": 3.7392439770418315,
+            "epoch_btjd": 2610.213002585813,
+            "duration_days": 0.20500000000000002,
+            "sde": 3.622151598120696,
+            "model_depth": 4.503452551700459e-05,
+            "model_depth_snr": 10.294392815572346,
+            "vetting": {
+              "depth": 4.565040644399776e-05,
+              "depth_ppm": 45.65040644399776,
+              "depth_error": 4.3821984055910666e-06,
+              "depth_snr": 10.417238613786697,
+              "pink_snr": 6.915619645841037,
+              "observed_transits": 6,
+              "significant_events": 2,
+              "odd_even_sigma": 1.753574768222299,
+              "secondary_snr": 0.5090569917433,
+              "centroid_snr": 1.2699245994427943,
+              "flags": [],
+              "events": [
+                {
+                  "cycle": 0,
+                  "epoch_btjd": 2610.213002585813,
+                  "points": 29,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 6.824236778113502e-05,
+                  "depth_error": 1.637957933741135e-05,
+                  "snr": 4.166307716173627
+                },
+                {
+                  "cycle": 1,
+                  "epoch_btjd": 2613.9522465628547,
+                  "points": 30,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.138230109194339e-06,
+                  "depth_error": 1.5995221376555476e-05,
+                  "snr": 0.133679307016556
+                },
+                {
+                  "cycle": 2,
+                  "epoch_btjd": 2617.691490539896,
+                  "points": 29,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.2621000031298735e-05,
+                  "depth_error": 1.5482814320363004e-05,
+                  "snr": 0.8151618801434304
+                },
+                {
+                  "cycle": 3,
+                  "epoch_btjd": 2621.430734516938,
+                  "points": 30,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 0.00012776273637737923,
+                  "depth_error": 1.6419975533837633e-05,
+                  "snr": 7.780933419425069
+                },
+                {
+                  "cycle": 5,
+                  "epoch_btjd": 2628.909222471022,
+                  "points": 30,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.910976973768964e-05,
+                  "depth_error": 1.549581632014867e-05,
+                  "snr": 1.8785567108096923
+                },
+                {
+                  "cycle": 6,
+                  "epoch_btjd": 2632.6484664480636,
+                  "points": 30,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 7.292865751296063e-06,
+                  "depth_error": 1.596633126517855e-05,
+                  "snr": 0.4567652787714165
+                }
+              ]
+            }
+          }
+        ],
+        "period_min": 0.8415324992475441,
+        "period_max": 11.981132183984233,
+        "period_trials": 1532,
+        "runtime_seconds": 0.05811300000641495,
+        "sde_definition": "(log-likelihood power - median power) / (1.4826 MAD power); heuristic, not a calibrated TLS SDE"
+      },
+      "tls": {
+        "method": "TLS",
+        "best": {
+          "period": 11.213475615175025,
+          "epoch_btjd": 2610.2300275707266,
+          "duration_days": 0.24912694226377122,
+          "sde": 6.543307160444472,
+          "model_depth": 8.013763890801773e-05,
+          "model_depth_snr": 11.918823597576074,
+          "vetting": {
+            "depth": 7.358769386889286e-05,
+            "depth_ppm": 73.58769386889286,
+            "depth_error": 5.692212752250999e-06,
+            "depth_snr": 12.92778345991942,
+            "pink_snr": 8.886110197636993,
+            "observed_transits": 3,
+            "significant_events": 2,
+            "odd_even_sigma": 5.255121851675836,
+            "secondary_snr": -0.13464304129659574,
+            "centroid_snr": 2.292546369345535,
+            "flags": [
+              "odd_even_depth_mismatch"
+            ],
+            "events": [
+              {
+                "cycle": 0,
+                "epoch_btjd": 2610.2300275707266,
+                "points": 36,
+                "depth_region": "central_half_of_transit",
+                "depth": 6.938102337006313e-05,
+                "depth_error": 1.4926388254383534e-05,
+                "snr": 4.64821242671934
+              },
+              {
+                "cycle": 1,
+                "epoch_btjd": 2621.4435031859016,
+                "points": 31,
+                "depth_region": "central_half_of_transit",
+                "depth": 0.0001367514401083847,
+                "depth_error": 1.495062113118341e-05,
+                "snr": 9.14687349164069
+              },
+              {
+                "cycle": 2,
+                "epoch_btjd": 2632.6569788010765,
+                "points": 36,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.6488256297741977e-05,
+                "depth_error": 1.4120869288555854e-05,
+                "snr": 1.1676516481251442
+              }
+            ]
+          }
+        },
+        "peaks": [
+          {
+            "period": 11.213475615175025,
+            "sde": 6.543307160444472
+          },
+          {
+            "period": 11.981132183984233,
+            "sde": 6.091349094041231
+          },
+          {
+            "period": 3.732177159217516,
+            "sde": 3.98864472910637
+          }
+        ],
+        "period_min": 0.8415324992475441,
+        "period_max": 11.981132183984233,
+        "period_trials": 1532,
+        "runtime_seconds": 0.04736833300557919,
+        "backend": "fused-pl",
+        "limb_darkening": [
+          0.3,
+          0.2
+        ],
+        "limb_darkening_note": "Generic fixed quadratic coefficients, not fitted stellar atmosphere values."
+      },
+      "decision": {
+        "conclusion": "signal_requires_review",
+        "reason": "At least one method passes the screening thresholds; agreement or false-positive checks require review.",
+        "preferred_method": "BLS",
+        "period_agreement": "exact",
+        "epoch_agreement": true,
+        "phase_difference_days": 0.004225015085921768,
+        "bls_supported": true,
+        "tls_supported": false,
+        "flags": [
+          "odd_even_depth_mismatch"
+        ],
+        "candidate_period": 11.213475615175025,
+        "candidate_epoch_btjd": 2610.2342525858126,
+        "candidate_duration_days": 0.2475
+      }
+    },
+    {
+      "iteration": 2,
+      "bls": {
+        "method": "BLS",
+        "best": {
+          "period": 1.17280997808822,
+          "epoch_btjd": 2610.443002585813,
+          "duration_days": 0.3,
+          "sde": 4.330896969487455,
+          "model_depth": 1.4183962021353275e-05,
+          "model_depth_snr": 5.840305632185406,
+          "vetting": {
+            "depth": 1.56785175823293e-05,
+            "depth_ppm": 15.678517582329299,
+            "depth_error": 2.5771173247384116e-06,
+            "depth_snr": 6.083742261878099,
+            "pink_snr": 4.110540052632377,
+            "observed_transits": 17,
+            "significant_events": 0,
+            "odd_even_sigma": 0.6087950908844053,
+            "secondary_snr": -1.145551077991975,
+            "centroid_snr": 0.8814495968289106,
+            "flags": [
+              "large_duty_cycle",
+              "fewer_than_two_individually_supported_events"
+            ],
+            "events": [
+              {
+                "cycle": 0,
+                "epoch_btjd": 2610.443002585813,
+                "points": 25,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.830779354783374e-06,
+                "depth_error": 1.852493521715167e-05,
+                "snr": 0.09882784114075127
+              },
+              {
+                "cycle": 1,
+                "epoch_btjd": 2611.615812563901,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 3.368394030278665e-05,
+                "depth_error": 1.4787991912210628e-05,
+                "snr": 2.277790013867495
+              },
+              {
+                "cycle": 2,
+                "epoch_btjd": 2612.7886225419893,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 9.946973254071345e-06,
+                "depth_error": 1.4782143789262227e-05,
+                "snr": 0.6729046473825293
+              },
+              {
+                "cycle": 3,
+                "epoch_btjd": 2613.9614325200773,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.3748326096574282e-05,
+                "depth_error": 1.4570749864849364e-05,
+                "snr": 0.9435565241388773
+              },
+              {
+                "cycle": 4,
+                "epoch_btjd": 2615.134242498166,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 8.46123791853337e-06,
+                "depth_error": 1.4759745743112726e-05,
+                "snr": 0.5732644766243077
+              },
+              {
+                "cycle": 5,
+                "epoch_btjd": 2616.307052476254,
+                "points": 44,
+                "depth_region": "central_half_of_transit",
+                "depth": -3.267361159364768e-05,
+                "depth_error": 1.4450632372993358e-05,
+                "snr": -2.2610506412654345
+              },
+              {
+                "cycle": 6,
+                "epoch_btjd": 2617.4798624543423,
+                "points": 44,
+                "depth_region": "central_half_of_transit",
+                "depth": -7.66346761260639e-06,
+                "depth_error": 1.449549206586315e-05,
+                "snr": -0.5286793699576324
+              },
+              {
+                "cycle": 7,
+                "epoch_btjd": 2618.6526724324303,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 5.582732842679405e-06,
+                "depth_error": 1.4495535019316423e-05,
+                "snr": 0.38513465251472134
+              },
+              {
+                "cycle": 8,
+                "epoch_btjd": 2619.8254824105184,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.3726752240206253e-05,
+                "depth_error": 1.4777905524270253e-05,
+                "snr": 0.92886994152604
+              },
+              {
+                "cycle": 9,
+                "epoch_btjd": 2620.998292388607,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 2.490372955843423e-05,
+                "depth_error": 1.687843336058947e-05,
+                "snr": 1.4754763683567655
+              },
+              {
+                "cycle": 14,
+                "epoch_btjd": 2626.862342279048,
+                "points": 44,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.9409213812715542e-05,
+                "depth_error": 1.4462909853620348e-05,
+                "snr": 1.3419992248556427
+              },
+              {
+                "cycle": 15,
+                "epoch_btjd": 2628.035152257136,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.7758425072122996e-05,
+                "depth_error": 1.4500194997641102e-05,
+                "snr": 1.2247025005534027
+              },
+              {
+                "cycle": 16,
+                "epoch_btjd": 2629.2079622352244,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.3036986716730148e-05,
+                "depth_error": 1.4496029788724426e-05,
+                "snr": 0.8993487807862275
+              },
+              {
+                "cycle": 17,
+                "epoch_btjd": 2630.3807722133124,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 2.4039290205446484e-05,
+                "depth_error": 1.4778143306440741e-05,
+                "snr": 1.626678650150149
+              },
+              {
+                "cycle": 18,
+                "epoch_btjd": 2631.553582191401,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": 3.3516895380447664e-05,
+                "depth_error": 1.4777910541126163e-05,
+                "snr": 2.2680402136128697
+              },
+              {
+                "cycle": 20,
+                "epoch_btjd": 2633.8992021475774,
+                "points": 43,
+                "depth_region": "central_half_of_transit",
+                "depth": -5.075225383011084e-05,
+                "depth_error": 1.4496131788194122e-05,
+                "snr": -3.5010894334890272
+              },
+              {
+                "cycle": 21,
+                "epoch_btjd": 2635.0720121256654,
+                "points": 44,
+                "depth_region": "central_half_of_transit",
+                "depth": -9.380790623625401e-06,
+                "depth_error": 1.4451841569611197e-05,
+                "snr": -0.6491069375788747
+              }
+            ]
+          }
+        },
+        "peaks": [
+          {
+            "period": 1.17280997808822,
+            "epoch_btjd": 2610.443002585813,
+            "duration_days": 0.3,
+            "sde": 4.330896969487455,
+            "model_depth": 1.4183962021353275e-05,
+            "model_depth_snr": 5.840305632185406,
+            "vetting": {
+              "depth": 1.56785175823293e-05,
+              "depth_ppm": 15.678517582329299,
+              "depth_error": 2.5771173247384116e-06,
+              "depth_snr": 6.083742261878099,
+              "pink_snr": 4.110540052632377,
+              "observed_transits": 17,
+              "significant_events": 0,
+              "odd_even_sigma": 0.6087950908844053,
+              "secondary_snr": -1.145551077991975,
+              "centroid_snr": 0.8814495968289106,
+              "flags": [
+                "large_duty_cycle",
+                "fewer_than_two_individually_supported_events"
+              ],
+              "events": [
+                {
+                  "cycle": 0,
+                  "epoch_btjd": 2610.443002585813,
+                  "points": 25,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.830779354783374e-06,
+                  "depth_error": 1.852493521715167e-05,
+                  "snr": 0.09882784114075127
+                },
+                {
+                  "cycle": 1,
+                  "epoch_btjd": 2611.615812563901,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 3.368394030278665e-05,
+                  "depth_error": 1.4787991912210628e-05,
+                  "snr": 2.277790013867495
+                },
+                {
+                  "cycle": 2,
+                  "epoch_btjd": 2612.7886225419893,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 9.946973254071345e-06,
+                  "depth_error": 1.4782143789262227e-05,
+                  "snr": 0.6729046473825293
+                },
+                {
+                  "cycle": 3,
+                  "epoch_btjd": 2613.9614325200773,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.3748326096574282e-05,
+                  "depth_error": 1.4570749864849364e-05,
+                  "snr": 0.9435565241388773
+                },
+                {
+                  "cycle": 4,
+                  "epoch_btjd": 2615.134242498166,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 8.46123791853337e-06,
+                  "depth_error": 1.4759745743112726e-05,
+                  "snr": 0.5732644766243077
+                },
+                {
+                  "cycle": 5,
+                  "epoch_btjd": 2616.307052476254,
+                  "points": 44,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -3.267361159364768e-05,
+                  "depth_error": 1.4450632372993358e-05,
+                  "snr": -2.2610506412654345
+                },
+                {
+                  "cycle": 6,
+                  "epoch_btjd": 2617.4798624543423,
+                  "points": 44,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -7.66346761260639e-06,
+                  "depth_error": 1.449549206586315e-05,
+                  "snr": -0.5286793699576324
+                },
+                {
+                  "cycle": 7,
+                  "epoch_btjd": 2618.6526724324303,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 5.582732842679405e-06,
+                  "depth_error": 1.4495535019316423e-05,
+                  "snr": 0.38513465251472134
+                },
+                {
+                  "cycle": 8,
+                  "epoch_btjd": 2619.8254824105184,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.3726752240206253e-05,
+                  "depth_error": 1.4777905524270253e-05,
+                  "snr": 0.92886994152604
+                },
+                {
+                  "cycle": 9,
+                  "epoch_btjd": 2620.998292388607,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.490372955843423e-05,
+                  "depth_error": 1.687843336058947e-05,
+                  "snr": 1.4754763683567655
+                },
+                {
+                  "cycle": 14,
+                  "epoch_btjd": 2626.862342279048,
+                  "points": 44,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.9409213812715542e-05,
+                  "depth_error": 1.4462909853620348e-05,
+                  "snr": 1.3419992248556427
+                },
+                {
+                  "cycle": 15,
+                  "epoch_btjd": 2628.035152257136,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.7758425072122996e-05,
+                  "depth_error": 1.4500194997641102e-05,
+                  "snr": 1.2247025005534027
+                },
+                {
+                  "cycle": 16,
+                  "epoch_btjd": 2629.2079622352244,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.3036986716730148e-05,
+                  "depth_error": 1.4496029788724426e-05,
+                  "snr": 0.8993487807862275
+                },
+                {
+                  "cycle": 17,
+                  "epoch_btjd": 2630.3807722133124,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.4039290205446484e-05,
+                  "depth_error": 1.4778143306440741e-05,
+                  "snr": 1.626678650150149
+                },
+                {
+                  "cycle": 18,
+                  "epoch_btjd": 2631.553582191401,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 3.3516895380447664e-05,
+                  "depth_error": 1.4777910541126163e-05,
+                  "snr": 2.2680402136128697
+                },
+                {
+                  "cycle": 20,
+                  "epoch_btjd": 2633.8992021475774,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -5.075225383011084e-05,
+                  "depth_error": 1.4496131788194122e-05,
+                  "snr": -3.5010894334890272
+                },
+                {
+                  "cycle": 21,
+                  "epoch_btjd": 2635.0720121256654,
+                  "points": 44,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -9.380790623625401e-06,
+                  "depth_error": 1.4451841569611197e-05,
+                  "snr": -0.6491069375788747
+                }
+              ]
+            }
+          },
+          {
+            "period": 9.68584214309597,
+            "epoch_btjd": 2614.160502585813,
+            "duration_days": 0.20500000000000002,
+            "sde": 3.738083448484912,
+            "model_depth": 4.807981277351168e-05,
+            "model_depth_snr": 6.3959815678744905,
+            "vetting": {
+              "depth": 4.8030479717797725e-05,
+              "depth_ppm": 48.030479717797725,
+              "depth_error": 7.518760221828079e-06,
+              "depth_snr": 6.388085043376979,
+              "pink_snr": 4.345501749119777,
+              "observed_transits": 2,
+              "significant_events": 1,
+              "odd_even_sigma": null,
+              "secondary_snr": 1.1302972100760422,
+              "centroid_snr": 0.6956553157266104,
+              "flags": [
+                "fewer_than_two_individually_supported_events"
+              ],
+              "events": [
+                {
+                  "cycle": 0,
+                  "epoch_btjd": 2614.160502585813,
+                  "points": 30,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.053111376265626e-05,
+                  "depth_error": 1.6451710293941847e-05,
+                  "snr": 1.2479622723612274
+                },
+                {
+                  "cycle": 2,
+                  "epoch_btjd": 2633.532186872005,
+                  "points": 29,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 7.488776625463878e-05,
+                  "depth_error": 1.5483030044948196e-05,
+                  "snr": 4.836764253329933
+                }
+              ]
+            }
+          },
+          {
+            "period": 0.9623683047170623,
+            "epoch_btjd": 2610.2955025858128,
+            "duration_days": 0.3,
+            "sde": 3.511184352046401,
+            "model_depth": 1.201487028461557e-05,
+            "model_depth_snr": 5.282022056618691,
+            "vetting": {
+              "depth": 1.35063131619928e-05,
+              "depth_ppm": 13.5063131619928,
+              "depth_error": 2.5480634568380034e-06,
+              "depth_snr": 5.300618838886116,
+              "pink_snr": 4.275267428072376,
+              "observed_transits": 21,
+              "significant_events": 0,
+              "odd_even_sigma": 0.43468865932751916,
+              "secondary_snr": -0.5125497368157367,
+              "centroid_snr": 3.3629130467336563,
+              "flags": [
+                "large_duty_cycle",
+                "fewer_than_two_individually_supported_events"
+              ],
+              "events": [
+                {
+                  "cycle": 1,
+                  "epoch_btjd": 2611.25787089053,
+                  "points": 44,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -1.4931413775176594e-05,
+                  "depth_error": 1.66893412264086e-05,
+                  "snr": -0.8946676547993204
+                },
+                {
+                  "cycle": 2,
+                  "epoch_btjd": 2612.220239195247,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 3.6001528940232674e-05,
+                  "depth_error": 1.6884723621753497e-05,
+                  "snr": 2.1321953350690306
+                },
+                {
+                  "cycle": 3,
+                  "epoch_btjd": 2613.182607499964,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.1919993069441368e-05,
+                  "depth_error": 1.651423799245514e-05,
+                  "snr": 1.3273390561196923
+                },
+                {
+                  "cycle": 4,
+                  "epoch_btjd": 2614.144975804681,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.238059579806606e-05,
+                  "depth_error": 1.7199391348170754e-05,
+                  "snr": 1.3012434768772416
+                },
+                {
+                  "cycle": 5,
+                  "epoch_btjd": 2615.107344109398,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 7.84228567485279e-06,
+                  "depth_error": 1.6916687720442408e-05,
+                  "snr": 0.4635828126906924
+                },
+                {
+                  "cycle": 6,
+                  "epoch_btjd": 2616.069712414115,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.4990825399130436e-05,
+                  "depth_error": 1.6511293424173486e-05,
+                  "snr": 0.9079134513582687
+                },
+                {
+                  "cycle": 7,
+                  "epoch_btjd": 2617.0320807188323,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -6.614569852625429e-06,
+                  "depth_error": 1.6877342027626637e-05,
+                  "snr": -0.39192011643764724
+                },
+                {
+                  "cycle": 8,
+                  "epoch_btjd": 2617.9944490235494,
+                  "points": 44,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.547975237543465e-05,
+                  "depth_error": 1.667147464968579e-05,
+                  "snr": 1.5283442473347653
+                },
+                {
+                  "cycle": 9,
+                  "epoch_btjd": 2618.9568173282664,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.7235091359711916e-05,
+                  "depth_error": 1.6877370575110123e-05,
+                  "snr": 1.6137046489858335
+                },
+                {
+                  "cycle": 10,
+                  "epoch_btjd": 2619.9191856329835,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -2.3611475821638805e-05,
+                  "depth_error": 1.651175084995175e-05,
+                  "snr": -1.4299801417914322
+                },
+                {
+                  "cycle": 11,
+                  "epoch_btjd": 2620.8815539377006,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.4027229125135321e-05,
+                  "depth_error": 1.6512070699696325e-05,
+                  "snr": 0.8495136303766733
+                },
+                {
+                  "cycle": 17,
+                  "epoch_btjd": 2626.655763766003,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 3.1533417339524306e-05,
+                  "depth_error": 1.6527565536191156e-05,
+                  "snr": 1.90792874307315
+                },
+                {
+                  "cycle": 18,
+                  "epoch_btjd": 2627.61813207072,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 6.624406857169696e-06,
+                  "depth_error": 1.6518716170487755e-05,
+                  "snr": 0.4010243162240915
+                },
+                {
+                  "cycle": 19,
+                  "epoch_btjd": 2628.5805003754367,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.188095838022818e-05,
+                  "depth_error": 1.6879816000196387e-05,
+                  "snr": 0.7038559176290755
+                },
+                {
+                  "cycle": 20,
+                  "epoch_btjd": 2629.542868680154,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 5.510627329674556e-06,
+                  "depth_error": 1.6921129151417435e-05,
+                  "snr": 0.32566546123270657
+                },
+                {
+                  "cycle": 21,
+                  "epoch_btjd": 2630.505236984871,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -3.0454048298711456e-06,
+                  "depth_error": 1.6877765970196983e-05,
+                  "snr": -0.18043885874758353
+                },
+                {
+                  "cycle": 22,
+                  "epoch_btjd": 2631.467605289588,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -4.45568877582847e-06,
+                  "depth_error": 1.6511559235199115e-05,
+                  "snr": -0.26985269606336715
+                },
+                {
+                  "cycle": 23,
+                  "epoch_btjd": 2632.429973594305,
+                  "points": 28,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 3.744287126217216e-05,
+                  "depth_error": 2.0810910685824405e-05,
+                  "snr": 1.7991942701323884
+                },
+                {
+                  "cycle": 24,
+                  "epoch_btjd": 2633.392341899022,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 2.8396888674953047e-05,
+                  "depth_error": 1.6511688575880456e-05,
+                  "snr": 1.7198052485336943
+                },
+                {
+                  "cycle": 25,
+                  "epoch_btjd": 2634.354710203739,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": -1.2438862647012883e-05,
+                  "depth_error": 1.651216595179716e-05,
+                  "snr": -0.7533150213802845
+                },
+                {
+                  "cycle": 26,
+                  "epoch_btjd": 2635.3170785084562,
+                  "points": 43,
+                  "depth_region": "central_half_of_transit",
+                  "depth": 1.819891780152627e-05,
+                  "depth_error": 1.654413377288812e-05,
+                  "snr": 1.100022403793056
+                }
+              ]
+            }
+          }
+        ],
+        "period_min": 0.8415324992475441,
+        "period_max": 11.981132183984233,
+        "period_trials": 1532,
+        "runtime_seconds": 0.05883837500005029,
+        "sde_definition": "(log-likelihood power - median power) / (1.4826 MAD power); heuristic, not a calibrated TLS SDE"
+      },
+      "tls": {
+        "method": "TLS",
+        "best": {
+          "period": 3.1179110793653173,
+          "epoch_btjd": 2611.7202098719285,
+          "duration_days": 0.08895202431653783,
+          "sde": 3.9223099597673095,
+          "model_depth": 3.587979514652062e-05,
+          "model_depth_snr": 4.748944439364373,
+          "vetting": {
+            "depth": 3.391133908559052e-05,
+            "depth_ppm": 33.91133908559052,
+            "depth_error": 6.08545304875132e-06,
+            "depth_snr": 5.572524972902193,
+            "pink_snr": 4.358060010204178,
+            "observed_transits": 7,
+            "significant_events": 1,
+            "odd_even_sigma": 0.5066503663216855,
+            "secondary_snr": -0.3324537183895799,
+            "centroid_snr": 1.1142451358914511,
+            "flags": [
+              "fewer_than_two_individually_supported_events"
+            ],
+            "events": [
+              {
+                "cycle": 0,
+                "epoch_btjd": 2611.7202098719285,
+                "points": 13,
+                "depth_region": "central_half_of_transit",
+                "depth": 2.439577046431385e-05,
+                "depth_error": 2.2180886204366588e-05,
+                "snr": 1.0998555350557289
+              },
+              {
+                "cycle": 1,
+                "epoch_btjd": 2614.838120951294,
+                "points": 12,
+                "depth_region": "central_half_of_transit",
+                "depth": 7.322948383459149e-06,
+                "depth_error": 2.600283357365791e-05,
+                "snr": 0.2816211688128343
+              },
+              {
+                "cycle": 2,
+                "epoch_btjd": 2617.956032030659,
+                "points": 13,
+                "depth_region": "central_half_of_transit",
+                "depth": 7.458246407576752e-06,
+                "depth_error": 2.216291223509304e-05,
+                "snr": 0.33651924117477977
+              },
+              {
+                "cycle": 3,
+                "epoch_btjd": 2621.0739431100246,
+                "points": 13,
+                "depth_region": "central_half_of_transit",
+                "depth": 1.7686173103270697e-05,
+                "depth_error": 2.2560848089188585e-05,
+                "snr": 0.7839321036759301
+              },
+              {
+                "cycle": 5,
+                "epoch_btjd": 2627.309765268755,
+                "points": 13,
+                "depth_region": "central_half_of_transit",
+                "depth": 3.343402040079102e-05,
+                "depth_error": 2.2177327504944667e-05,
+                "snr": 1.507576618207787
+              },
+              {
+                "cycle": 6,
+                "epoch_btjd": 2630.4276763481203,
+                "points": 13,
+                "depth_region": "central_half_of_transit",
+                "depth": 5.178423174811986e-05,
+                "depth_error": 2.2163220987290107e-05,
+                "snr": 2.336493949946014
+              },
+              {
+                "cycle": 7,
+                "epoch_btjd": 2633.5455874274858,
+                "points": 13,
+                "depth_region": "central_half_of_transit",
+                "depth": 8.626862818805758e-05,
+                "depth_error": 2.382342405745666e-05,
+                "snr": 3.6211683081322548
+              }
+            ]
+          }
+        },
+        "peaks": [
+          {
+            "period": 3.1179110793653173,
+            "sde": 3.9223099597673095
+          },
+          {
+            "period": 0.8415324992475441,
+            "sde": 3.900910756544874
+          },
+          {
+            "period": 1.9566775178938076,
+            "sde": 3.7275640713108773
+          }
+        ],
+        "period_min": 0.8415324992475441,
+        "period_max": 11.981132183984233,
+        "period_trials": 1532,
+        "runtime_seconds": 0.04533008299767971,
+        "backend": "fused-pl",
+        "limb_darkening": [
+          0.3,
+          0.2
+        ],
+        "limb_darkening_note": "Generic fixed quadratic coefficients, not fitted stellar atmosphere values."
+      },
+      "decision": {
+        "conclusion": "no_significant_signal_in_search_range",
+        "reason": "Neither leading peak passes all the fixed SDE, correlated-noise SNR and observed-event thresholds. This does not establish planet absence.",
+        "preferred_method": "TLS",
+        "period_agreement": null,
+        "epoch_agreement": false,
+        "phase_difference_days": 1.277207286115754,
+        "bls_supported": false,
+        "tls_supported": false,
+        "flags": [
+          "fewer_than_two_individually_supported_events"
+        ],
+        "candidate_period": 3.1179110793653173,
+        "candidate_epoch_btjd": 2611.7202098719285,
+        "candidate_duration_days": 0.08895202431653783
+      }
+    }
+  ],
+  "conclusion": "signal_requires_review",
+  "reason": "At least one method passes the screening thresholds; agreement or false-positive checks require review.",
+  "catalog_group": "no_cataloged_transiting_planet",
+  "radius_bin": "comparison",
+  "stellar_priors": {
+    "mass_solar": 0.967,
+    "radius_solar": 1.237
+  },
+  "known_planets": [
+    {
+      "pl_name": "HD 86728 b",
+      "hostname": "HD 86728",
+      "tic_id": "TIC 172954294",
+      "tran_flag": 0,
+      "pl_orbper": 31.1515,
+      "pl_tranmid": 2459260.69,
+      "pl_trandur": null,
+      "pl_trandep": null,
+      "pl_rade": 3.03,
+      "pl_bmasse": 9.43,
+      "st_rad": 1.237,
+      "st_mass": 0.967,
+      "st_teff": 5610.0,
+      "sy_tmag": 4.7727,
+      "ra": 150.250054,
+      "dec": 31.9218216,
+      "sy_pnum": 1,
+      "discoverymethod": "Radial Velocity",
+      "disc_year": 2025,
+      "tic": 172954294
+    }
+  ],
+  "catalog_evaluation": []
+}

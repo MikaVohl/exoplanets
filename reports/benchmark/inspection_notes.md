@@ -1,0 +1,10 @@
+# Initial visual inspection
+
+This supplements the automated screening; it does not change the saved algorithm classifications or establish planet discoveries.
+
+- **TOI-1853, sector 50:** BLS and TLS agree near 1.24395 days. The folded curve shows a coherent dip. The supported period matches the cataloged planet. This is a useful example of a successful baseline recovery. See `plots/tic73540072_signal1.png`.
+- **TOI-880, sector 107:** The first search finds a signal near 6.3855 days. After masking it, both methods find another near 2.5726 days. Both correspond to cataloged planets, showing why iterative searching matters. See `plots/tic34077285_signal1.png` and `plots/tic34077285_signal2.png`.
+- **HD 108202, sector 46:** Both methods support a dip sequence near 7.1054 days despite the host having no cataloged transiting planet in this snapshot. The folded baseline is asymmetric and brightens after the dip, making stellar/instrumental effects a concern. Treat this as a screening alert that needs SAP-versus-PDCSAP comparison, other-sector checks, target-pixel/contamination inspection and catalog cross-checks. It is not a discovery claim. See `plots/tic94924490_signal1.png`.
+- **LHS 1140, sector 107:** A leading feature near 7.1 days has only one adequately sampled event, so the pipeline rejects it as a repeated-transit detection. It does not recover the known 3.77794-day planet in this run. The host also has a 24.73723-day planet, outside the search range. A stronger isolated feature can dominate a single-sector periodogram; this is a concrete failure case for improving candidate selection or using additional sectors.
+
+The size-stratified results show strong limitations for small planets: period matches in 19/20 giant-planet hosts, 12/20 medium-planet hosts and 5/20 small-planet hosts. A sensible next improvement is a controlled injection-recovery study, including shorter bins and additional sectors, before changing thresholds or introducing ML. Any later tuning should be evaluated on a separate set of stars.

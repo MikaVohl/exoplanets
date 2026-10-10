@@ -192,6 +192,8 @@ lark==1.3.1
     # via rfc3987-syntax
 lightkurve==2.6.0
     # via -r requirements.in
+llvmlite==0.50.0
+    # via numba
 markupsafe==3.0.4
     # via
     #   jinja2
@@ -237,6 +239,8 @@ nest-asyncio2==1.7.4
     # via ipykernel
 notebook-shim==0.2.4
     # via jupyterlab
+numba==0.68.0
+    # via transitleastsquares
 numpy==2.5.4
     # via
     #   astropy
@@ -245,11 +249,13 @@ numpy==2.5.4
     #   contourpy
     #   lightkurve
     #   matplotlib
+    #   numba
     #   pandas
     #   patsy
     #   pyerfa
     #   scikit-learn
     #   scipy
+    #   transitleastsquares
 packaging==26.3
     # via
     #   astropy
@@ -392,7 +398,9 @@ tornado==6.5.10
     #   jupyterlab
     #   terminado
 tqdm==4.70.1
-    # via lightkurve
+    # via
+    #   lightkurve
+    #   transitleastsquares
 traitlets==5.16.1
     # via
     #   ipykernel
@@ -407,6 +415,8 @@ traitlets==5.16.1
     #   nbclient
     #   nbconvert
     #   nbformat
+transitleastsquares==2.0
+    # via -r requirements.in
 typing-extensions==4.16.0
     # via
     #   aiohttp

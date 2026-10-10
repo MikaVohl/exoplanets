@@ -4,6 +4,54 @@ Real TESS observations for an initial exploratory data analysis. The starter tar
 
 These are extracted light curves, not detector images. Original FITS files include aperture flux (`SAP_FLUX`), pipeline-corrected flux (`PDCSAP_FLUX`), uncertainties, background, centroids, and quality flags. All original rows are retained in those files.
 
+## 100-star BLS/TLS benchmark
+
+For a worked example, open [the TOI-880 notebook walkthrough](notebooks/02_toi880_pipeline_walkthrough.ipynb). It reconstructs each preprocessing transformation from the original FITS data, shows BLS/TLS intermediate results, inspects the first signal's warning flags, masks its events, finds a weaker second signal, and only then compares the periods with the catalog. All intermediate tables and figures are included after execution. A read-only export is in `reports/walkthrough/toi880.html`.
+
+```sh
+source .venv/bin/activate
+jupyter lab notebooks/02_toi880_pipeline_walkthrough.ipynb
+```
+
+The project also includes a complete benchmark using **100 distinct cataloged planet hosts**: 60 with known transiting planets and 40 whose confirmed planets have no cataloged transits. The latter are comparison stars, not proven transit-free stars.
+
+Open [the benchmark report](reports/benchmark/index.html), [method and measured results](reports/benchmark/README.md), or [the star summary](reports/benchmark/summary.csv). Each report row links to diagnostic plots and full results with detected periods, event times/depths, significance estimates, warning flags, catalog comparisons and provenance.
+
+The transiting group includes 20 hosts each with a largest short-period planet of ≤3, 3–8, and >8 Earth radii. Targets have TESS magnitude 4–11.5 and known stellar mass/radius. Selection is deterministic from saved NASA Exoplanet Archive and MAST snapshots. It selects each star's latest available public 120-second SPOC sector. The groups differ in brightness; this is a learning benchmark, not a population-completeness measurement.
+
+Both **Astropy BLS** and **TLS 2.0** search independently over 0.5–12 days, shortened to half the usable baseline when necessary. They receive stellar mass/radius priors but no catalog planet periods, epochs, planet sizes or labels. Up to two search iterations are performed, masking only a signal discovered by the algorithms. Catalog comparisons happen afterward.
+
+Preprocessing retains observing gaps, filters quality flags, splits at gaps longer than 0.5 days, trims 0.1 days at segment edges, removes slow trends using a one-day median, clips only large upward excursions, and makes ten-minute weighted bins. It scales formal errors to the measured point-to-point scatter when necessary. Longer trends, short transits and gaps can still limit sensitivity.
+
+The common signal checks include observed repeat events, duration-block correlated-noise SNR, agreement in period and phase, central-half odd/even depths, secondary eclipses, and centroid shifts with a correlated-noise correction. The fixed thresholds in `config/benchmark.json` are heuristic screening rules, not calibrated false-alarm probabilities. Conclusions are **supported transit-like signal**, **signal requiring review**, or **no significant signal in the search range**. Data/search errors are reported separately. No result automatically confirms or rules out a planet.
+
+Run or resume from the project folder:
+
+```sh
+.venv/bin/python scripts/run_benchmark.py all
+```
+
+Stages can be run separately:
+
+```sh
+.venv/bin/python scripts/run_benchmark.py select
+.venv/bin/python scripts/run_benchmark.py download
+.venv/bin/python scripts/run_benchmark.py search --workers 2
+.venv/bin/python scripts/run_benchmark.py report
+```
+
+The default uses four download workers and two search workers with one TLS thread each. Successful per-star searches are reused only when the input file hash, code, configuration and numerical-library versions match. `--force` reruns searches; `--limit 3` performs a small smoke run. `--refresh-catalog` on `select` or `all` fetches fresh snapshots and can change the sample. Keep the existing snapshots to reproduce this run.
+
+Benchmark inputs live in `data/benchmark/targets.csv`, `known_planets.csv`, `selection.json`, and `download_manifest.json`. Original files are in `data/raw/benchmark/`. Generated photometry is in `data/processed/benchmark/`. Small result JSONs and summary tables can be committed; raw files, derived photometry, plot images and numerical spectra are Git-ignored and reproducible.
+
+Run the scientific validation checks:
+
+```sh
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+These tests check an injected transit, a seeded white-noise example, transit preservation through detrending, gap handling, unobserved-event counts, alternating eclipse depths, and period harmonics. They are not a large injection-recovery sensitivity calibration.
+
 ## Start exploring
 
 The local `.venv` is already installed. From this project folder:

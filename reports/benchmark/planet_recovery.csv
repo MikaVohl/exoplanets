@@ -1,0 +1,83 @@
+tic,hostname,planet,catalog_period_days,catalog_radius_earth,in_nominal_period_range,exact_supported_match,harmonic_supported_match,bls_exact_match,tls_exact_match,matching_methods
+4070275,TOI-4364,TOI-4364 b,5.424019,2.01,True,False,False,False,False,
+14227229,K2-111,K2-111 b,5.3518963,1.837,True,False,True,False,False,BLS:double_period:signal1
+19342878,WASP-149,WASP-149 b,1.332813,15.24421375,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1;BLS:exact:signal2
+26826078,HAT-P-20,HAT-P-20 b,2.875317,9.718,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+27064468,TOI-5126,TOI-5126 c,17.8999,3.86,False,False,False,False,False,
+27064468,TOI-5126,TOI-5126 b,5.4588385,4.74,True,False,False,False,False,TLS:exact:signal1
+29857954,TOI-172,TOI-172 b,9.47725,10.816685,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+33692729,TOI-469,HIP 29442 d,6.429575,1.538,True,False,False,False,False,
+33692729,TOI-469,TOI-469.01,13.6308205,3.41,False,False,False,False,False,
+33692729,TOI-469,HIP 29442 c,3.5379559,1.551,True,False,False,False,False,
+34077285,TOI-880,TOI-880 c,6.3872703,4.95,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+34077285,TOI-880,TOI-880.02,2.57571,2.19,True,True,False,True,True,BLS:exact:signal2;TLS:exact:signal2
+35021200,K2-158,K2-158 c,5.90279,1.28,True,False,False,False,False,
+35021200,K2-158,K2-158 b,10.06049,2.64,True,False,False,False,False,
+53498154,TOI-5624,TOI-5624 e,21.489936,3.247,False,False,False,False,False,
+53498154,TOI-5624,TOI-5624 b,3.3903473,2.314,True,False,False,False,False,
+53498154,TOI-5624,TOI-5624 c,7.885385,2.474,True,False,False,False,False,
+53498154,TOI-5624,TOI-5624 d,13.731468,3.584,False,False,False,False,False,
+58825110,TOI-5301,TOI-5301 b,5.858858,13.09208946,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+73540072,TOI-1853,TOI-1853 b,1.2436258,3.46,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+76419763,HAT-P-5,HAT-P-5 b,2.78849,13.56289,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+80611440,TOI-5422,TOI-5422 b,5.377219,9.10169233,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+83092282,TOI-622,TOI-622 b,6.402513,9.2362001,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+92226327,LHS 1140,LHS 1140 b,24.73723,1.73,False,False,False,False,False,
+92226327,LHS 1140,LHS 1140 c,3.77794,1.272,True,False,False,False,False,
+120826158,TOI-4495,TOI-4495 c,5.18553,4.03,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1;TLS:half_period:signal2
+120826158,TOI-4495,TOI-4495 b,2.56699,2.483,True,False,True,False,False,BLS:double_period:signal1;TLS:double_period:signal1;TLS:exact:signal2
+120973167,Kepler-1655,Kepler-1655 b,11.8728787,2.213,True,False,False,False,False,BLS:half_period:signal2;TLS:half_period:signal2
+123357864,Kepler-102,Kepler-102 b,5.286965,0.46,True,False,False,False,False,
+123357864,Kepler-102,Kepler-102 c,7.071392,0.567,True,False,False,False,False,
+123357864,Kepler-102,Kepler-102 d,10.311767,1.154,True,True,False,True,False,BLS:exact:signal1;TLS:exact:signal1
+123357864,Kepler-102,Kepler-102 f,27.453592,0.861,False,False,False,False,False,
+123357864,Kepler-102,Kepler-102 e,16.1456994,2.17,False,False,False,False,False,
+142937186,TOI-2427,TOI-2427 b,1.305962,1.64,True,True,False,True,True,BLS:exact:signal2;TLS:exact:signal2
+146172354,TOI-1036,TOI-1036 b,3.77952125496,6.28499593,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+148673433,TOI-5704,TOI-5704 b,3.771116,3.2274,True,False,False,False,False,BLS:double_period:signal1;TLS:double_period:signal1
+150030205,TOI-286,TOI-286 c,39.361826,1.88,False,False,False,False,False,
+150030205,TOI-286,TOI-286 b,4.5117244,1.42,True,False,False,False,False,
+150070085,TIC 150070085,TIC 150070085 b,10.47423,3.62,True,False,False,False,False,
+164767175,HIP 8152,HIP 8152 c,19.60562,2.52442508,False,False,False,False,False,
+164767175,HIP 8152,HIP 8152 b,10.751014,2.53625843,True,False,False,False,False,
+169765334,TOI-329,TOI-329 b,5.70439,4.94057819,True,False,False,False,False,
+176899385,HAT-P-6,HAT-P-6 b,3.85298,16.58932,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+183985250,LTT 9779,LTT 9779 b,0.792052,4.72,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+193754373,TOI-4487 A,TOI-4487 A b,3.9540709,14.60530185,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+194795551,TOI-3331 A,TOI-3331 A b,2.0180231,12.97999965,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+203377303,TOI-3493,TOI-3493 b,8.1594667,3.22,True,True,False,True,True,BLS:exact:signal2;TLS:exact:signal2
+234994474,L 168-9,L 168-9 b,1.40152604,1.63,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+250707118,HAT-P-29,HAT-P-29 b,5.72319,13.11453,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+256783784,TOI-1432,TOI-1432 b,6.1094927,2.39,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+257605131,TOI-451,TOI-451 b,1.8587033,1.84,True,False,False,False,False,
+257605131,TOI-451,TOI-451 c,9.192463,2.93,True,False,False,False,False,
+257605131,TOI-451,TOI-451 d,16.364962,3.93,False,False,False,False,False,
+260004324,LHS 1815,LHS 1815 b,3.814334,1.088,True,False,False,False,False,
+266980320,HD 219666,HD 219666 b,6.034468,4.898,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1;BLS:exact:signal2
+278775625,TOI-921,TOI-921 b,5.12871907628,3.53409617,True,False,False,False,False,
+281575427,TOI-205,TOI-205 b,4.25300773815,2.50121142,True,False,False,False,False,BLS:double_period:signal2;TLS:double_period:signal2
+285048486,TOI-1728,TOI-1728 b,3.49151,5.05,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+290035649,Kepler-1743,Kepler-1743 b,7.649710178,1.59887007,True,False,False,False,False,
+293607057,BD-14 3065 A,BD-14 3065 b,4.2889731,21.59,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+293687315,KELT-18,KELT-18 b,2.8717518,17.59813,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1;BLS:exact:signal2;TLS:exact:signal2
+349488688,HD 152843,HD 152843 b,11.62071,3.05,True,False,False,False,False,
+349488688,HD 152843,HD 152843 c,19.502104,5.94,False,False,False,False,False,
+364186197,TOI-1408,TOI-1408 b,4.42587,25.0,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+364186197,TOI-1408,TOI-1408 c,2.1664,2.22,True,False,False,False,False,
+372172128,TOI-2196,TOI-2196 b,1.1947268,3.51,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+376637093,TOI-1516,TOI-1516 b,2.056014,15.24421375,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+383390264,HD 110082,HD 110082 b,10.18271,3.2,True,False,False,False,False,
+392681545,TOI-6054,TOI-6054.01,7.501428,2.64,True,False,False,False,False,
+392681545,TOI-6054,TOI-6054.02,12.563636,2.82,False,False,False,False,False,
+408310006,WASP-166,WASP-166 b,5.44354,7.06167,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+417931300,TOI-2068,TOI-2068 b,7.768915,1.821,True,False,False,False,False,
+420814525,HD 209458,HD 209458 b,3.52474859,15.58051,True,True,True,True,True,BLS:exact:signal1;TLS:exact:signal1;BLS:double_period:signal2;TLS:double_period:signal2
+427761355,TOI-1518,TOI-1518 b,1.90261131,21.05046575,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1;BLS:exact:signal2;TLS:exact:signal2
+439842788,WASP-177,WASP-177 b,3.071722,17.71022,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+439943973,TOI-6647,TOI-6647 b,3.9992,3.97,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+441587756,TOI-5380,TOI-5380 b,3.77229247873,3.48093238,True,False,False,False,False,
+460205581,TOI-837,TOI-837 b,8.3249113,9.16894621,True,False,False,False,False,
+462553953,TOI-4156,TOI-4156 c,12.82282706375,2.92303762,False,False,False,False,False,
+462553953,TOI-4156,TOI-4156 b,4.46189034133,2.53823825,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+466382581,TOI-5803,TOI-5803 b,5.38305,3.2732,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1
+470171739,TOI-4153,TOI-4153 b,4.6174141,16.11851425,True,True,False,True,True,BLS:exact:signal1;TLS:exact:signal1

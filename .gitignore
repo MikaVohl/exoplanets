@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 data/raw/
 data/processed/
+reports/benchmark/plots/
+reports/benchmark/spectra/
+reports/walkthrough/figures/
+reports/walkthrough/*.html
