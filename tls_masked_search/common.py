@@ -83,6 +83,13 @@ def relation(p, known):
     return None
 
 
+def count_transits_with_data(t, t0, period, half_window, min_points=1):
+    """How many of a planet's dips (times t0 + k*period) have at least `min_points` data points within
+    `half_window` days of the dip centre."""
+    ks = np.arange(np.floor((t.min() - t0) / period), np.ceil((t.max() - t0) / period) + 1)
+    return int(sum(np.sum(np.abs(t - (t0 + k * period)) < half_window) >= min_points for k in ks))
+
+
 def star_kwargs(mass, radius):
     """TLS keyword arguments for a star: +/-20% mass/radius priors, generic limb darkening."""
     import os

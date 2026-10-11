@@ -20,7 +20,7 @@ import warnings
 import numpy as np
 import lightkurve as lk
 
-from common import clean_and_stitch
+from common import clean_and_stitch, count_transits_with_data
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
@@ -43,11 +43,6 @@ def box_snr(t, y, sigma, period, t0, dur):
     return (np.median(y[~inn]) - y[inn].mean()) / (sigma / np.sqrt(inn.sum()))
 
 
-def count_transits(t, t0, period, dur):
-    ks = np.arange(np.floor((t.min() - t0) / period), np.ceil((t.max() - t0) / period) + 1)
-    return int(sum(np.sum(np.abs(t - (t0 + k * period)) < dur / 2) >= 3 for k in ks))
-
-
 def analyse_planet(t, y, sigma, span, star_radius, p, found_period):
     P = float(p["pl_orbper"])
     dur = float(p["pl_trandur"]) / 24 if p["pl_trandur"] else 3 / 24
@@ -59,8 +54,8 @@ def analyse_planet(t, y, sigma, span, star_radius, p, found_period):
     scan_at = lambda Q: [box_snr(t, y, sigma, Q, t.min() + f * Q, dur) for f in phases]
     scan = scan_at(P)
     t_best = t.min() + phases[np.nanargmax(scan)] * P
-    n_tr = count_transits(t, t0, P, dur)
-    n_tr_best = count_transits(t, t_best, P, dur)
+    n_tr = count_transits_with_data(t, t0, P, dur / 2, min_points=3)
+    n_tr_best = count_transits_with_data(t, t_best, P, dur / 2, min_points=3)
     ratio = found_period / P
     harm = "exact" if abs(ratio - 1) < 0.01 else next(
         (f"x{h}" for h, v in HARMONICS if abs(ratio / v - 1) < 0.01), "")

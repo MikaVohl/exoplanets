@@ -29,7 +29,8 @@ import lightkurve as lk
 import numpy as np
 import pandas as pd
 
-from common import MIN_SDE, OUT_DIR, RAW, ROOT, clean_and_stitch, hide_transits, relation, star_kwargs, tls_wide
+from common import (MIN_SDE, OUT_DIR, RAW, ROOT, clean_and_stitch, count_transits_with_data, hide_transits,
+                    relation, star_kwargs, tls_wide)
 
 ablation = importlib.import_module("05_ablation")  # reuse its fake-planet injector and paired test
 
@@ -106,11 +107,6 @@ def data_times(star):
     return time[np.isfinite(time)], time[np.isfinite(time) & np.isfinite(flux)]
 
 
-def n_dips_with_data(times, period, t0, half_window=1 / 24):
-    ks = np.arange(0, np.ceil((times.max() - t0) / period) + 1)
-    return int(sum(np.any(np.abs(times - (t0 + k * period)) < half_window) for k in ks))
-
-
 def build_jobs(targets, known, limit):
     hosts = targets[targets.catalog_group.eq("known_transiting_host")]
     comps = targets[targets.catalog_group.eq("no_cataloged_transiting_planet")]
@@ -145,7 +141,7 @@ def build_jobs(targets, known, limit):
             while True:  # long period, but at least 2 dips must land on data
                 period = float(np.exp(rng.uniform(np.log(8.0), np.log(span / 2))))
                 t0 = float(times.min() + rng.uniform(0, period))
-                if n_dips_with_data(usable, period, t0) >= 2:
+                if count_transits_with_data(usable, t0, period, half_window=1 / 24) >= 2:
                     break
             jobs.append({"star": star, "kind": "inj_long", "fakes": [(period, t0, depth)], "targets": [period],
                          "meta": {"depth": depth, "period": period}})
