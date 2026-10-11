@@ -1,11 +1,11 @@
-"""Step 4: run the WASP-18 method (TLS, mask transits, re-flatten, fine TLS) on the repo's
+"""Step 4: run the masked two-pass TLS search on the repo's
 100-star benchmark sample and compare recovery with the repo's existing BLS+TLS benchmark.
 
 Same stars, same raw files, same catalog check as reports/benchmark. Only the pipeline differs:
   - flattening: lightkurve flatten (33 h window), re-run with the transits masked
   - search: TLS only, wide pass then fine pass
   - second signal: the first signal's transits are hidden and the search runs again
-    (step 7 showed this finds the weaker planet in two-planet systems)
+    (it finds the weaker planet in two-planet systems)
 Catalog periods are used only AFTER each search finishes, to score it.
 
 Usage (from tls_masked_search/; needs `python ../scripts/run_benchmark.py download` first):

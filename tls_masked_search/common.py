@@ -1,4 +1,4 @@
-"""Shared settings and helpers for the WASP-18 b pipeline (imported by the numbered steps)."""
+"""Shared settings and helpers for the transit search, the benchmark and the dataset build."""
 from pathlib import Path
 
 import lightkurve as lk
@@ -6,37 +6,15 @@ import numpy as np
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent             # repo root
-DATA_DIR = HERE / "data"        # cached MAST downloads (git-ignored)
-OUT_DIR = HERE / "output"       # results.json + plots written by the steps
+OUT_DIR = HERE / "output"       # CSVs written by the numbered steps
 
-TARGET = "WASP-18"
-TIC_ID = 100100827
-SEARCH_SECTORS = [2, 3]         # ~50 contiguous days: plenty to find a ~1 day planet quickly
-
-# Published values we compare against (ranges because papers disagree with each other).
-# Period: Cortes-Zuleta+2020 via the NASA Exoplanet Archive.
-PUBLISHED_PERIOD = 0.94145224           # days
-PUBLISHED_DEPTH = (0.0088, 0.0104)      # fraction of flux
-PUBLISHED_DURATION_H = (2.1, 2.2)       # hours
-
-# "Close enough" tolerances. Period is pinned down tightly; depth and duration vary by
-# method (box vs. limb-darkened fit, detrending, binning), so they get a looser margin.
-PERIOD_TOL_DAYS = 1e-4
-# Benchmark-sample settings (steps 4-5): same TLS threshold and period tolerance as the repo benchmark.
+# Benchmark settings: same TLS threshold and period tolerance as the repo benchmark.
 RAW = ROOT / "data" / "raw" / "benchmark"
 MIN_SDE = 7.0
 MATCH_TOL = 0.01
-RANGE_TOL_FRAC = 0.15                   # allowed overshoot beyond the published range
 
 
-def download(sectors=None):
-    """Download (or reuse cached) SPOC 2-min light curves. `sectors=None` means all of them."""
-    kwargs = {"sector": sectors} if sectors else {}
-    search = lk.search_lightcurve(TARGET, author="SPOC", exptime=120, **kwargs)
-    return search.download_all(download_dir=str(DATA_DIR))
-
-
-def clean_and_stitch(lcs, bin_minutes=10, ephemeris=None, window_length=1001):
+def clean_and_stitch(lcs, bin_minutes=10, ephemeris=None):
     """Clean each light curve, stitch them, bin them; return (time, flux, flux_err) arrays.
 
     Each sector is cleaned on its own because each has its own brightness level and drift.
@@ -49,13 +27,13 @@ def clean_and_stitch(lcs, bin_minutes=10, ephemeris=None, window_length=1001):
     for lc in lcs:
         lc = lc.remove_nans().normalize()
         # Flatten removes slow drifts. The window must be much longer than the ~2 hr transit
-        # (~65 points) or it would erase the dip. Default 1001 points ~ 33 hours.
+        # (~65 points) or it would erase the dip. 1001 points ~ 33 hours.
         mask = None
         if ephemeris is not None:
             period, t0, duration = ephemeris
             # Mask twice the measured duration: a first-pass duration is biased short.
             mask = lc.create_transit_mask(period=period, transit_time=t0, duration=2 * duration)
-        lc = lc.flatten(window_length=window_length, mask=mask)
+        lc = lc.flatten(window_length=1001, mask=mask)
         # Clip upward spikes only: downward points are the transit signal we want to keep.
         lc = lc.remove_outliers(sigma=6, sigma_lower=np.inf)
         cleaned.append(lc)
@@ -63,16 +41,6 @@ def clean_and_stitch(lcs, bin_minutes=10, ephemeris=None, window_length=1001):
     lc = lk.LightCurveCollection(cleaned).stitch().bin(time_bin_size=bin_minutes / 1440).remove_nans()
     return (lc.time.value.astype(float), lc.flux.value.astype(float),
             lc.flux_err.value.astype(float))
-
-
-def load_clean(sectors=None, bin_minutes=10, ephemeris=None):
-    """Download (or reuse cached) WASP-18 sectors, then clean_and_stitch them."""
-    return clean_and_stitch(download(sectors), bin_minutes, ephemeris)
-
-
-def in_range(value, lo, hi, frac=RANGE_TOL_FRAC):
-    """True if `value` is inside [lo, hi], widened by `frac` on each side."""
-    return lo * (1 - frac) <= value <= hi * (1 + frac)
 
 
 def relation(p, known):
