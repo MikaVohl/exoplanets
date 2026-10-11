@@ -51,15 +51,21 @@ Run from inside this folder: the scripts import `common.py` from the current dir
 ## Watch it live
 
 `live.py` runs step 4 and streams what it is doing (which star, each cleaning and search stage, the
-result) to the TESS visualizer in your browser. Extra arguments go to `04_benchmark_100_stars.py`:
+result) to the TESS visualizer in your browser:
 
 ```bash
-python live.py --limit 5                       # the first 5 stars
+python live.py                                 # serve the page; click Run pipeline there
+python live.py --limit 5                       # or start a run right away: the first 5 stars
 python live.py --tics 26826078 34077285        # pick stars by TIC ID (from data/benchmark/targets.csv)
 python live.py --tics 26826078 --port 8000 --no-browser
 ```
 
-It serves the page at http://127.0.0.1:8765/ and keeps serving after the run ends; Ctrl-C to stop.
+It serves the page at http://127.0.0.1:8765/ (local only) and keeps serving after a run ends; Ctrl-C to
+stop. Click **Run pipeline** on the page and pick the 7-star tour, the first N stars, or TIC IDs; a new
+run replaces the one in progress. Extra command-line arguments go to `04_benchmark_100_stars.py`.
+Endpoints: `GET /targets`, `GET /run` (running, finished, failed or stopped, and the exit code),
+`POST /run` with JSON `{"tics": [...]}` or `{"limit": N}` (400 unless whole numbers and known TICs),
+`POST /stop`, and `GET /events`. Opening `reports/tess-survey/index.html` directly plays the recorded sample instead.
 The run's event log and CSVs go to `output/live/` (git-ignored), so the committed results stay as they are.
 To record a run for replay (load the file in the page, or rebuild the page's built-in sample):
 

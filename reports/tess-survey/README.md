@@ -35,8 +35,9 @@ are labeled V, not TESS magnitudes.
 ## Mission Control
 
 Mission Control shows the TLS masked-search benchmark
-(`tls_masked_search/04_benchmark_100_stars.py`) working star by star. Open it
-with the pulse button in the toolbar or `M`. Every target is a ring on the sky
+(`tls_masked_search/04_benchmark_100_stars.py`) working star by star. Click
+**Run pipeline** (top of the page) to start a run, or open the panel with the
+pulse button in the toolbar or `M`. Every target is a ring on the sky
 globe, colored by outcome once known: green recovered, cyan harmonic, red
 missed, amber false alarm, grey quiet, purple error, dark grey pending; colours
 fade in as verdicts arrive. Sector numbers are drawn on the globe: the active
@@ -79,12 +80,18 @@ Events are shown from a queue at a readable pace, about 60â€“70 s per star at 1Ã
 position slider. Seeking jumps straight to the right state without replaying
 animations.
 
-- **Live:** `cd tls_masked_search && python live.py --limit 5` runs the
-  benchmark and serves this page at http://127.0.0.1:8765/. Over HTTP the page
-  follows `/events` (Server-Sent Events). The pipeline is usually ahead of the
-  presentation; "N events queued" then appears, with **Skip to latest** to catch up.
-- **Replay:** open `index.html` and click **Watch sample run**, or open/drop a
-  recorded JSONL event log (for example
+- **Live:** start `cd tls_masked_search && python live.py`; it serves this page
+  at http://127.0.0.1:8765/ and opens it. Click **Run pipeline** and choose the
+  stars: the 7-star tour (the sample's stars), the first N stars, or TIC IDs
+  (suggestions list each target's TIC and host name). **Start** runs the real
+  benchmark; a new run replaces the one in progress. Over HTTP the page follows
+  `/events` (Server-Sent Events) and shows whether the pipeline is running,
+  finished, failed (with its exit code) or stopped (**Stop**). The pipeline is
+  usually ahead of the presentation; "N events queued" then appears, with
+  **Skip to latest** to catch up.
+- **Replay:** open `index.html` directly and click **Run pipeline** (or
+  **Watch sample run**) to play the embedded sample run; a real run needs
+  `live.py`. You can also open/drop a recorded JSONL event log (for example
   `tls_masked_search/output/live/events.jsonl`). The recorded compute times are
   not replayed.
 

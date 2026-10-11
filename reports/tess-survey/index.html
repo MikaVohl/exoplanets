@@ -37,7 +37,7 @@ p{margin:0}
 .masthead{position:absolute;left:24px;top:18px;pointer-events:none;text-shadow:0 1px 8px rgba(0,0,0,.6)}
 .masthead h1{margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em}
 .masthead p{margin-top:1px;color:var(--l2)}
-.views{position:absolute;top:var(--gap);left:var(--gap);right:calc(var(--panel) + var(--gap)*2);display:flex;justify-content:center;pointer-events:none}
+.views{position:absolute;top:var(--gap);left:var(--gap);right:calc(var(--panel) + var(--gap)*2);display:flex;justify-content:center;gap:8px;pointer-events:none}
 .views .seg{pointer-events:auto;padding:3px;border-radius:11px}
 .views .seg button{height:30px;padding:0 16px}
 .seg{position:relative;display:inline-flex;padding:2px;border-radius:9px;background:var(--fill)}
@@ -259,6 +259,18 @@ body:not(.mc-open) .stage{left:var(--gap)}
 .ledger span{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ledger span+span{flex:none;width:34px;font-size:11px;color:var(--l3)}
 .ledger span+span+span{width:64px;text-align:right}
+.run-btn{flex:none;display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 18px;border-radius:13px;background:var(--blue);box-shadow:var(--shadow);font-weight:600;pointer-events:auto;transition:filter .15s var(--ease),transform .15s var(--ease)}
+.run-btn:hover{filter:brightness(1.15)}
+.run-btn:active{transform:scale(.96)}
+.run-btn svg{width:12px;height:12px}
+.mc-runf{display:grid;gap:7px;flex:none;margin:0 18px 10px;padding:10px 12px;border-radius:10px;background:var(--fill);color:var(--l2)}
+.mc-runf label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.mc-runf input:not([type=radio]){min-width:0;height:26px;padding:0 8px;border:0;border-radius:7px;background:rgba(0,0,0,.3)}
+.mc-runf input[type=number]{width:58px}
+.mc-runf input[list]{flex:1}
+.mc-runf .chip{justify-self:start;background:var(--blue);font-weight:600}
+.chip:disabled{opacity:.5;cursor:default}
+.mc-proc{display:flex;align-items:center;gap:8px;flex:none;padding:0 18px 8px;font-size:12px;color:var(--l2);line-height:1.45}
 @media(max-width:1100px){
  .masthead p{display:none}
  .t-row{flex-wrap:wrap;row-gap:8px}
@@ -304,7 +316,7 @@ body:not(.mc-open) .stage{left:var(--gap)}
  <canvas id="scene" aria-label="Interactive 3D TESS observation sectors. Drag to rotate; Shift-drag to pan; scroll to zoom." tabindex="0"></canvas>
  <div class="labels" id="labels" aria-hidden="true"></div>
  <header class="masthead"><h1>TESS</h1><p id="view-title">The sky, centered on TESS</p></header>
- <div class="views"><div class="seg glass" role="group" aria-label="Scene view"><span class="pill" aria-hidden="true"></span><button type="button" data-view="sky" aria-pressed="true" title="Sky globe (1)">Sky globe</button><button type="button" data-view="orbit" aria-pressed="false" title="Earth orbit (2)">Earth orbit</button><button type="button" data-view="solar" aria-pressed="false" title="Sun &amp; Earth (3)">Sun &amp; Earth</button></div></div>
+ <div class="views"><div class="seg glass" role="group" aria-label="Scene view"><span class="pill" aria-hidden="true"></span><button type="button" data-view="sky" aria-pressed="true" title="Sky globe (1)">Sky globe</button><button type="button" data-view="orbit" aria-pressed="false" title="Earth orbit (2)">Earth orbit</button><button type="button" data-view="solar" aria-pressed="false" title="Sun &amp; Earth (3)">Sun &amp; Earth</button></div><button type="button" class="run-btn" id="run-btn" title="Watch the planet-search pipeline work star by star"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.6v10.8c0 .7.7 1 1.3.7l8.2-5.4a.8.8 0 0 0 0-1.4L5.3 1.9C4.7 1.6 4 1.9 4 2.6z"/></svg>Run pipeline</button></div>
  <div class="tools" role="toolbar" aria-label="Camera framing" aria-orientation="vertical">
   <button type="button" class="tool glass" id="face-field" aria-label="Face sector"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="4.5"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/><path d="M8 1v2.5M8 12.5V15M1 8h2.5M12.5 8H15"/></svg></button>
   <button type="button" class="tool glass" id="focus-earth" aria-label="Focus on Earth"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6"/><ellipse cx="8" cy="8" rx="2.6" ry="6"/><path d="M2 8h12"/></svg></button>
@@ -339,6 +351,14 @@ body:not(.mc-open) .stage{left:var(--gap)}
 <section class="mc glass" id="mc" aria-label="Mission Control" hidden>
  <div class="mc-head"><h2>Mission Control</h2><span class="mc-live" id="mc-status" role="status" hidden></span><button type="button" class="icon-btn" id="mc-close" aria-label="Close Mission Control"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button></div>
  <div class="mc-src"><button type="button" class="chip" id="mc-sample">Watch sample run</button><button type="button" class="chip" id="mc-open">Open run file…</button><input type="file" id="mc-file" accept=".jsonl,.ndjson,.json" hidden></div>
+ <form class="mc-runf" id="mc-runf" hidden>
+  <label id="mc-tour-l"><input type="radio" name="mode" value="tour" checked><span id="mc-tour"></span></label>
+  <label><input type="radio" name="mode" value="limit">First <input type="number" name="limit" id="mc-limit" min="1" value="5" aria-label="Number of stars"> stars</label>
+  <label><input type="radio" name="mode" value="tics">These TIC IDs <input name="tics" list="mc-targets" placeholder="26826078 34077285" aria-label="TIC IDs" autocomplete="off"></label>
+  <datalist id="mc-targets"></datalist>
+  <button type="submit" class="chip" id="mc-start">Start</button>
+ </form>
+ <div class="mc-proc" id="mc-proc" role="status" hidden><span id="mc-proc-t"></span><button type="button" class="chip" id="mc-stop" hidden>Stop</button></div>
  <div class="mc-ctl" id="mc-ctl" hidden>
   <button type="button" class="icon-btn" id="mc-play" aria-label="Pause"></button>
   <button type="button" class="icon-btn" id="mc-step" aria-label="Next event" title="Step to the next event"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 3.3v9.4c0 .5.6.8 1 .5l6.3-4.7a.6.6 0 0 0 0-1L4.5 2.8c-.4-.3-1 0-1 .5z"/><rect x="11.3" y="3" width="1.8" height="10" rx=".9"/></svg></button>
@@ -347,7 +367,7 @@ body:not(.mc-open) .stage{left:var(--gap)}
  </div>
  <div class="mc-queue" id="mc-queue" role="status" hidden><span id="mc-qn"></span><button type="button" class="chip" id="mc-skip">Skip to latest</button></div>
  <div class="mc-body">
-  <p class="mc-intro" id="mc-intro">Watch the planet-search pipeline work through its stars one by one: where each star sits in the sky, what every step does to its light curve, and whether the known planet was found. Click <b>Watch sample run</b>, open or drop a recorded run (<code>.jsonl</code>) onto the page, or start <code>live.py</code> to follow a run as it happens.</p>
+  <p class="mc-intro" id="mc-intro">Watch the planet-search pipeline work through its stars one by one: where each star sits in the sky, what every step does to its light curve, and whether the known planet was found. Click <b>Run pipeline</b>: on the page served by <code>live.py</code> it starts a real run; opened as a file it plays a recorded sample run. You can also open or drop a recorded run (<code>.jsonl</code>) onto the page.</p>
   <div id="mc-run" hidden>
    <div id="mc-now">
     <div class="star-detail" id="mc-star"></div>
@@ -2254,15 +2274,33 @@ $('film-strip').addEventListener('click',e=>{const b=e.target.closest('[data-fra
 $('stage-close').addEventListener('click',()=>{const t=mcRun&&mcRun.by.get(mcRun.pin??mcRun.cur);if(t){mc.closed=t.tic;mcStage(t,true);}});
 $('mc-ledger').addEventListener('click',e=>{const b=e.target.closest('[data-tic]');if(!b||!mcRun)return;const t=mcRun.by.get(+b.dataset.tic);mcRun.pin=t.tic===mcRun.cur?null:t.tic;mc.closed=null;film.sel=null;mcFocus(t);mcDirty=true;});
 $('mc-star').addEventListener('click',e=>{if(e.target.id==='mc-follow'&&mcRun){mcRun.pin=null;mc.closed=null;film.sel=null;const t=mcRun.by.get(mcRun.cur);if(t)mcFocus(t);mcDirty=true;}});
-// Live: served by tls_masked_search/live.py. /events replays the log from its start on
-// every (re)connection, so already-queued events are skipped; a different run_start resets.
-if(location.protocol.startsWith('http')){es=new EventSource('/events');
+// Live: served by tls_masked_search/live.py, which also answers /targets. /events replays the
+// log from its start on every (re)connection, so already-queued events are skipped. A run_start
+// begins the stream again (a new run restarts the log); a different run_start resets.
+let mcServer=false,mcPoll=0;
+const mcSampleRun=(()=>{try{return JSON.parse($('sample-run').textContent.trim().split('\n')[0]).targets;}catch(err){return [];}})(),mcTour=mcSampleRun.map(t=>t.tic);
+function mcListen(){if(es)return;es=new EventSource('/events');
  es.onopen=()=>{mc.recv=0;mcStatus('Live · connected',true);};
- es.onmessage=m=>{let e;try{e=JSON.parse(m.data);}catch(err){return;}
-  if(mc.recv++===0&&e.type==='run_start'&&!(mc.live&&mc.events.length&&mc.events[0].ts===e.ts)){mcClear();Object.assign(mc,{events:[],i:0,live:true,playing:true,name:'live',due:0});}
+ es.onmessage=m=>{let e;try{e=JSON.parse(m.data);}catch(err){return;}if(e.type==='run_start')mc.recv=0;
+  if(mc.recv++===0&&e.type==='run_start'&&!(mc.live&&mc.events.length&&mc.events[0].ts===e.ts)){mcClear();Object.assign(mc,{events:[],i:0,live:true,playing:true,name:'live',due:0});mcStatus('Live · connected',true);}
   if(!mc.live||mc.recv<=mc.events.length)return;
   mc.events.push(e);mcDirty=true;if(e.type==='run_end'){mcStatus('Live · run complete',true);es.close();es=null;}};
  es.onerror=()=>{if(!es)return;if(es.readyState===EventSource.CLOSED){es=null;if(mcRun)mcStatus('Live · disconnected');}else mcStatus('Live · reconnecting…');};}
+function mcProcText(text,running=false){$('mc-proc').hidden=!text;$('mc-proc-t').textContent=text;$('mc-stop').hidden=!running;}
+// The pipeline process's own state (live.py's GET /run), polled while it runs.
+function mcProc(){clearTimeout(mcPoll);fetch('/run').then(r=>r.json()).then(s=>{mcProcText({running:'Pipeline running…',finished:'Pipeline finished.',stopped:'Pipeline stopped.',failed:'Pipeline failed (exit code '+s.code+'). See the terminal running live.py.'}[s.state]||'',s.state==='running');if(s.state==='running')mcPoll=setTimeout(mcProc,2000);}).catch(()=>{});}
+function mcPost(path,body){return fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json().then(j=>{if(!r.ok)throw new Error(j.error);return j;}));}
+$('mc-tour').textContent=mcTour.length+'-star tour';$('mc-tour-l').title=mcSampleRun.map(t=>t.hostname).join(', ');$('mc-tour-l').hidden=!mcTour.length;if(!mcTour.length)$('mc-runf').mode.value='limit';
+// Run pipeline: served by live.py, choose the stars and start a real run; opened as a file, play the sample.
+$('run-btn').addEventListener('click',()=>{const f=$('mc-runf');if(mcServer){f.hidden=!$('mc').hidden&&!f.hidden;mcShow(true);if(!f.hidden)$('mc-start').focus();return;}
+ mcLoad($('sample-run').textContent,'sample run');mcProcText('Playing a recorded sample run. A real run needs the server: cd tls_masked_search && python live.py, then click Run pipeline on the page it opens.');});
+$('mc-runf').addEventListener('focusin',e=>{const r=e.target.closest('label')?.querySelector('[type=radio]');if(r)r.checked=true;});
+$('mc-runf').addEventListener('submit',e=>{e.preventDefault();const f=e.target,m=f.mode.value;$('mc-start').disabled=true;
+ mcPost('/run',m==='limit'?{limit:+f.limit.value}:{tics:m==='tour'?mcTour:(f.tics.value.match(/\d+/g)||[]).map(Number)})
+  .then(()=>{f.hidden=true;mcListen();mcProc();},err=>mcProcText('Could not start: '+err.message)).finally(()=>{$('mc-start').disabled=false;});});
+$('mc-stop').addEventListener('click',()=>mcPost('/stop',{}).then(mcProc,err=>mcProcText(err.message)));
+if(location.protocol.startsWith('http'))fetch('/targets').then(r=>r.json()).then(list=>{mcServer=true;$('mc-limit').max=list.length;
+ $('mc-targets').innerHTML=list.map(t=>'<option value="'+t.tic+'">'+esc(t.hostname)+' · '+(t.group==='known_transiting_host'?'known planet host':'comparison star')+'</option>').join('');mcListen();mcProc();}).catch(()=>{});
 function frame(now){const dt=previousFrame?Math.min(.1,(now-previousFrame)/1000):0;previousFrame=now;if(state.playing){state.time+=dt*+$('speed').value*DAY;if(state.time>=regular.at(-1).end){state.time=regular.at(-1).end;state.playing=false;updatePlay();}if(now-lastUI>75){setTime(state.time);lastUI=now;}}stepTween();controls.update();mcFrame(now);milky.position.copy(camera.position);scene.updateMatrixWorld();updateLabels();renderer.render(scene,camera);requestAnimationFrame(frame);}
 active=sectorAt(state.time);setYear(1,false);setTime(state.time);resize();setView('sky');$('loading').style.display='none';requestAnimationFrame(frame);
 // Read-only diagnostic access is useful for checking the embedded scientific data.

@@ -99,9 +99,17 @@ const fs = require('node:fs');
   await page.locator('#reset-view').click();
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.screenshot({path:path.join(__dirname,'assets','mobile-final.png'),fullPage:true});
+  // Opened as a file, Run pipeline plays the embedded sample: Mission Control opens and the star-system stage comes up.
+  await page.setViewportSize({width:1440,height:1000});
+  await page.locator('#run-btn').click();
+  assert(await page.locator('#mc').isVisible());
+  assert.match(await page.locator('#mc-proc-t').textContent(),/live\.py/);
+  assert.equal(await page.evaluate(()=>window.tessExplorer.mission.replay.name),'sample run');
+  await page.locator('#mc-speed').selectOption('4');
+  await page.waitForSelector('#mc-stage.on',{timeout:30000});
   assert.deepEqual(errors,[]);
   assert.deepEqual(remote,[]);
-  const result={geometry,offlineRequests:remote.length,browserErrors:errors,interactionChecks:'sector jumps, comet window, gaps, year change, coverage, camera toggles, views, playback, pan, zoom, keyboard rotation, responsive layout',pass:true};
+  const result={geometry,offlineRequests:remote.length,browserErrors:errors,interactionChecks:'sector jumps, comet window, gaps, year change, coverage, camera toggles, views, playback, pan, zoom, keyboard rotation, responsive layout, Run pipeline sample replay',pass:true};
   fs.writeFileSync(path.join(__dirname,'assets','browser-validation.json'),JSON.stringify(result,null,2));
   console.log(JSON.stringify(result,null,2));
   await browser.close();
