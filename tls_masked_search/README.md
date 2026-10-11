@@ -27,6 +27,8 @@ TLS on years of gappy data returns wrong dip lengths, which breaks every dip mea
 | `04_benchmark_100_stars.py` | Runs the search on the repo's 100-star benchmark. Writes `output/benchmark_100*.csv`. |
 | `05_build_dataset.py` | Builds the labeled training set from NASA TOI dispositions. Writes `output/dataset_*.csv`. |
 | `06_train_classifier.py` | Trains and cross-validates the classifier against the fixed rules. Writes `output/classifier_scores.csv`. |
+| `07_build_views.py` | Folds each signal's light curve into fixed-size "snapshots" of the dip shape (whole orbit, zoom, odd, even, halfway point, star position). Writes `output/views.npz`. CPU, ~6 min. |
+| `08_train_shape_model.py` | Shape model: a small 1D neural network (PyTorch) on the snapshots plus 06's measurements, same folds as 06. Writes `output/shape_scores.csv`. GPU, ~5 min. |
 
 ## Run
 
@@ -38,6 +40,8 @@ python ../scripts/run_benchmark.py download    # once: raw files for the 100 ben
 python 04_benchmark_100_stars.py                # ~5 min
 python 05_build_dataset.py                      # ~25 min, ~15 GB in data/raw/dataset/ (--per-class N for less)
 python 06_train_classifier.py                   # ~1 min
+python 07_build_views.py                        # ~6 min
+python 08_train_shape_model.py                  # ~5 min on one MI300X (ROCm PyTorch)
 ```
 
 Run from inside this folder: the scripts import `common.py` from the current directory. Keep the
@@ -61,17 +65,19 @@ one sector.
 fake stars. 3,198 training signals: 1,112 planets, 2,086 fakes (631 FP/FA-matched dips, plus unmatched
 signals on fake-only stars). Unmatched signals on planet stars and half/double matches are left out.
 
-**Classifier** (scikit-learn gradient-boosted trees, 5-fold cross-validation grouped by star), on the
-hard task of NASA-confirmed planets vs NASA-known fakes (1,743 dips):
+**Classifiers** (5-fold cross-validation grouped by star; same folds for both), on the hard task of
+NASA-confirmed planets vs NASA-known fakes (1,743 dips):
 
-| | Planets called planet | Fakes called planet | Overall correct |
-|---|---|---|---|
-| Model (score > 0.5) | 79% | 28% | 77% |
-| Fixed rules (SDE >= 7, noise SNR >= 7.1, >= 2 dips, no flags) | 60% | 30% | 63% |
+| | Ranking (ROC AUC) | Planets caught at the rules' fake rate | Planets called planet | Fakes called planet | Overall correct |
+|---|---|---|---|---|---|
+| Shape model: snapshots + measurements (08) | **0.87 +/- 0.02** | **87% +/- 3%** | 85% | 28% | 80% |
+| Gradient-boosted trees on measurements (06) | 0.83 +/- 0.02 | 81% +/- 3% | 79% | 28% | 77% |
+| Fixed rules (SDE >= 7, noise SNR >= 7.1, >= 2 dips, no flags) | - | 60% | 60% | 30% | 63% |
 
-At the rules' fake rate the model finds 81% +/- 3% of planets vs 60%, and it beats the rules in every
-group of stars with the same number of months of data (planet stars get re-observed more, so
-data-amount alone predicts the label; features are per-dip to limit that).
+The shape model beats the trees in all 5 folds (+0.02 to +0.06 AUC). Snapshots alone, without the
+measurements, are no better than the trees. Both models beat the rules in every group of stars with
+the same number of months of data (planet stars get re-observed more, so data-amount alone predicts
+the label; features are per-dip to limit that).
 
 ## Why it's built this way
 

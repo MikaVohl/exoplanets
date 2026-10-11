@@ -29,9 +29,10 @@ flowchart LR
 - **TLS (Transit Least Squares)** tries thousands of possible repeat times ("periods") and asks, for
   each: if a planet repeated this often, would the dips line up? It returns the best period, when the
   dips happen, how long and how deep they are, and a score for how strongly it stands out (**SDE**).
-- **Two passes:** the smoothing curve tends to dip along with a real dip and eat part of it. So after
-  the first search, we redo the smoothing while **ignoring the dips we found**, then search again
-  near that period. This gives a truer depth.
+- **Two passes (100-star benchmark only):** the smoothing curve tends to dip along with a real dip and
+  eat part of it. So after the first search, we redo the smoothing while **ignoring the dips we found**,
+  then search again near that period. This gives a truer depth. The training dataset skips this step;
+  its depths come from the dip measurements in section 5.
 - **Second search:** we hide the first signal's dips and search again. This finds a weaker second
   planet that the bigger one was drowning out.
 
@@ -50,12 +51,13 @@ Each signal gets a set of measurements. These are the clues the model learns fro
 |---|---|---|---|
 | **Signal strength** | How much the dip stands out from the noise, per dip | strong | often weaker |
 | **Odd/even depths** | Do every-other dips have different depths? Two stars of different brightness give deep, shallow, deep, shallow when we catch half their orbit | match (~1.0) | differ more (~1.3) |
-| **Faint second dip** | A small dip exactly halfway between the main ones: the brighter star of a pair passing in front of the dimmer one. Planets give off almost no light, so they don't cause it | none (~0.4) | often present (~1.2) |
-| **Position shift** | Where the light lands on the camera during dips vs between dips. A big shift means the dip is really on a neighbouring star blended into our pixels | small (~2.7) | larger (~5.4) |
+| **Faint second dip** | A small dip exactly halfway between the main ones: the brighter star of a pair passing in front of the dimmer one. Planets give off almost no light, so they don't cause it | none (~0.6) | often present (~1.2) |
+| **Position shift** | Where the light lands on the camera during dips vs between dips. A big shift means the dip is really on a neighbouring star blended into our pixels | small (~2.8) | larger (~5.3) |
 | **Depth, length, period** | How deep and long the dip is and how often it repeats | | very deep or very long dips are suspicious |
 | **Dip counts** | How many individual dips we actually saw and how many were clear on their own | | |
 
-(Typical values are medians from our dataset.)
+(Typical values are medians over NASA-confirmed planets vs NASA-known fakes in our dataset. Signal
+strength, depth and length matter most to the model; the other clues help less but catch specific fakes.)
 
 ## 6. Labels: where the right answers come from
 
@@ -65,7 +67,8 @@ Each signal gets a set of measurements. These are the clues the model learns fro
   that star (within 1%), it gets NASA's verdict.
 - Extra fakes: other dips we find on stars NASA marked as fake. Unmatched dips on planet stars are left
   out, since they could be real planets NASA hasn't listed.
-- Our dataset: about 2,450 stars, 3,198 labeled dips (1,112 planets, 2,086 fakes).
+- Our dataset: 2,454 stars sampled, 2,204 with 2-minute data; 3,198 labeled dips (1,112 planets,
+  2,086 fakes).
 
 ## 7. Keeping the comparison fair
 
@@ -80,6 +83,10 @@ Each signal gets a set of measurements. These are the clues the model learns fro
   how likely the dip is a real planet.
 - **Testing:** the stars are split into 5 groups; the model learns from 4 and is tested on the 5th,
   rotating so every star is tested once by a model that never saw it.
+- **Shape model** (PyTorch, on the GPU): instead of only a summary, it also looks at "snapshots" of
+  each dip: the whole orbit, a zoom on the dip, odd vs even dips, the halfway point, and the star's
+  position. A small neural network slides pattern detectors along these curves (e.g. U-shaped planet
+  dip vs V-shaped star-pair dip) and combines what it sees with the measurements.
 
 ## 9. Results so far
 
@@ -87,17 +94,19 @@ On NASA-confirmed planets vs NASA-known fakes:
 
 | | Planets called planet | Fakes called planet | Overall correct |
 |---|---|---|---|
-| Our model | 79% | 28% | 77% |
+| Shape model | 85% | 28% | 80% |
+| Decision-tree model | 79% | 28% | 77% |
 | Old fixed rules | 60% | 30% | 63% |
 
-- At the same false-alarm level as the rules, the model catches about **4 in 5** planets vs 3 in 5.
-- It wins in every same-amount-of-data group, so it's learning from the dips, not the data amount.
-- It's a **ranking tool**, not a final judge: about 1 in 4 fakes still gets through. Best use: put the
+- At the same false-alarm level as the rules, the shape model catches about **87%** of planets, the
+  tree model 81%, the rules 60%. The shape model wins in all 5 test groups.
+- Both win in every same-amount-of-data group, so they learn from the dips, not the data amount.
+- They're **ranking tools**, not final judges: about 1 in 4 fakes still gets through. Best use: put the
   most promising candidates at the top for a person to check.
 
 ## 10. Known limits
 
 - Some fakes look exactly like planets in brightness data alone; NASA often needed other telescopes.
 - Very faint planets, or ones with only one dip in the data, can't be found.
-- The model only sees a summary of each dip, not its shape. A model that looks at the dip shape
-  directly (using the GPU) is a possible next step.
+- The snapshots alone (without the measurements) do no better than the tree model: the gain comes
+  from combining shape with the measurements.
