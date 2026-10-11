@@ -6,17 +6,31 @@ and ephemerides are embedded. There are no runtime downloads or API requests.
 A browser with WebGL is required.
 
 Drag to rotate, Shift/right-drag to pan, and scroll/pinch to zoom. The canvas
-also accepts arrow keys and +/−. Use **Earth**, **TESS**, or **Sun** to inspect a
-body, **Face sector** to center the selected field, and **Reset** to restore the
-view. Close-up views follow the selected body during playback. All time inputs
-and displayed observation times are UTC, regardless of the browser's timezone.
+also accepts arrow keys and +/−. Elsewhere on the page, Space plays/pauses,
+`[` / `]` step to the previous/next sector, and `1`–`3` switch views. Use
+**Earth**, **TESS**, or **Sun** to inspect a body, **Face sector** to center the
+selected field, and **Reset** to restore the view; camera moves are short eased
+flights that any pointer, wheel or key input cancels (instant with reduced
+motion). Close-up views follow the selected body during playback. All time
+inputs and displayed observation times are UTC, regardless of the browser's
+timezone.
 
 The three views show an observer-centered celestial globe, the Earth-centered
 TESS trajectory, and the Sun–Earth geometry. Choose a survey year or sector,
-scrub time, or play the mission. Colored fields are the four camera envelopes
-and their calibrated CCD footprints. Other sectors and accumulated coverage
-can be toggled. The star picker and clicking a star report nominal camera/CCD
-membership. HYG visual magnitudes are labeled V, not TESS magnitudes.
+scrub time, or play the mission. The timeline draws each sector to its
+duration, with published orbit windows inside it set against downlink gaps.
+Planned sectors (after the October 10, 2026 snapshot) are drawn at reduced
+opacity, and the comet window is marked over Sector 99. Colored fields are the
+four camera envelopes (dashed) and their calibrated CCD footprints. During a gap
+the retained reference field is dimmed. In the orbit and Sun–Earth views the
+fields are faint and the camera sight lines carry the pointing. Other sectors
+and accumulated coverage can be toggled. The sky globe draws the ecliptic, a 30°
+ecliptic graticule and the celestial equator, which is computed from the
+obliquity. Scale notes, accuracy caveats, sources and keyboard shortcuts are in
+the **About this data** sheet. The star picker and clicking a star report
+nominal camera/CCD membership. Star point size follows HYG V magnitude and color
+follows B−V through a temperature/blackbody approximation. HYG visual magnitudes
+are labeled V, not TESS magnitudes.
 
 ## Scientific scope
 
