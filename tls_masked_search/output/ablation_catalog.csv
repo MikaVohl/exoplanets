@@ -1,0 +1,101 @@
+tic,hostname,group,radius_bin,n_planets,hit_A,alarm_A,hit_B,alarm_B,hit_C,alarm_C
+4070275,TOI-4364,known_transiting_host,small,1,False,True,False,True,False,True
+14227229,K2-111,known_transiting_host,small,1,False,False,False,False,False,False
+19342878,WASP-149,known_transiting_host,giant,1,True,True,True,True,True,True
+26826078,HAT-P-20,known_transiting_host,giant,1,True,True,True,True,True,True
+27064468,TOI-5126,known_transiting_host,medium,1,False,False,True,True,True,True
+29857954,TOI-172,known_transiting_host,giant,1,True,True,True,True,True,True
+33692729,TOI-469,known_transiting_host,small,2,False,True,False,True,False,True
+34077285,TOI-880,known_transiting_host,medium,2,True,True,True,True,True,True
+35021200,K2-158,known_transiting_host,small,2,False,True,False,False,False,False
+53498154,TOI-5624,known_transiting_host,small,2,False,False,False,True,False,True
+58825110,TOI-5301,known_transiting_host,giant,1,True,True,True,True,True,True
+73540072,TOI-1853,known_transiting_host,medium,1,True,True,True,True,True,True
+76419763,HAT-P-5,known_transiting_host,giant,1,True,True,True,True,True,True
+80611440,TOI-5422,known_transiting_host,giant,1,True,True,True,True,True,True
+83092282,TOI-622,known_transiting_host,giant,1,True,True,True,True,True,True
+92226327,LHS 1140,known_transiting_host,small,1,False,True,False,True,False,True
+120826158,TOI-4495,known_transiting_host,medium,2,True,True,True,True,True,True
+120973167,Kepler-1655,known_transiting_host,small,1,False,False,False,False,False,False
+123357864,Kepler-102,known_transiting_host,small,3,False,False,False,True,False,True
+142937186,TOI-2427,known_transiting_host,small,1,False,True,True,True,True,True
+146172354,TOI-1036,known_transiting_host,medium,1,True,True,True,True,True,True
+148673433,TOI-5704,known_transiting_host,medium,1,False,True,False,True,False,True
+150030205,TOI-286,known_transiting_host,small,1,False,True,True,True,True,True
+150070085,TIC 150070085,known_transiting_host,medium,1,False,True,False,True,False,True
+164767175,HIP 8152,known_transiting_host,small,1,False,True,False,False,False,False
+169765334,TOI-329,known_transiting_host,medium,1,False,False,True,True,True,True
+176899385,HAT-P-6,known_transiting_host,giant,1,True,True,True,True,True,True
+183985250,LTT 9779,known_transiting_host,medium,1,True,True,True,True,True,True
+193754373,TOI-4487 A,known_transiting_host,giant,1,True,True,True,True,True,True
+194795551,TOI-3331 A,known_transiting_host,giant,1,True,True,True,True,True,True
+203377303,TOI-3493,known_transiting_host,medium,1,False,False,True,True,True,True
+234994474,L 168-9,known_transiting_host,small,1,True,True,True,True,True,True
+250707118,HAT-P-29,known_transiting_host,giant,1,True,True,True,True,True,True
+256783784,TOI-1432,known_transiting_host,small,1,True,True,True,True,True,True
+257605131,TOI-451,known_transiting_host,small,2,False,True,False,True,False,True
+260004324,LHS 1815,known_transiting_host,small,1,False,True,True,True,True,True
+266980320,HD 219666,known_transiting_host,medium,1,True,True,True,True,True,True
+278775625,TOI-921,known_transiting_host,medium,1,False,True,True,True,True,True
+281575427,TOI-205,known_transiting_host,small,1,False,False,True,True,True,True
+285048486,TOI-1728,known_transiting_host,medium,1,True,True,True,True,True,True
+290035649,Kepler-1743,known_transiting_host,small,1,False,False,False,False,False,False
+293607057,BD-14 3065 A,known_transiting_host,giant,1,True,True,True,True,True,True
+293687315,KELT-18,known_transiting_host,giant,1,True,True,True,True,True,True
+349488688,HD 152843,known_transiting_host,medium,1,False,True,False,False,False,False
+364186197,TOI-1408,known_transiting_host,giant,2,True,True,True,True,True,True
+372172128,TOI-2196,known_transiting_host,medium,1,True,True,True,True,True,True
+376637093,TOI-1516,known_transiting_host,giant,1,True,True,True,True,True,True
+383390264,HD 110082,known_transiting_host,medium,1,False,False,False,False,False,False
+392681545,TOI-6054,known_transiting_host,small,1,False,False,False,False,False,False
+408310006,WASP-166,known_transiting_host,medium,1,True,True,True,True,True,True
+417931300,TOI-2068,known_transiting_host,small,1,False,True,False,False,False,False
+420814525,HD 209458,known_transiting_host,giant,1,True,True,True,True,True,True
+427761355,TOI-1518,known_transiting_host,giant,1,True,True,True,True,True,True
+439842788,WASP-177,known_transiting_host,giant,1,True,True,True,True,True,True
+439943973,TOI-6647,known_transiting_host,medium,1,True,True,True,True,True,True
+441587756,TOI-5380,known_transiting_host,medium,1,False,False,False,False,False,False
+460205581,TOI-837,known_transiting_host,giant,1,False,False,False,False,False,False
+462553953,TOI-4156,known_transiting_host,small,1,True,True,True,True,True,True
+466382581,TOI-5803,known_transiting_host,medium,1,True,True,True,True,True,True
+470171739,TOI-4153,known_transiting_host,giant,1,True,True,True,True,True,True
+2288734,HD 179949,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+9156146,HD 220689,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+11499710,HD 188015,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+16917838,KOBE-1,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+26045729,HIP 39017,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+39554091,HD 176986,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+42812945,HD 178911 B,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+52121796,HD 7199,no_cataloged_transiting_planet,comparison,0,False,False,False,True,False,True
+68165288,HD 145377,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+73312938,HD 68988,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+92300251,HD 231701,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+94924490,HD 108202,no_cataloged_transiting_planet,comparison,0,False,True,False,True,False,True
+94945758,AF Lep,no_cataloged_transiting_planet,comparison,0,False,True,False,True,False,True
+134245358,HD 183263,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+142875660,HD 21411,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+144730053,HD 37605,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+159527171,BD+60 1417,no_cataloged_transiting_planet,comparison,0,False,True,False,True,False,True
+172954294,HD 86728,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+180655149,HD 115954,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+180871947,HD 6434,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+234928947,HD 46375,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+244178536,HD 2638,no_cataloged_transiting_planet,comparison,0,False,True,False,True,False,True
+252470070,Gl 378,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+272546396,HD 68402,no_cataloged_transiting_planet,comparison,0,False,False,False,True,False,True
+278523703,HD 210193,no_cataloged_transiting_planet,comparison,0,False,True,False,True,False,True
+286896213,HD 108341,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+300081980,HD 187085,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+307606851,HD 135344 A,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+327303574,HD 196067,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+328465904,CD Cet,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+336634601,HD 211810,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+351534793,HD 196050,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+354326161,HD 220773,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+380086262,HD 154672,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+406095880,PZ Tel,no_cataloged_transiting_planet,comparison,0,False,True,False,True,False,True
+407090552,HD 137388,no_cataloged_transiting_planet,comparison,0,False,False,False,True,False,True
+409527090,GJ 96,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False
+413948621,Wolf 1061,no_cataloged_transiting_planet,comparison,0,False,True,False,True,False,True
+424934357,GJ 724,no_cataloged_transiting_planet,comparison,0,False,True,False,False,False,False
+441804565,psi1 Dra B,no_cataloged_transiting_planet,comparison,0,False,False,False,False,False,False

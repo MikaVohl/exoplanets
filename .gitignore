@@ -8,5 +8,5 @@ reports/benchmark/plots/
 reports/benchmark/spectra/
 reports/walkthrough/figures/
 reports/walkthrough/*.html
-# WASP-18b: cached MAST downloads
-wasp18b/data/
+# tls_masked_search: cached MAST downloads
+tls_masked_search/data/

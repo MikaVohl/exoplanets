@@ -1,0 +1,14 @@
+{
+  "period_d": 0.9414780903122797,
+  "period_uncertainty_d": 0.00020086771568617046,
+  "t0_bjd": 1354.4574900652135,
+  "duration_h": 1.8811713880362908,
+  "tls_duration_h": 1.7324662131941242,
+  "depth": 0.010778205539071828,
+  "sde": 37.664752926844734,
+  "transit_count": 55,
+  "distinct_transit_count": 47,
+  "odd_even_mismatch_sigma": 0.12085217048622136,
+  "pass1_duration_h": 1.8161344627526925,
+  "pass1_depth": 0.009786350775967567
+}
