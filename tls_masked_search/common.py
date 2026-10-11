@@ -36,7 +36,7 @@ def download(sectors=None):
     return search.download_all(download_dir=str(DATA_DIR))
 
 
-def clean_and_stitch(lcs, bin_minutes=10, ephemeris=None):
+def clean_and_stitch(lcs, bin_minutes=10, ephemeris=None, window_length=1001):
     """Clean each light curve, stitch them, bin them; return (time, flux, flux_err) arrays.
 
     Each sector is cleaned on its own because each has its own brightness level and drift.
@@ -49,13 +49,13 @@ def clean_and_stitch(lcs, bin_minutes=10, ephemeris=None):
     for lc in lcs:
         lc = lc.remove_nans().normalize()
         # Flatten removes slow drifts. The window must be much longer than the ~2 hr transit
-        # (~65 points) or it would erase the dip. 1001 points ~ 33 hours.
+        # (~65 points) or it would erase the dip. Default 1001 points ~ 33 hours.
         mask = None
         if ephemeris is not None:
             period, t0, duration = ephemeris
             # Mask twice the measured duration: a first-pass duration is biased short.
             mask = lc.create_transit_mask(period=period, transit_time=t0, duration=2 * duration)
-        lc = lc.flatten(window_length=1001, mask=mask)
+        lc = lc.flatten(window_length=window_length, mask=mask)
         # Clip upward spikes only: downward points are the transit signal we want to keep.
         lc = lc.remove_outliers(sigma=6, sigma_lower=np.inf)
         cleaned.append(lc)
@@ -89,6 +89,11 @@ def star_kwargs(mass, radius):
     return dict(R_star=radius, R_star_min=0.8 * radius, R_star_max=1.2 * radius,
                 M_star=mass, M_star_min=0.8 * mass, M_star_max=1.2 * mass,
                 u=[0.3, 0.2], use_threads=os.cpu_count(), show_progress_bar=False, verbose=False)
+
+
+def hide_transits(lc, result):
+    """The light curve with a TLS result's transits removed (2x duration), for a search for a second signal."""
+    return lc[~lc.create_transit_mask(period=result.period, transit_time=result.T0, duration=2 * result.duration)]
 
 
 def tls_wide(t, y, dy, star, config):
