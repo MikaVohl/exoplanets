@@ -10,3 +10,4 @@ reports/walkthrough/figures/
 reports/walkthrough/*.html
 # tls_masked_search: cached MAST downloads
 tls_masked_search/data/
+tls_masked_search/output/live/

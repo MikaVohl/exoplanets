@@ -1,4 +1,7 @@
 """Shared settings and helpers for the transit search, the benchmark and the dataset build."""
+import json
+import math
+import time
 from pathlib import Path
 
 import lightkurve as lk
@@ -84,12 +87,99 @@ def two_pass(lc, star, config):
     re-flatten and re-search a +/-0.5% window. Returns (wide_result, fine_result_or_None)."""
     from transitleastsquares import transitleastsquares
     t, y, dy = clean_and_stitch([lc], config["bin_minutes"])
+    if _events:
+        emit("cleaned", **CONTEXT, **{"pass": "wide"}, **_curve(t, y))
     wide, pmax = tls_wide(t, y, dy, star, config)
-    if wide.SDE < MIN_SDE:
-        return wide, None
-    t, y, dy = clean_and_stitch([lc], config["bin_minutes"],
-                                ephemeris=(wide.period, wide.T0, wide.duration))
-    fine = transitleastsquares(t, y, dy).power(
-        period_min=wide.period * 0.995, period_max=min(wide.period * 1.005, pmax),
-        n_transits_min=2, oversampling_factor=20, **star)
+    if _events:
+        emit("search", **CONTEXT, **{"pass": "wide"}, period_range=[config["period_min_days"], _sig(pmax)],
+             **_spectrum(wide), **_numbers(wide))
+    fine = None
+    if not wide.SDE < MIN_SDE:
+        t, y, dy = clean_and_stitch([lc], config["bin_minutes"],
+                                    ephemeris=(wide.period, wide.T0, wide.duration))
+        lo, hi = wide.period * 0.995, min(wide.period * 1.005, pmax)
+        if _events:
+            emit("cleaned", **CONTEXT, **{"pass": "masked"}, **_curve(t, y),
+                 mask={"period": _sig(wide.period), "t0": round(wide.T0, 4), "duration_d": _sig(wide.duration)})
+        fine = transitleastsquares(t, y, dy).power(
+            period_min=lo, period_max=hi, n_transits_min=2, oversampling_factor=20, **star)
+        if _events:
+            emit("search", **CONTEXT, **{"pass": "fine"}, period_range=[_sig(lo), _sig(hi)],
+                 **_spectrum(fine), **_numbers(fine))
+    if _events:
+        final = fine if fine is not None else wide
+        # Detection uses the wide pass's SDE (the fine window is too narrow for a meaningful SDE).
+        emit("signal_done", **CONTEXT, **dict(_numbers(final), sde=_sig(wide.SDE)), refined=fine is not None,
+             folded=_folded(final))
     return wide, fine
+
+
+# --- Mission Control: a log of what the pipeline is doing, one JSON object per line, read by the
+# TESS visualizer (live via live.py, or replayed from a file). Off unless 04 is run with --events.
+_events = None    # the open log file while recording, else None (then emit() does nothing)
+CONTEXT = {}      # tic and signal (1 or 2) of the search in progress, added to the events two_pass emits
+
+
+def events_to(path):
+    """Start recording events to `path` (overwritten)."""
+    global _events
+    _events = open(path, "w")
+
+
+def emit(type, **fields):
+    """Record one event, stamped with the current time, if recording is on."""
+    if _events:
+        event = _jsonable({"type": type, "ts": round(time.time(), 3), **fields})
+        _events.write(json.dumps(event, separators=(",", ":")) + "\n")
+        _events.flush()
+
+
+def _jsonable(o):
+    """numpy values -> plain Python, NaN/inf -> None (JSON has no NaN)."""
+    if isinstance(o, np.ndarray):
+        o = o.tolist()
+    if isinstance(o, dict):
+        return {k: _jsonable(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_jsonable(v) for v in o]
+    if isinstance(o, np.generic):
+        o = o.item()
+    return None if isinstance(o, float) and not math.isfinite(o) else o
+
+
+def _sig(x):
+    """Round a number, or each number in an array, to 6 significant figures."""
+    return float(f"{x:.6g}") if np.ndim(x) == 0 else [float(f"{v:.6g}") for v in x]
+
+
+def _numbers(r):
+    """The headline numbers of a TLS result (depth as the fractional dip)."""
+    return dict(period=_sig(r.period), t0=round(float(r.T0), 4), sde=_sig(r.SDE), depth=_sig(1 - r.depth),
+                duration_h=_sig(r.duration * 24))
+
+
+def _curve(t, y, n=4000):
+    """A light curve, thinned to at most n points."""
+    s = slice(None, None, max(1, -(-len(t) // n)))
+    return dict(t=np.round(t[s], 4), y=np.round(y[s], 6))
+
+
+def _spectrum(r, n=2000):
+    """TLS SDE spectrum, at most n points, keeping the highest point of each bucket so peaks survive."""
+    p, s = np.atleast_1d(r.periods), np.atleast_1d(r.power)
+    k = max(1, -(-len(p) // n))
+    i = [j + int(np.argmax(np.nan_to_num(s[j:j + k]))) for j in range(0, len(p), k)]
+    return dict(periods=_sig(p[i]), power=_sig(s[i]))
+
+
+def _folded(r, n=1500):
+    """TLS phase-folded data (thinned to at most n points) and model. The model is flat (1) away from
+    the dip, so only the dip, its edges and the two ends are kept."""
+    ph, fy = np.atleast_1d(r.folded_phase), np.atleast_1d(r.folded_y)
+    mp, mm = np.atleast_1d(r.model_folded_phase), np.atleast_1d(r.model_folded_model)
+    s = slice(None, None, max(1, -(-len(ph) // n)))
+    dip = mm < 1
+    keep = dip | np.roll(dip, 1) | np.roll(dip, -1)
+    keep[[0, -1]] = True
+    return dict(phase=np.round(ph[s], 6), flux=np.round(fy[s], 6),
+                model_phase=np.round(mp[keep], 6), model_flux=np.round(mm[keep], 6))

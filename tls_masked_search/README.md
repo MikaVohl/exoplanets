@@ -29,6 +29,7 @@ TLS on years of gappy data returns wrong dip lengths, which breaks every dip mea
 | `06_train_classifier.py` | Trains and cross-validates the classifier against the fixed rules. Writes `output/classifier_scores.csv`. |
 | `07_build_views.py` | Folds each signal's light curve into fixed-size "snapshots" of the dip shape (whole orbit, zoom, odd, even, halfway point, star position). Writes `output/views.npz`. CPU, ~6 min. |
 | `08_train_shape_model.py` | Shape model: a small 1D neural network (PyTorch) on the snapshots plus 06's measurements, same folds as 06. Writes `output/shape_scores.csv`. GPU, ~5 min. |
+| `live.py` | Runs step 4 and shows it live in the TESS visualizer ("Mission Control"). See below. |
 
 ## Run
 
@@ -46,6 +47,28 @@ python 08_train_shape_model.py                  # ~5 min on one MI300X (ROCm PyT
 
 Run from inside this folder: the scripts import `common.py` from the current directory. Keep the
 `if __name__ == "__main__":` guard in each script: TLS starts worker processes that re-import it.
+
+## Watch it live
+
+`live.py` runs step 4 and streams what it is doing (which star, each cleaning and search stage, the
+result) to the TESS visualizer in your browser. Extra arguments go to `04_benchmark_100_stars.py`:
+
+```bash
+python live.py --limit 5                       # the first 5 stars
+python live.py --tics 26826078 34077285        # pick stars by TIC ID (from data/benchmark/targets.csv)
+python live.py --tics 26826078 --port 8000 --no-browser
+```
+
+It serves the page at http://127.0.0.1:8765/ and keeps serving after the run ends; Ctrl-C to stop.
+The run's event log and CSVs go to `output/live/` (git-ignored), so the committed results stay as they are.
+To record a run for replay (load the file in the page, or rebuild the page's built-in sample):
+
+```bash
+python 04_benchmark_100_stars.py --tics 26826078 34077285 --out output/live \
+    --events ../reports/tess-survey/runs/sample.jsonl
+```
+
+`--out` keeps the CSVs for just those stars out of `output/`, where they would replace the full results.
 
 ## Results
 

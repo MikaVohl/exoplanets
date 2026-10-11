@@ -2,13 +2,19 @@
 
 Run with .venv/bin/python scripts/build_tess_visualization.py. Raw source files
 are cached under reports/tess-survey/assets; index.html is the only runtime file.
+--render-only rebuilds index.html offline from that cache; --extract-cache
+recreates the cache from the committed index.html (for a fresh clone).
 """
 from pathlib import Path
 import csv
 import importlib.util
 import json
 import math
+import struct
+import re
 import subprocess
+import zlib
+from base64 import b64decode, b64encode
 import sys
 from datetime import datetime, timezone
 
@@ -21,6 +27,9 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'reports/tess-survey'
 CACHE = OUT / 'assets'
 CACHE.mkdir(parents=True, exist_ok=True)
+# Each notice's first line, used to split the concatenated notices back apart.
+LICENSES = [('tess-point-LICENSE', 'MIT License\n'), ('three-LICENSE', '\nThe MIT License\n'), ('HYG-LICENSE', '\nShield: ')]
+NOTICES = '<!-- Third-party notices\n'
 
 
 def download(url, name):
@@ -67,7 +76,61 @@ def unit(ra, dec):
     return np.array([math.cos(d)*math.cos(a), math.cos(d)*math.sin(a), math.sin(d)])
 
 
+def milky_way():
+    """Return the cached Milky Way background JPEG, converting it on first use.
+
+    Source: NASA SVS Deep Star Maps 2020, Milky Way layer (bright Hipparcos/Tycho
+    stars omitted, so the page's own HYG stars sit on top), plate carrée in ICRF
+    RA/Dec: centered on RA 0h, RA increasing to the left, north up. The EXR is
+    linear half-float RGB with ZIP compression, decoded here with zlib + numpy.
+    """
+    jpg = CACHE / 'milkyway.jpg'
+    if jpg.exists():
+        return jpg
+    from PIL import Image
+    data = download('https://svs.gsfc.nasa.gov/vis/a000000/a004800/a004851/milkyway_2020_4k.exr', 'milkyway_2020_4k.exr').read_bytes()
+    header, p = {}, 8
+    while data[p]:
+        name, kind, rest = data[p:].split(b'\0', 2)
+        p += len(name) + len(kind) + 2
+        size = struct.unpack_from('<i', data, p)[0]
+        header[name.decode()] = data[p+4:p+4+size]
+        p += 4 + size
+    assert header['compression'] == b'\x03', 'expected ZIP-compressed EXR'
+    assert header['channels'].count(b'\x01\x00\x00\x00\x00\x00\x00\x00\x01') == 3, 'expected three half-float channels (B, G, R)'
+    x0, y0, x1, y1 = struct.unpack('<4i', header['dataWindow'])
+    w, h = x1-x0+1, y1-y0+1
+    image = np.empty((h, 3, w), '<f2')
+    for offset in np.frombuffer(data, '<u8', (h+15)//16, p+1):
+        y, size = struct.unpack_from('<ii', data, int(offset))
+        delta = np.frombuffer(zlib.decompress(data[int(offset)+8:int(offset)+8+size]), np.uint8)
+        raw = (np.cumsum(delta.astype(np.int64)-128)+128).astype(np.uint8)  # undo the byte predictor
+        half = (len(raw)+1)//2
+        bytes_ = np.empty_like(raw)
+        bytes_[0::2], bytes_[1::2] = raw[:half], raw[half:]  # re-interleave the split byte halves
+        rows = min(16, h-y+y0)
+        image[y-y0:y-y0+rows] = bytes_.view('<f2').reshape(rows, 3, w)
+    rgb = image[:, ::-1].transpose(0, 2, 1).astype(np.float32)  # B,G,R planes -> RGB pixels
+    lum = rgb.mean(2)
+
+    def sky(ra, dec):
+        x, y = int((180-ra) % 360/360*w), int((90-dec)/180*h)
+        return lum[y-20:y+20, x-20:x+20].mean()
+    # Orientation check: Large Magellanic Cloud and Galactic Centre bright, galactic poles dark.
+    assert min(sky(80.9, -69.8), sky(266.4, -28.9)) > 10*max(sky(192.9, 27.1), sky(12.9, -27.1)), 'Milky Way image orientation'
+    # Black point removes most of the unresolved-star haze; gamma lifts the faint Milky Way.
+    out = np.clip((rgb-.006)/.6, 0, 1)**(1/1.8)
+    Image.fromarray((out*255+.5).astype(np.uint8)).save(jpg, 'JPEG', quality=75, optimize=True, progressive=True)
+    return jpg
+
+
 def main():
+    if '--extract-cache' in sys.argv:
+        extract_cache()
+        return
+    if '--render-only' in sys.argv:
+        render()
+        return
     for url, name in [
         ('https://tess.mit.edu/public/files/TESS_orbit_times.csv', 'orbit-times.csv'),
         ('https://raw.githubusercontent.com/tessgi/tess-point/master/tess_stars2px.py', 'tess_stars2px.py'),
@@ -80,9 +143,7 @@ def main():
         ('https://cdn.jsdelivr.net/npm/three@0.128.0/LICENSE', 'three-LICENSE'),
     ]:
         download(url, name)
-    if '--render-only' in sys.argv:
-        render()
-        return
+    milky_way()
     sectors = []
     for year in range(1, 10):
         page = download(f'https://tess.mit.edu/tess-year-{year}-observations/', f'year-{year}.html')
@@ -169,13 +230,46 @@ def main():
 
 
 def render():
+    missing = [f for f in ['three.min.js', 'OrbitControls.js', 'scene-data.json', *(n for n, _ in LICENSES)] if not (CACHE / f).exists()]
+    if missing:
+        sys.exit(f'Missing cached {", ".join(missing)} in {CACHE}.\nRun --extract-cache to recover them '
+                 'from the committed index.html, or run without flags for a full (network) build.')
     template = (OUT / 'template.html').read_text()
     for token, file in [('__THREE__','three.min.js'),('__CONTROLS__','OrbitControls.js'),('__DATA__','scene-data.json')]:
         template = template.replace(token, (CACHE / file).read_text().replace('</script', '<\\/script'))
-    licenses = '\n\n'.join((CACHE / name).read_text() for name in ['tess-point-LICENSE','three-LICENSE','HYG-LICENSE'])
-    template = template.replace('</body>', '<!-- Third-party notices\n'+licenses.replace('--','—')+'\n-->\n</body>')
+    sample = OUT / 'runs/sample.jsonl'
+    template = template.replace('__SAMPLE_RUN__', sample.read_text().replace('</script', '<\\/script') if sample.exists() else '')
+    jpg = CACHE / 'milkyway.jpg'
+    template = template.replace('__MILKYWAY__', b64encode(jpg.read_bytes()).decode() if jpg.exists() else '')
+    licenses = '\n\n'.join((CACHE / name).read_text() for name, _ in LICENSES)
+    template = template.replace('</body>', NOTICES+licenses.replace('--','—')+'\n-->\n</body>')
     (OUT / 'index.html').write_text(template)
     print('Built', OUT / 'index.html', (OUT / 'index.html').stat().st_size, 'bytes', flush=True)
+
+
+def extract_cache():
+    """Recreate render()'s cached inputs from the committed index.html (reverse of render)."""
+    html = (OUT / 'index.html').read_text()
+    template = (OUT / 'template.html').read_text()
+    # Match the template's embedded-script block, tokens -> captures, so tags/order come from the template.
+    start = template.rindex('<script', 0, template.index('__THREE__'))
+    end = template.index('</script>', template.index('__MILKYWAY__')) + len('</script>')
+    pattern = re.escape(template[start:end])
+    for token in ['__THREE__', '__CONTROLS__', '__DATA__', '__SAMPLE_RUN__', '__MILKYWAY__']:
+        pattern = pattern.replace(re.escape(token), f'(?P<{token.strip("_")}>.*?)')
+    m = re.search(pattern, html, re.S)
+    if not m:
+        sys.exit('index.html does not contain the template script block; cannot extract the cache.')
+    for group, file in [('THREE', 'three.min.js'), ('CONTROLS', 'OrbitControls.js'), ('DATA', 'scene-data.json')]:
+        (CACHE / file).write_text(m[group].replace('<\\/script', '</script'))
+    if m['MILKYWAY']:
+        (CACHE / 'milkyway.jpg').write_bytes(b64decode(m['MILKYWAY']))
+    # The '--' -> '—' substitution is not reversed: the upstream notices contain no '--'.
+    notices = html[html.rindex(NOTICES) + len(NOTICES):html.rindex('\n-->\n</body>')]
+    cuts = [0, *(notices.index('\n\n' + head) for _, head in LICENSES[1:]), len(notices)]
+    for (name, _), a, b in zip(LICENSES, cuts, cuts[1:]):
+        (CACHE / name).write_text(notices[a + (2 if a else 0):b])
+    print('Extracted cache into', CACHE, flush=True)
 
 
 if __name__ == '__main__':

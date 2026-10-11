@@ -6,17 +6,100 @@ and ephemerides are embedded. There are no runtime downloads or API requests.
 A browser with WebGL is required.
 
 Drag to rotate, Shift/right-drag to pan, and scroll/pinch to zoom. The canvas
-also accepts arrow keys and +/−. Use **Earth**, **TESS**, or **Sun** to inspect a
-body, **Face sector** to center the selected field, and **Reset** to restore the
-view. Close-up views follow the selected body during playback. All time inputs
-and displayed observation times are UTC, regardless of the browser's timezone.
+also accepts arrow keys and +/−. Elsewhere on the page, Space plays/pauses,
+`[` / `]` step to the previous/next sector, and `1`–`3` switch views. Use
+**Earth**, **TESS**, or **Sun** to inspect a body, **Face sector** to center the
+selected field, and **Reset** to restore the view; camera moves are short eased
+flights that any pointer, wheel or key input cancels (instant with reduced
+motion). Close-up views follow the selected body during playback. All time
+inputs and displayed observation times are UTC, regardless of the browser's
+timezone.
 
 The three views show an observer-centered celestial globe, the Earth-centered
 TESS trajectory, and the Sun–Earth geometry. Choose a survey year or sector,
-scrub time, or play the mission. Colored fields are the four camera envelopes
-and their calibrated CCD footprints. Other sectors and accumulated coverage
-can be toggled. The star picker and clicking a star report nominal camera/CCD
-membership. HYG visual magnitudes are labeled V, not TESS magnitudes.
+scrub time, or play the mission. The timeline draws each sector to its
+duration, with published orbit windows inside it set against downlink gaps.
+Planned sectors (after the October 10, 2026 snapshot) are drawn at reduced
+opacity, and the comet window is marked over Sector 99. Colored fields are the
+four camera envelopes (dashed) and their calibrated CCD footprints. During a gap
+the retained reference field is dimmed. In the orbit and Sun–Earth views the
+fields are faint and the camera sight lines carry the pointing. Other sectors
+and accumulated coverage can be toggled. The sky globe draws the ecliptic, a 30°
+ecliptic graticule and the celestial equator, which is computed from the
+obliquity. Scale notes, accuracy caveats, sources and keyboard shortcuts are in
+the **About this data** sheet. The star picker and clicking a star report
+nominal camera/CCD membership. Star point size follows HYG V magnitude and color
+follows B−V through a temperature/blackbody approximation. HYG visual magnitudes
+are labeled V, not TESS magnitudes.
+
+## Mission Control
+
+Mission Control shows the TLS masked-search benchmark
+(`tls_masked_search/04_benchmark_100_stars.py`) working star by star. Open it
+with the pulse button in the toolbar or `M`. Every target is a ring on the sky
+globe, colored by outcome once known: green recovered, cyan harmonic, red
+missed, amber false alarm, grey quiet, purple error, dark grey pending; colours
+fade in as verdicts arrive. Sector numbers are drawn on the globe: the active
+sector large, every run target's sector dimmer.
+
+Each star is told as a short story. The camera flies to the star on the globe
+(the timeline jumps to its sector), then into TESS's own view along the
+boresight of the camera that holds it, while that CCD breathes and a soft scan
+band sweeps across it. The camera keeps diving toward the star and a
+**star-system stage** fades in over the 3D view: the star as a limb-darkened
+disk coloured by its temperature (`teff`; sun-like if unknown), and a
+brightness trace scrolling underneath. During the wide search, faint ghost
+orbits at trial periods spin and then converge on the best period, or fade if
+no SDE reaches the threshold. A locked-in planet candidate then orbits nearly
+edge-on and the trace dips exactly while it crosses the disk. The dip's shape is
+the TLS folded model once the fold is known, and a box before that. Refinement
+eases the orbit and size to the refined values (before → after numbers). A
+second signal above the threshold gets its own orbit. Until the verdict, every
+signal is drawn as a candidate (dashed outline). At the verdict, only signals
+that match a catalog planet turn solid. A detected signal that matches no known
+planet, and any signal on a comparison star, stays hollow with a dashed orbit.
+On a known host the card adds a line saying it matches no known planet and is
+likely leftover noise or systematics, or an unknown planet. The decision card is
+worded honestly: the pipeline finds planet candidates, and the benchmark checks
+them against the catalog. A missed or harmonic catalog planet is drawn as a
+dashed ghost orbit. Everything on the stage is schematic: orbit radius
+follows a ∝ P^(2/3), the planet radius is √depth of the star's (small planets
+are enlarged and labelled), and every orbit lasts a few seconds on screen.
+
+Under the stage, a filmstrip collects each step's graph in order: cleaned light
+curve, period search, masked light curve, refined period, folded transit, then
+the same for signal 2. The latest graph is drawn large and animated; click a
+thumbnail to enlarge it. While the stage is up, the panel keeps only the
+controls, the step rail with its plain-English caption, the scoreboard and the
+ledger. Click a finished star in the ledger to review its stage and graphs, and
+close the stage with ×. Reduced-motion settings skip the animations.
+
+Events are shown from a queue at a readable pace, about 60–70 s per star at 1×
+(signal-2 steps are shorter). Use the speed menu (0.5–4×), pause, step and the
+position slider. Seeking jumps straight to the right state without replaying
+animations.
+
+- **Live:** `cd tls_masked_search && python live.py --limit 5` runs the
+  benchmark and serves this page at http://127.0.0.1:8765/. Over HTTP the page
+  follows `/events` (Server-Sent Events). The pipeline is usually ahead of the
+  presentation; "N events queued" then appears, with **Skip to latest** to catch up.
+- **Replay:** open `index.html` and click **Watch sample run**, or open/drop a
+  recorded JSONL event log (for example
+  `tls_masked_search/output/live/events.jsonl`). The recorded compute times are
+  not replayed.
+
+The **Milky Way background** (toggle under Display) is the NASA SVS Deep Star
+Maps 2020 Milky Way layer, drawn at infinity in J2000 RA/Dec behind the globe.
+The build decodes the 4k EXR with zlib and numpy, checks its orientation (the
+Large Magellanic Cloud and Galactic Centre bright, the galactic poles dark), and
+embeds a 4096 × 2048 JPEG cached as `assets/milkyway.jpg`.
+
+The sample is `runs/sample.jsonl`, embedded at build time. Each line is one
+JSON event: `run_start` (config, targets), `star_start` (position, sector and
+stellar `teff`, `radius`, `mass`; also on each target), `loaded`, `cleaned`
+(wide or masked pass), `search` (wide or fine pass, SDE spectrum),
+`signal_done` (folded data), `hide`, `verdict` (outcome) and `run_end`;
+signal-scoped events carry `signal` 1 or 2.
 
 ## Scientific scope
 
@@ -97,9 +180,12 @@ existing Python environment:
 Raw source downloads are cached in the Git-ignored `assets/` directory. A fresh
 build needs network access; its generated HTML does not. The current sources
 are upstream snapshots, so rebuilding with an empty cache may use updated data.
-For HTML-only edits with the existing cache:
+For HTML-only edits, `--render-only` rebuilds offline from the cache. On a
+fresh clone (empty cache), first recover the cache from the committed
+`index.html`; rendering then reproduces it byte for byte:
 
 ```sh
+.venv/bin/python scripts/build_tess_visualization.py --extract-cache
 .venv/bin/python scripts/build_tess_visualization.py --render-only
 ```
 
@@ -114,4 +200,8 @@ HYG v4.1: David Nash / Astronexus, derived subset of 5,070 stars with V ≤ 6,
 derived catalog remains under this license. Natural Earth land boundaries are
 public domain. TESS-Point by Burke, Levine and collaborators, and Three.js r128
 with OrbitControls, are MIT licensed. Their license notices are embedded in the
-standalone file. Scientific source links are also included in the page.
+standalone file. The Milky Way background is from
+[Deep Star Maps 2020](https://svs.gsfc.nasa.gov/4851/): NASA/Goddard Space
+Flight Center Scientific Visualization Studio; Gaia DR2: ESA/Gaia/DPAC. NASA SVS
+material is public domain unless marked otherwise, with this credit requested.
+Scientific source links are also included in the page.
