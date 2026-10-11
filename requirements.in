@@ -6,3 +6,4 @@ nbclient>=0.10,<1
 ipykernel>=6,<8
 jupyterlab>=4,<5
 transitleastsquares>=2,<3
+torch>=2.4,<3

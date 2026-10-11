@@ -389,6 +389,8 @@ threadpoolctl==3.7.0
     # via scikit-learn
 tinycss2==1.5.1
     # via bleach
+torch==2.14.1
+    # via -r requirements.in (GPU: install the ROCm build from download.pytorch.org/whl/rocm7.2)
 tornado==6.5.10
     # via
     #   bokeh
