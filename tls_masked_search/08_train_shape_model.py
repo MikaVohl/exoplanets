@@ -8,8 +8,11 @@ its stars for early stopping (the test fold never influences training). Augmenta
 views and small noise. 5 seeds per fold, averaged.
 Variants: (a) views only, (b) views + measurements, (c) average of (b) and the step-6 model.
 
-Usage (from tls_masked_search/, on a GPU):  python 08_train_shape_model.py
+Usage (from tls_masked_search/, on a GPU):  python 08_train_shape_model.py [--name dataset]
+  --name N reads output/N_stars.csv, N_signals.csv, N_views.npz and writes N_shape_scores.csv
+  (default "dataset": dataset_*.csv, views.npz -> shape_scores.csv).
 """
+import argparse
 import importlib
 import time
 
@@ -19,8 +22,6 @@ import torch
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold
 from torch import nn
-
-from common import OUT_DIR
 
 m6 = importlib.import_module("06_train_classifier")
 LOCAL = ["local", "odd", "even", "secondary", "centroid"]
@@ -50,16 +51,18 @@ class ShapeNet(nn.Module):
         return self.head(torch.cat([self.glob(g), self.loc(l), x], 1)).squeeze(1)
 
 
-def features(df, train):
-    """Step-6 measurements standardized on the training rows, NaN -> 0, plus missing flags."""
-    x = df[m6.DIP_FEATURES].replace([np.inf, -np.inf], np.nan).values.astype(float)
+def features(df, train, cols=None):
+    """Step-6 measurements (`cols`, default DIP_FEATURES) standardized on the training rows, NaN -> 0, plus missing flags."""
+    x = df[cols or m6.DIP_FEATURES].replace([np.inf, -np.inf], np.nan).values.astype(float)
     miss = np.isnan(x)
     mu, sd = np.nanmean(x[train], 0), np.nanstd(x[train], 0) + 1e-9
     z = np.nan_to_num(np.clip((x - mu) / sd, -10, 10))
     return np.hstack([z, miss]).astype(np.float32)
 
 
-def train_one(g, l, x, y, train, val, seed):
+def train_one(g, l, x, y, train, val, seed, history=None):
+    """One network, early-stopped on `val`. If `history` is a list, (training loss, validation loss) is
+    appended after every round (the training loss without augmentation or dropout)."""
     torch.manual_seed(seed)
     net = ShapeNet(x.shape[1]).to(DEV)
     opt = torch.optim.AdamW(net.parameters(), lr=1e-3, weight_decay=1e-3)
@@ -79,6 +82,8 @@ def train_one(g, l, x, y, train, val, seed):
         net.eval()
         with torch.no_grad():
             v = loss_fn(net(g[va], l[va], x[va]), y[va]).item()
+            if history is not None:
+                history.append((loss_fn(net(g[tr], l[tr], x[tr]), y[tr]).item(), v))
         if v < best - 1e-4:
             best, wait = v, 0
             best_state = {k: t.clone() for k, t in net.state_dict().items()}
@@ -90,15 +95,15 @@ def train_one(g, l, x, y, train, val, seed):
     return net
 
 
-def shape_cv(df, views, use_features):
-    """Out-of-fold planet scores, step 6's folds."""
+def shape_cv(df, views, use_features, cols=None):
+    """Out-of-fold planet scores, step 6's folds. `cols`: measurements to add (default DIP_FEATURES)."""
     g = torch.as_tensor(views["global"][:, None], device=DEV)
     l = torch.as_tensor(np.stack([views[k] for k in LOCAL], 1), device=DEV)
     y = torch.as_tensor(df.y.values.astype(np.float32), device=DEV)
     scores, fold_of = np.zeros(len(df)), np.zeros(len(df), int)
     folds = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=m6.SEED)
     for k, (train, test) in enumerate(folds.split(df, df.y, groups=df.tic)):
-        x = features(df, train) if use_features else np.zeros((len(df), 0), np.float32)
+        x = features(df, train, cols) if use_features else np.zeros((len(df), 0), np.float32)
         x = torch.as_tensor(x, device=DEV)
         preds = []
         for seed in range(SEEDS):
@@ -135,9 +140,16 @@ def evaluate(df, s, folds):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--name", default="dataset", help="dataset name, as in step 6")
+    ap.add_argument("--star-features", action="store_true",
+                    help="add step 6's STAR_FEATURES (trees and (b)); output prefix star_")
+    ap.add_argument("--nt", action="store_true", help="NT signals as fakes, as in step 6; output prefix nt_")
+    args = ap.parse_args()
+    cols = m6.FEATURES if args.star_features else m6.DIP_FEATURES
     start = time.time()
-    df = m6.load().reset_index(drop=True)
-    npz = np.load(OUT_DIR / "views.npz")
+    df = m6.load(args.name, args.nt).reset_index(drop=True)
+    npz = np.load(m6.out_path(args.name, "views.npz"))
     pos = pd.Series(np.arange(len(npz["tic"])), index=pd.MultiIndex.from_arrays([npz["tic"], npz["signal"]]))
     idx = pos.loc[list(zip(df.tic, df.signal))].values  # KeyError if a row has no views
     views = {k: np.clip(npz[k][idx], -10, 10) for k in ["global"] + LOCAL}
@@ -145,13 +157,13 @@ def main():
           f"({torch.cuda.get_device_name(0) if DEV == 'cuda' else 'cpu'})")
 
     print("step-6 model (gradient-boosted trees)...", flush=True)
-    gbt, folds, _ = m6.cross_validate(df, m6.DIP_FEATURES)
+    gbt, folds, _ = m6.cross_validate(df, cols)
     print(f"  {time.time() - start:.0f} s")
     out = {"GBT (06)": gbt}
     for name, use in [("(a) views", False), ("(b) views + features", True)]:
         t = time.time()
         print(f"{name}...", flush=True)
-        out[name], f2 = shape_cv(df, views, use)
+        out[name], f2 = shape_cv(df, views, use, cols)
         assert (f2 == folds).all(), "folds differ from step 6"
         print(f"  {time.time() - t:.0f} s")
     out["(c) avg (b) + GBT"] = (out["(b) views + features"] + gbt) / 2
@@ -161,7 +173,8 @@ def main():
         print("\n" + table.to_string())
     df[["tic", "signal", "label", "y", "hard"]].assign(
         gbt=gbt, views=out["(a) views"], views_features=out["(b) views + features"],
-        average=out["(c) avg (b) + GBT"], fold=folds).to_csv(OUT_DIR / "shape_scores.csv", index=False)
+        average=out["(c) avg (b) + GBT"], fold=folds).to_csv(m6.out_path(
+        args.name, ("nt_" if args.nt else "") + ("star_" if args.star_features else "") + "shape_scores.csv"), index=False)
     print(f"\ntotal {time.time() - start:.0f} s")
 
 

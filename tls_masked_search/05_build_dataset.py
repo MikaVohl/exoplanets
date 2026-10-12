@@ -12,14 +12,20 @@ stars excluded):
   3. measure each signal with the repo's own vetting (tess_hunt.search.vet_signal: odd/even depths,
      secondary eclipse, star-position shift during dips, noise-aware SNR, per-dip counts)
   4. label each signal by matching its period (within 1%) to the star's TOIs; unmatched = "none"
+Optional (--random-stars N): N "nothing here" stars, drawn from the SPOC 2-min target lists of a few
+sectors with no TOI at all (any disposition) and not in the benchmark; same steps, every signal
+labeled "NT" (star_class "random").
 Reports data availability, download size/time, search time, and how often the labeled TOI is recovered.
 
-Writes output/dataset_stars.csv (one row per star) and output/dataset_signals.csv (one row per signal).
+Writes output/{name}_stars.csv (one row per star) and output/{name}_signals.csv (one row per signal);
+name defaults to "dataset".
 
 Usage (from tls_masked_search/):  python 05_build_dataset.py [--per-class N] [--workers 96]
+    [--name dataset] [--max-chunks 2] [--random-stars 0]
 Full set (~2,450 stars): ~25 min, mostly MAST downloads (latency-bound), ~15 GB in data/raw/dataset/.
 """
 import argparse
+import io
 import json
 import os
 import sys
@@ -28,6 +34,7 @@ import warnings
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 
 import lightkurve as lk
+from astropy.io import fits
 import numpy as np
 import pandas as pd
 import requests
@@ -49,6 +56,7 @@ MAX_CHUNKS = 2               # so at most 8 sectors per star
 MIN_HIDE_DAYS = 3 / 24        # hide at least 3 h around each dip, in case a dip length comes out short
 TLS_THREADS = 4
 SEED = 0
+RANDOM_SECTORS = range(1, 92, 10)  # sectors whose 2-min target lists the random stars are drawn from
 
 
 def toi_table():
@@ -74,6 +82,23 @@ def sample_stars(tois, per_class=None):
     rng = np.random.default_rng(SEED)
     picks = [rng.choice(single[single.eq(c)].index, per_class, replace=False) for c in CLASSES]
     return pd.DataFrame({"tic": np.concatenate(picks), "star_class": np.repeat(list(CLASSES), per_class)})
+
+
+def random_stars(n):
+    """`n` SPOC 2-min targets of RANDOM_SECTORS with no TOI (any disposition) and not in the benchmark."""
+    r = requests.get(TAP, params={"query": "select distinct tid from toi", "format": "csv"}, timeout=120)
+    r.raise_for_status()
+    exclude = set(pd.read_csv(io.StringIO(r.text)).tid) | set(pd.read_csv(ROOT / "data" / "benchmark" / "targets.csv").tic)
+    tics = set()
+    for sector in RANDOM_SECTORS:
+        r = requests.get(f"https://archive.stsci.edu/missions/tess/download_scripts/sector/tesscurl_sector_{sector}_lc.sh",
+                         timeout=120)
+        r.raise_for_status()
+        tics |= {int(line.split()[5].split("-")[2]) for line in r.text.splitlines() if line.startswith("curl")}
+    pool = np.array(sorted(tics - exclude))
+    picks = np.random.default_rng(SEED).choice(pool, n, replace=False)
+    print(f"Random stars: {len(pool)} no-TOI 2-min targets in sectors {list(RANDOM_SECTORS)}, picked {n}")
+    return pd.DataFrame({"tic": picks, "star_class": "random"})
 
 
 def download(tic):
@@ -146,6 +171,11 @@ def search_star(job):
     start = time.time()
     mass, radius = star_params(tois)
     star = {**star_kwargs(mass, radius), "use_threads": TLS_THREADS}
+    props = {}
+    if job.get("star_props"):  # TIC values from the FITS header, the same source for TOI and non-TOI stars
+        head = fits.getheader(paths[0])
+        props = {c: float(head[k]) if head.get(k) is not None else np.nan
+                 for c, k in [("st_tmag", "TESSMAG"), ("st_rad", "RADIUS"), ("st_teff", "TEFF"), ("st_logg", "LOGG")]}
 
     vet_parts = []
     for p in paths:
@@ -154,7 +184,7 @@ def search_star(job):
         except ValueError:
             pass
     if not vet_parts:
-        return {"tic": tic, "sectors": len(paths), "skipped": "preprocess rejected every sector"}, []
+        return {"tic": tic, "sectors": len(paths), **props, "skipped": "preprocess rejected every sector"}, []
     vet_data = {k: np.concatenate([d[k] for d in vet_parts]) for k in ["time", "flux", "error", "centroid1", "centroid2"]}
 
     found = []  # (period, sde, duration, chunk index) from every chunk
@@ -206,7 +236,7 @@ def search_star(job):
     dips = [count_transits_with_data(vet_data["time"], row.pl_tranmid - 2457000, row.pl_orbper,
                                      row.pl_trandurh / 48 if np.isfinite(row.pl_trandurh) else 1 / 24)
             for row in labeled.itertuples() if np.isfinite(row.pl_orbper) and np.isfinite(row.pl_tranmid)]
-    star_row = {"tic": tic, "sectors": len(paths), "chunks": len(chunks(paths)),
+    star_row = {"tic": tic, "sectors": len(paths), "chunks": len(chunks(paths)), **props,
                 "span_days": float(np.ptp(vet_data["time"])),
                 "labeled_toi_dips_with_data": max(dips, default=0), "search_seconds": time.time() - start,
                 "recovered": any(s["label"] != "none" for s in signals)}
@@ -214,17 +244,25 @@ def search_star(job):
 
 
 def main():
+    global MAX_CHUNKS
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--per-class", type=int, default=None, help="stars per class (default: all the smaller class has)")
     parser.add_argument("--workers", type=int, default=96)
     parser.add_argument("--download-workers", type=int, default=48)  # MAST queries take ~8 s each; latency-bound
+    parser.add_argument("--name", default="dataset", help="output prefix: output/{name}_stars.csv, _signals.csv")
+    parser.add_argument("--max-chunks", type=int, default=MAX_CHUNKS, help="runs of up to 4 sectors per star")
+    parser.add_argument("--random-stars", type=int, default=0, help="add N no-TOI stars, signals labeled NT")
+    parser.add_argument("--star-props", action="store_true", help="add TIC st_tmag/st_rad/st_teff/st_logg per star")
     args = parser.parse_args()
+    MAX_CHUNKS = args.max_chunks
     warnings.filterwarnings("ignore")
     RAW.mkdir(parents=True, exist_ok=True)
 
     tois = toi_table()
     print("TOI dispositions:", tois.tfopwg_disp.value_counts(dropna=False).to_dict())
     stars = sample_stars(tois, args.per_class)
+    if args.random_stars:
+        stars = pd.concat([stars, random_stars(args.random_stars)], ignore_index=True)
 
     def safe_download(tic):  # retry MAST hiccups; NaN sectors_available = gave up (finished files stay cached)
         for attempt in range(3):
@@ -245,15 +283,17 @@ def main():
           f"{stars.sectors_available.isna().sum()} failed", flush=True)
     start = time.time()
 
-    jobs = [{"tic": s.tic, "paths": s.paths, "tois": tois[tois.tid.eq(s.tic)]} for s in have.itertuples()]
+    jobs = [{"tic": s.tic, "paths": s.paths, "tois": tois[tois.tid.eq(s.tic)], "star_props": args.star_props}
+            for s in have.itertuples()]
     star_rows, signal_rows, failed = [], [], []
 
     def save():  # rewritten after every star, so a killed run keeps its partial data
         rows = pd.DataFrame(star_rows or {"tic": []})
         per_star = stars.drop(columns=["paths", "sectors"]).merge(rows, on="tic", how="left")
-        per_star.to_csv(OUT_DIR / "dataset_stars.csv", index=False)
+        per_star.to_csv(OUT_DIR / f"{args.name}_stars.csv", index=False)
         signals = pd.DataFrame(signal_rows or {"tic": []}).merge(stars[["tic", "star_class"]], on="tic")
-        signals.to_csv(OUT_DIR / "dataset_signals.csv", index=False)
+        signals.loc[signals.star_class.eq("random"), "label"] = "NT"
+        signals.to_csv(OUT_DIR / f"{args.name}_signals.csv", index=False)
         return per_star, signals
 
     with ProcessPoolExecutor(args.workers) as pool:

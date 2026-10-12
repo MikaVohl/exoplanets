@@ -12,8 +12,11 @@ Flux views are shifted and scaled so the out-of-dip median is 0 and the local di
 depth itself is already a step-6 feature). Empty bins are interpolated; `ok` is False when a view has
 too few filled bins or no dip.
 
-Usage (from tls_masked_search/):  python 07_build_views.py   (~ minutes on 96 cores)
+Usage (from tls_masked_search/):  python 07_build_views.py [--name dataset] [--max-chunks 2]   (~ minutes on 96 cores)
+Reads output/{name}_signals.csv; writes output/views.npz for "dataset", else output/{name}_views.npz.
+--max-chunks must match the step-5 run, so the same sector files are used.
 """
+import argparse
 import importlib
 import time
 import warnings
@@ -136,8 +139,13 @@ def star_views(job):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--name", default="dataset")
+    parser.add_argument("--max-chunks", type=int, default=m5.MAX_CHUNKS)
+    args = parser.parse_args()
+    m5.MAX_CHUNKS = args.max_chunks  # read by capped() in the (forked) workers
     start = time.time()
-    s = pd.read_csv(OUT_DIR / "dataset_signals.csv")
+    s = pd.read_csv(OUT_DIR / f"{args.name}_signals.csv")
     jobs = [(int(tic), g[["signal", "period", "t0", "duration_h"]].to_dict("records")) for tic, g in s.groupby("tic")]
     results = []
     with ProcessPoolExecutor(WORKERS) as pool:
@@ -151,7 +159,8 @@ def main():
     tic = np.array([r[0] for r in results], np.int64)
     signal = np.array([r[1] for r in results], np.int64)
     ok = np.array([r[3] for r in results])
-    np.savez_compressed(OUT_DIR / "views.npz", tic=tic, signal=signal, ok=ok, **arrays)
+    np.savez_compressed(OUT_DIR / ("views.npz" if args.name == "dataset" else f"{args.name}_views.npz"),
+                        tic=tic, signal=signal, ok=ok, **arrays)
     print(f"\n{ok.sum()} rows ok, {(~ok).sum()} failed, of {len(ok)}; {time.time() - start:.0f} s")
 
     # Sanity check: planets (U-shaped) vs eclipsing-binary-like fakes (V-shaped), and the dip centre.

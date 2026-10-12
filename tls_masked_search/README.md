@@ -48,6 +48,7 @@ TLS on years of gappy data returns wrong dip lengths, which breaks every dip mea
 | `06_train_classifier.py` | Trains and cross-validates the classifier against the fixed rules. Writes `output/classifier_scores.csv`. |
 | `07_build_views.py` | Folds each signal's light curve into fixed-size "snapshots" of the dip shape (whole orbit, zoom, odd, even, halfway point, star position). Writes `output/views.npz`. CPU, ~6 min. |
 | `08_train_shape_model.py` | Shape model: a small 1D neural network (PyTorch) on the snapshots plus 06's measurements, same folds as 06. Writes `output/shape_scores.csv`. GPU, ~5 min. |
+| `09_rank_candidates.py` | Runs steps 5 and 7 on every star with an undecided (PC/APC) TOI, scores each signal with 06/08 trained on all labeled rows, and compares with NASA's ExoMiner++ catalog. Writes `output/candidate*`. |
 | `live.py` | Runs step 4 and shows it live in the TESS visualizer ("Mission Control"). See below. |
 
 ## Run
@@ -66,6 +67,16 @@ python 08_train_shape_model.py                  # ~5 min on one MI300X (ROCm PyT
 
 Run from inside this folder: the scripts import `common.py` from the current directory. Keep the
 `if __name__ == "__main__":` guard in each script: TLS starts worker processes that re-import it.
+
+Variant datasets: `--name N` (05-08) reads/writes `output/N_*` instead. 05 also takes `--max-chunks K`
+(runs of up to 4 sectors per star, default 2), `--random-stars M` (M no-TOI 2-min stars whose signals
+are labeled `NT`; 06/08 use them as fakes only with `--nt`) and `--star-props` (TIC magnitude, radius,
+temperature, log g per star). 07 needs the same `--max-chunks` as 05. The larger set:
+
+```bash
+python 05_build_dataset.py --name dataset_v2 --max-chunks 4 --random-stars 1000 --star-props   # ~27 min
+python 07_build_views.py --name dataset_v2 --max-chunks 4                                      # ~14 min
+```
 
 ## Watch it live
 
@@ -108,24 +119,47 @@ period is within 1% of a cataloged transiting planet.
 The repo's full pipeline reports 36/60, but it also requires BLS agreement and vetting checks, so it
 isn't directly comparable. Of the 16 hosts still missed, about 9 are too faint or show too few dips in
 one sector.
+
 **Dataset** (`data/dataset/toi_labeled.csv` labels, all planet stars plus as many fake stars):
 2,204 stars with 2-min data; our search finds the labeled TOI on 87% of planet stars and 64% of
-fake stars. 3,198 training signals: 1,112 planets, 2,086 fakes (631 FP/FA-matched dips, plus unmatched
-signals on fake-only stars). Unmatched signals on planet stars and half/double matches are left out.
+fake stars. Training uses only catalog-matched signals: 1,743 dips (1,112 CP/KP planets, 631 FP/FA
+fakes). Unmatched signals and half/double matches stay unlabeled.
 
-**Classifiers** (5-fold cross-validation grouped by star; same folds for both), on the hard task of
-NASA-confirmed planets vs NASA-known fakes (1,743 dips):
+**Classifiers** (5-fold cross-validation grouped by star; same folds for both), on NASA-confirmed
+planets vs NASA-known fakes (1,743 dips):
 
 | | Ranking (ROC AUC) | Planets caught at the rules' fake rate | Planets called planet | Fakes called planet | Overall correct |
 |---|---|---|---|---|---|
-| Shape model: snapshots + measurements (08) | **0.87 +/- 0.02** | **87% +/- 3%** | 85% | 28% | 80% |
-| Gradient-boosted trees on measurements (06) | 0.83 +/- 0.02 | 81% +/- 3% | 79% | 28% | 77% |
+| Shape model: snapshots + measurements (08) | **0.90 +/- 0.03** | **92% +/- 3%** | 91% | 30% | 83% |
+| Gradient-boosted trees on measurements (06) | 0.86 +/- 0.02 | 83% +/- 6% | 88% | 35% | 80% |
 | Fixed rules (SDE >= 7, noise SNR >= 7.1, >= 2 dips, no flags) | - | 60% | 60% | 30% | 63% |
 
-The shape model beats the trees in all 5 folds (+0.02 to +0.06 AUC). Snapshots alone, without the
-measurements, are no better than the trees. Both models beat the rules in every group of stars with
-the same number of months of data (planet stars get re-observed more, so data-amount alone predicts
-the label; features are per-dip to limit that).
+Snapshots alone, without the measurements, score the same as the trees (0.86). Both models beat the
+rules in every group of stars with the same number of months of data (planet stars get re-observed
+more, so data-amount alone predicts the label; features are per-dip to limit that).
+
+**More months per star** (`dataset_v2`: up to 16 sectors instead of 8): shape model 0.90 -> 0.91,
+trees 0.86 -> 0.87, within the fold spread. **Random "nothing here" stars** (`--nt`): cost ~0.01 AUC
+on the task above, but without them over half of random-star signals score > 0.5; with them ~1%.
+
+**Undecided candidates** (`09_rank_candidates.py`, star features, 4,338 stars with 2-min data):
+we find 3,397 of NASA's undecided TOIs. On the 2,018 also scored by ExoMiner++, scores correlate at
+0.60 (Spearman) and agree on planet/fake at a 0.5 cutoff 74% of the time.
+
+**Star features** (opt-in: `--star-features` in 06/08; writes `output/star_*_scores.csv`). Star radius,
+temperature and log g from the TOI table, plus two physics checks: the size of the dimming body
+(sqrt(depth) x star radius) and measured / expected dip length for that period and star. Brightness
+(Tmag) is left out: alone it scores AUC 0.58 and adds nothing on top. With FP/FA-only fakes, same folds
+(ROC AUC, planets caught at the rules' fake rate):
+
+| | Without | With star features |
+|---|---|---|
+| Trees (06) | 0.86 +/- 0.02, 83% +/- 6% | **0.92 +/- 0.01, 92% +/- 3%** (all 5 folds better) |
+| Shape model (08 b) | 0.90 +/- 0.03, 92% +/- 4% | 0.92 +/- 0.02, 92% +/- 3% (planets caught: no clear change) |
+| Average of both (08 c) | 0.90 +/- 0.03, 90% +/- 3% | **0.93 +/- 0.01, 94% +/- 2%** |
+
+Missing star values mark fakes (radius missing for 13% of fake dips, 1% of planets), but on stars with
+all values known the trees still gain +0.05 AUC. The model beats the rules in every brightness quartile.
 
 ## Why it's built this way
 

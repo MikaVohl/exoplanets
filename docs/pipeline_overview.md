@@ -65,10 +65,10 @@ strength, depth and length matter most to the model; the other clues help less b
   Each gets an expert verdict: **confirmed planet** or **fake** (usually two stars eclipsing each other).
 - We **don't label anything ourselves**. If a dip we found repeats at the same rate as a NASA candidate on
   that star (within 1%), it gets NASA's verdict.
-- Extra fakes: other dips we find on stars NASA marked as fake. Unmatched dips on planet stars are left
-  out, since they could be real planets NASA hasn't listed.
-- Our dataset: 2,454 stars sampled, 2,204 with 2-minute data; 3,198 labeled dips (1,112 planets,
-  2,086 fakes).
+- Dips that match no NASA candidate are left out, on every star: they could be real planets NASA
+  hasn't listed, or plain noise.
+- Our dataset: 2,454 stars sampled, 2,204 with 2-minute data; 1,743 labeled dips (1,112 planets,
+  631 fakes).
 
 ## 7. Keeping the comparison fair
 
@@ -94,14 +94,14 @@ On NASA-confirmed planets vs NASA-known fakes:
 
 | | Planets called planet | Fakes called planet | Overall correct |
 |---|---|---|---|
-| Shape model | 85% | 28% | 80% |
-| Decision-tree model | 79% | 28% | 77% |
+| Shape model | 91% | 30% | 83% |
+| Decision-tree model | 88% | 35% | 80% |
 | Old fixed rules | 60% | 30% | 63% |
 
-- At the same false-alarm level as the rules, the shape model catches about **87%** of planets, the
-  tree model 81%, the rules 60%. The shape model wins in all 5 test groups.
+- At the same false-alarm level as the rules, the shape model catches about **92%** of planets, the
+  tree model 83%, the rules 60%.
 - Both win in every same-amount-of-data group, so they learn from the dips, not the data amount.
-- They're **ranking tools**, not final judges: about 1 in 4 fakes still gets through. Best use: put the
+- They're **ranking tools**, not final judges: about 1 in 3 fakes still gets through. Best use: put the
   most promising candidates at the top for a person to check.
 
 ## 10. Known limits
