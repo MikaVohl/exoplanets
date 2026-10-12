@@ -47,8 +47,9 @@ TLS on years of gappy data returns wrong dip lengths, which breaks every dip mea
 | `05_build_dataset.py` | Builds the labeled training set from NASA TOI dispositions. Writes `output/dataset_*.csv`. |
 | `06_train_classifier.py` | Trains and cross-validates the classifier against the fixed rules. Writes `output/classifier_scores.csv`. |
 | `07_build_views.py` | Folds each signal's light curve into fixed-size "snapshots" of the dip shape (whole orbit, zoom, odd, even, halfway point, star position). Writes `output/views.npz`. CPU, ~6 min. |
-| `08_train_shape_model.py` | Shape model: a small 1D neural network (PyTorch) on the snapshots plus 06's measurements, same folds as 06. Writes `output/shape_scores.csv`. GPU, ~5 min. |
+| `08_train_shape_model.py` | Shape model: a small 1D neural network (PyTorch) on the snapshots plus 06's measurements, same folds as 06. 5 copies per fold; their score spread is saved as `shape_score_spread` ("unsure" flag). Writes `output/shape_scores.csv`. GPU, ~5 min. `--extra-views pixel` adds step 11 (see Results). |
 | `09_rank_candidates.py` | Runs steps 5 and 7 on every star with an undecided (PC/APC) TOI, scores each signal with 06/08 trained on all labeled rows, and compares with NASA's ExoMiner++ catalog. Writes `output/candidate*`. |
+| `11_build_pixel_views.py` | Difference images (out-of-dip minus in-dip pixels from the SPOC target pixel files): which star dimmed. Downloads TPFs to `data/dataset_tpf/`. Writes `output/dataset_pixel_views.npz`. |
 | `live.py` | Runs step 4 and shows it live in the TESS visualizer ("Mission Control"). See below. |
 
 ## Run
@@ -63,6 +64,8 @@ python 05_build_dataset.py                      # ~25 min, ~15 GB in data/raw/da
 python 06_train_classifier.py                   # ~1 min
 python 07_build_views.py                        # ~6 min
 python 08_train_shape_model.py                  # ~5 min on one MI300X (ROCm PyTorch)
+python 11_build_pixel_views.py                  # difference images (downloads TPFs)
+python 08_train_shape_model.py --extra-views pixel   # (b) without/with difference images
 ```
 
 Run from inside this folder: the scripts import `common.py` from the current directory. Keep the
@@ -122,21 +125,44 @@ one sector.
 
 **Dataset** (`data/dataset/toi_labeled.csv` labels, all planet stars plus as many fake stars):
 2,204 stars with 2-min data; our search finds the labeled TOI on 87% of planet stars and 64% of
-fake stars. Training uses only catalog-matched signals: 1,743 dips (1,112 CP/KP planets, 631 FP/FA
-fakes). Unmatched signals and half/double matches stay unlabeled.
+fake stars. Training uses only catalog-matched signals: 1,725 dips (1,111 CP/KP planets, 614 FP/FA
+fakes). Unmatched signals and half/double matches stay unlabeled. 06's `load()` drops 18 stars that have
+no 2-min file of their own (older step-5 runs kept a neighbour star's file; 17 of the 18 were fakes).
 
 **Classifiers** (5-fold cross-validation grouped by star; same folds for both), on NASA-confirmed
-planets vs NASA-known fakes (1,743 dips):
+planets vs NASA-known fakes (1,725 dips):
 
 | | Ranking (ROC AUC) | Planets caught at the rules' fake rate | Planets called planet | Fakes called planet | Overall correct |
 |---|---|---|---|---|---|
-| Shape model: snapshots + measurements (08) | **0.90 +/- 0.03** | **92% +/- 3%** | 91% | 30% | 83% |
-| Gradient-boosted trees on measurements (06) | 0.86 +/- 0.02 | 83% +/- 6% | 88% | 35% | 80% |
-| Fixed rules (SDE >= 7, noise SNR >= 7.1, >= 2 dips, no flags) | - | 60% | 60% | 30% | 63% |
+| Shape model: snapshots + measurements (08) | **0.90 +/- 0.02** | **90% +/- 2%** | 90% | 29% | 83% |
+| Gradient-boosted trees on measurements (06) | 0.86 +/- 0.01 | 83% +/- 3% | 88% | 37% | 79% |
+| Fixed rules (SDE >= 7, noise SNR >= 7.1, >= 2 dips, no flags) | - | 60% | 60% | 30% | 64% |
 
 Snapshots alone, without the measurements, score the same as the trees (0.86). Both models beat the
 rules in every group of stars with the same number of months of data (planet stars get re-observed
 more, so data-amount alone predicts the label; features are per-dip to limit that).
+
+**Unsure flag** (`shape_score_spread`, the spread of the 5 copies' scores), shape model above, by spread quartile:
+
+| Spread quartile | Q1 (lowest) | Q2 | Q3 | Q4 (highest) |
+|---|---|---|---|---|
+| Correct at 0.5 | 95% | 91% | 82% | 65% |
+| ROC AUC within the bin | 0.96 | 0.94 | 0.87 | 0.69 |
+
+Higher spread does mean more mistakes, but the score's closeness to 0.5 finds wrong calls slightly better
+(ROC AUC 0.77 vs 0.74 for spread; together 0.77). Where it adds something: among confident scores (< 0.2 or
+> 0.8), high-spread rows are wrong ~4x as often (13-14% vs 3%). `09` writes it to `candidate_ranking.csv`.
+
+**Extra views** (`08 --extra-views pixel`, one GPU session, same folds and seeds; shape model (b)
+0.90 +/- 0.02, 90% +/- 2% without):
+
+| | ROC AUC | Planets caught at the rules' fake rate | Per-fold ROC AUC change |
+|---|---|---|---|
+| + difference images (11) | **0.91 +/- 0.02** | **92% +/- 1%** | +0.021 +0.006 +0.004 +0.005 +0.008 |
+
+Difference images help a little in every fold: NASA fakes whose dimming peaks > 1 px off the target (171)
+scored > 0.5 12% -> 3% of the time (centroid_snr > 3: 23% -> 18%). The gain is small, within the fold
+spread, so the views stay opt-in. Each-dip views (each dip side by side) were tried too: worse in all 5 folds, not kept.
 
 **More months per star** (`dataset_v2`: up to 16 sectors instead of 8): shape model 0.90 -> 0.91,
 trees 0.86 -> 0.87, within the fold spread. **Random "nothing here" stars** (`--nt`): cost ~0.01 (shape)
@@ -144,16 +170,18 @@ to ~0.03 (trees) on the task above, within the fold spread; but without them ove
 signals score > 0.5, with them ~1%.
 
 **Undecided candidates** (`09_rank_candidates.py score --name dataset_v2 --nt`: trained with the random
-"nothing here" stars, no star features; 4,338 stars with 2-min data): we find 3,397 of NASA's undecided
-TOIs (3,416 dips); only those are ranked. Junk dips matching no TOI now score > 0.5 just 4% of the time.
-On the 2,018 also scored by ExoMiner++, scores correlate at 0.54 (Spearman) and agree on planet/fake at a
-0.5 cutoff 76% of the time.
+"nothing here" stars, no star features; 4,338 stars with 2-min data, 22 without their own file dropped):
+we find 3,377 of NASA's undecided TOIs (3,396 dips); only those are ranked. Junk dips matching no TOI
+score > 0.5 just 4% of the time. On the 2,018 also scored by ExoMiner++, scores correlate at 0.55
+(Spearman) and agree on planet/fake at a 0.5 cutoff 75% of the time. `score` needs
+`output/dataset_v2_views.npz` and `output/candidate_views.npz` (~35 MB, not in git): rebuild them with
+`07_build_views.py --name dataset_v2 --max-chunks 4` and `09_rank_candidates.py build`.
 
 **Star features** (opt-in: `--star-features` in 06/08; writes `output/star_*_scores.csv`). Star radius,
 temperature and log g from the TOI table, plus two physics checks: the size of the dimming body
 (sqrt(depth) x star radius) and measured / expected dip length for that period and star. Brightness
 (Tmag) is left out: alone it scores AUC 0.58 and adds nothing on top. With FP/FA-only fakes, same folds
-(ROC AUC, planets caught at the rules' fake rate):
+(ROC AUC, planets caught at the rules' fake rate; measured before the 18-star drop, as is the next paragraph):
 
 | | Without | With star features |
 |---|---|---|

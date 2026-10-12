@@ -106,7 +106,10 @@ def download(tic):
     from MAST (astroquery's progress bar is not thread-safe). Returns (paths, sectors available, MB, seconds)."""
     start = time.time()
     found = lk.search_lightcurve(f"TIC {tic}", author="SPOC", exptime=120)
-    uris = {uri.split("/")[-1]: uri for uri in (found.table["dataURI"] if len(found) else [])}
+    # The search is a cone search: it also returns neighbouring stars' files. Keep only this star's own.
+    own = f"{int(tic):016d}"
+    uris = {uri.split("/")[-1]: uri for uri in (found.table["dataURI"] if len(found) else [])
+            if own in uri.split("/")[-1]}
     paths = []
     with requests.Session() as session:
         for name in capped(list(uris)):

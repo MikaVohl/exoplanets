@@ -8,7 +8,8 @@ Stages (run in order):
            Raw files go to tls_masked_search/data/raw_candidates/ (git-ignored, ~28 GB). ~45 min on 96 cores.
   score    (GPU) step 6's trees and step 8's shape model (views + step-6 measurements, SEEDS seeds, each
            early-stopped on a 15% star-grouped split) trained on ALL labeled step-6 rows; every
-           TOI-matched candidate signal scored.  -> output/candidate_ranking.csv (sorted by shape score).
+           TOI-matched candidate signal scored.  -> output/candidate_ranking.csv (sorted by shape score;
+           shape_score_spread = std of the SEEDS copies' scores, the "unsure" flag).
            Unmatched signals are left out: the models never trained on them and score most of them
            as planets (86 of the top 100 when they were included).
            --star-features adds 06's STAR_FEATURES to both models. --name picks the step-5 training set
@@ -149,7 +150,10 @@ def score(args):
     start = time.time()
     feats = m6.FEATURES if args.star_features else m6.DIP_FEATURES
     df = m6.load(args.name, args.nt).reset_index(drop=True)
-    cand = m6.with_features(pd.read_csv(SIGNALS), pd.read_csv(STARS)).reset_index(drop=True)
+    cand = m6.with_features(pd.read_csv(SIGNALS), pd.read_csv(STARS))
+    own = m6.own_data(cand.tic.values, HERE / "data" / "raw_candidates")
+    print(f"candidates: dropped {(~own).sum()} signals of {cand.tic[~own].nunique()} stars with no light curve of their own")
+    cand = cand[own].reset_index(drop=True)
     keys = ["global"] + m8.LOCAL
     tv, _ = views_for(df, OUT_DIR / ("views.npz" if args.name == "dataset" else f"{args.name}_views.npz"), keys)
     cv, cok = views_for(cand, VIEWS, keys)
@@ -184,7 +188,8 @@ def score(args):
     star_tois = tois[tois.tfopwg_disp.isin(PENDING)].groupby("tid").toi.agg(lambda t: ";".join(map(str, sorted(t))))
     out = pd.DataFrame({
         "tic": cand.tic, "toi": cand.tic.map(star_tois), "signal": cand.signal, "period": cand.period,
-        "depth_ppm": cand.depth_ppm, "duration_h": cand.duration_h, "shape_score": shape, "tree_score": tree,
+        "depth_ppm": cand.depth_ppm, "duration_h": cand.duration_h, "shape_score": shape,
+        "shape_score_spread": np.std(preds, 0), "tree_score": tree,
         "average_score": (shape + tree) / 2,  # 08's variant (c), the best in StarDetails' CV with star features
         "matched_toi": np.where(pc, cand.label_toi.astype(str), "unmatched"),
         "matched_other": np.where(~pc & cand.label.ne("none"), cand.label + " " + cand.label_toi.astype(str), ""),

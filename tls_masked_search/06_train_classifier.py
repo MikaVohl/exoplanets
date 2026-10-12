@@ -39,6 +39,7 @@ STAR_FEATURES = ["st_rad", "st_teff", "st_logg", "companion_radius_earth", "dura
 FEATURES = DIP_FEATURES + STAR_FEATURES
 AMOUNT_FEATURES = ["sectors", "sectors_available", "span_days", "chunks"]
 SEED = 0
+RAW = ROOT / "data" / "raw" / "dataset"  # step 5's light curves (every dataset name)
 
 
 def star_props(stars):
@@ -78,6 +79,14 @@ def with_features(s, stars):
     return s
 
 
+def own_data(tics, raw=RAW):
+    """Whether each star has a light-curve file of its own TIC in `raw`. Older step-5 runs kept a
+    neighbour's file (lightkurve cone search) for stars with no 2-min data of their own."""
+    have = {int(p.name.split("-")[2]) for p in raw.glob("*.fits")}  # tess<date>-s<sector>-<16-digit TIC>-...
+    assert have, f"no light curves in {raw}"
+    return np.isin(tics, list(have))
+
+
 def load(name="dataset", nt=False):
     """Labeled rows of output/<name>_*.csv; NT rows (random no-TOI stars) count as fakes only if `nt`."""
     s = with_features(pd.read_csv(OUT_DIR / f"{name}_signals.csv"), pd.read_csv(OUT_DIR / f"{name}_stars.csv"))
@@ -86,7 +95,11 @@ def load(name="dataset", nt=False):
     s = s[planet | fake].copy()
     s["y"] = s.label.isin(["CP", "KP"]).astype(int)
     s["hard"] = s.label.isin(["CP", "KP", "FP", "FA"])  # NASA-flagged dips only
-    return s
+    own = own_data(s.tic.values)
+    if not own.all():
+        print(f"load: dropped {(~own).sum()} rows ({s.label[~own].value_counts().to_dict()}) of {s.tic[~own].nunique()} "
+              "stars with no light curve of their own")
+    return s[own]
 
 
 def cross_validate(df, features):
