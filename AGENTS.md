@@ -26,7 +26,10 @@ Abdullah (`cd tls_masked_search`; details in its README):
 - `07_rank_candidates.py build|score|compare` - rank undecided TOIs, compare with ExoMiner++
 
 ## Data and results
-- `data/raw/` holds every download, is git-ignored, and is re-downloaded automatically when missing.
+- `data/raw/` holds every download and is git-ignored. Most of it was deleted to stay under the home
+  quota (~500 GB; pixel files are ~80 MB per star, so 05 streams and deletes them). Training (03, 06) and
+  scoring (`07 score`) need only committed files. Steps 02 and `07 build` download what they need; 04 and 05
+  read light curves from `data/raw/`, so re-run 02 / `07 build` first to rebuild them.
 - Committed: `data/{benchmark,catalogs,dataset,starter}/`, `reports/`, and in `tls_masked_search/output/`
   the labeled datasets, search outputs, all model inputs (`*.npz`: snapshots and pixel images, slow to
   rebuild), final tables (`benchmark_100*.csv`, `candidate_ranking.csv`, `candidate_exominer.csv`) and the

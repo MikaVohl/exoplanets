@@ -255,7 +255,7 @@ def main():
     if args.name == "candidates":  # 07's candidate set; like 07, drop stars with no light curve of their own
         m2.RAW, TPF_DIR = ROOT / "data" / "raw" / "candidates", ROOT / "data" / "raw" / "tpf_candidates"
         s = pd.read_csv(OUT_DIR / "candidates_signals.csv")
-        s = s[m3.own_data(s.tic.values, m2.RAW)]
+        s = s[m3.own_data(s.tic.values, pd.read_csv(OUT_DIR / "candidates_stars.csv"))]
     else:
         s = m3.load(args.name, nt=True)
     cached = {}

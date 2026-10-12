@@ -155,7 +155,7 @@ def score(args):
     feats = m3.FEATURES if args.star_features else m3.DIP_FEATURES
     df = m3.load(args.name, args.nt).reset_index(drop=True)
     cand = m3.with_features(pd.read_csv(SIGNALS), pd.read_csv(STARS))
-    own = m3.own_data(cand.tic.values, RAW)
+    own = m3.own_data(cand.tic.values, pd.read_csv(STARS))
     print(f"candidates: dropped {(~own).sum()} signals of {cand.tic[~own].nunique()} stars with no light curve of their own")
     cand = cand[own].reset_index(drop=True)
     keys = ["global"] + m6.LOCAL

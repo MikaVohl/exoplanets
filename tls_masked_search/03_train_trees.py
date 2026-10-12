@@ -39,7 +39,6 @@ STAR_FEATURES = ["st_rad", "st_teff", "st_logg", "companion_radius_earth", "dura
 FEATURES = DIP_FEATURES + STAR_FEATURES
 AMOUNT_FEATURES = ["sectors", "sectors_available", "span_days", "chunks"]
 SEED = 0
-RAW = ROOT / "data" / "raw" / "dataset"  # step 2's light curves (every dataset name)
 
 
 def star_props(stars):
@@ -79,23 +78,25 @@ def with_features(s, stars):
     return s
 
 
-def own_data(tics, raw=RAW):
-    """Whether each star has a light-curve file of its own TIC in `raw`. Older step-2 runs kept a
-    neighbour's file (lightkurve cone search) for stars with no 2-min data of their own."""
-    have = {int(p.name.split("-")[2]) for p in raw.glob("*.fits")}  # tess<date>-s<sector>-<16-digit TIC>-...
-    assert have, f"no light curves in {raw}"
-    return np.isin(tics, list(have))
+def own_data(tics, stars):
+    """Whether each star has light curves of its own. Step-2 runs before the own-file fix kept a neighbour's
+    file (lightkurve cone search) for stars with no 2-min data of their own; their stars file marks them
+    has_own_lc=False. Newer runs only download a star's own files, so the column is absent there."""
+    if "has_own_lc" not in stars:
+        return np.ones(len(tics), bool)
+    return ~np.isin(tics, stars.tic[~stars.has_own_lc.astype(bool)].values)
 
 
 def load(name="dataset", nt=False):
     """Labeled rows of output/<name>_*.csv; NT rows (random no-TOI stars) count as fakes only if `nt`."""
-    s = with_features(pd.read_csv(OUT_DIR / f"{name}_signals.csv"), pd.read_csv(OUT_DIR / f"{name}_stars.csv"))
+    stars = pd.read_csv(OUT_DIR / f"{name}_stars.csv")
+    s = with_features(pd.read_csv(OUT_DIR / f"{name}_signals.csv"), stars)
     planet = s.label.isin(["CP", "KP"])
     fake = s.label.isin(["FP", "FA", "NT"] if nt else ["FP", "FA"])
     s = s[planet | fake].copy()
     s["y"] = s.label.isin(["CP", "KP"]).astype(int)
     s["hard"] = s.label.isin(["CP", "KP", "FP", "FA"])  # NASA-flagged dips only
-    own = own_data(s.tic.values)
+    own = own_data(s.tic.values, stars)
     if not own.all():
         print(f"load: dropped {(~own).sum()} rows ({s.label[~own].value_counts().to_dict()}) of {s.tic[~own].nunique()} "
               "stars with no light curve of their own")
