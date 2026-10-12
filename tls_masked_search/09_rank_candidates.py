@@ -8,7 +8,9 @@ Stages (run in order):
            Raw files go to tls_masked_search/data/raw_candidates/ (git-ignored, ~28 GB). ~45 min on 96 cores.
   score    (GPU) step 6's trees and step 8's shape model (views + step-6 measurements, SEEDS seeds, each
            early-stopped on a 15% star-grouped split) trained on ALL labeled step-6 rows; every
-           candidate signal scored.  -> output/candidate_ranking.csv (sorted by shape score)
+           TOI-matched candidate signal scored.  -> output/candidate_ranking.csv (sorted by shape score).
+           Unmatched signals are left out: the models never trained on them and score most of them
+           as planets (86 of the top 100 when they were included).
            --star-features adds 06's STAR_FEATURES to both models. Set OMP_NUM_THREADS on a busy node.
   compare  (CPU) ExoMiner++ TESS 2-min catalog (Zenodo 10.5281/zenodo.15466292): matched to our
            TOI-matched signals by TIC + period within 1% (the catalog has no TOI column); the TCE from
@@ -186,7 +188,7 @@ def score(args):
         "matched_other": np.where(~pc & cand.label.ne("none"), cand.label + " " + cand.label_toi.astype(str), ""),
         "sectors": cand.sectors, "views_ok": cok,
     }).sort_values("shape_score", ascending=False)
-    out.to_csv(RANKING, index=False)
+    out[out.matched_toi.ne("unmatched")].to_csv(RANKING, index=False)
     print(f"Spearman(shape, tree) = {out[['shape_score', 'tree_score']].corr('spearman').iloc[0, 1]:.2f}; "
           f"mean shape score: PC/APC-matched {shape[pc].mean():.2f} ({pc.sum()}), "
           f"unmatched {shape[cand.label.eq('none')].mean():.2f} ({cand.label.eq('none').sum()}); "
