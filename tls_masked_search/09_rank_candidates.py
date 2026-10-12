@@ -11,13 +11,15 @@ Stages (run in order):
            TOI-matched candidate signal scored.  -> output/candidate_ranking.csv (sorted by shape score).
            Unmatched signals are left out: the models never trained on them and score most of them
            as planets (86 of the top 100 when they were included).
-           --star-features adds 06's STAR_FEATURES to both models. Set OMP_NUM_THREADS on a busy node.
+           --star-features adds 06's STAR_FEATURES to both models. --name picks the step-5 training set
+           (e.g. dataset_v2) and --nt adds its random no-TOI stars as fakes, so junk dips score low.
+           Set OMP_NUM_THREADS on a busy node.
   compare  (CPU) ExoMiner++ TESS 2-min catalog (Zenodo 10.5281/zenodo.15466292): matched to our
            TOI-matched signals by TIC + period within 1% (the catalog has no TOI column); the TCE from
            the longest sector run is used.  -> output/candidate_exominer.csv
 
 Usage (from tls_masked_search/):  python 09_rank_candidates.py build [--limit N]
-                                  python 09_rank_candidates.py score [--star-features]   (on a GPU)
+                                  python 09_rank_candidates.py score [--star-features] [--name N --nt]   (on a GPU)
                                   python 09_rank_candidates.py compare
 """
 import argparse
@@ -146,10 +148,10 @@ def score(args):
     m8 = importlib.import_module("08_train_shape_model")
     start = time.time()
     feats = m6.FEATURES if args.star_features else m6.DIP_FEATURES
-    df = m6.load().reset_index(drop=True)
+    df = m6.load(args.name, args.nt).reset_index(drop=True)
     cand = m6.with_features(pd.read_csv(SIGNALS), pd.read_csv(STARS)).reset_index(drop=True)
     keys = ["global"] + m8.LOCAL
-    tv, _ = views_for(df, OUT_DIR / "views.npz", keys)
+    tv, _ = views_for(df, OUT_DIR / ("views.npz" if args.name == "dataset" else f"{args.name}_views.npz"), keys)
     cv, cok = views_for(cand, VIEWS, keys)
     print(f"training: {len(df)} rows from {df.tic.nunique()} stars ({df.y.sum()} planet); "
           f"candidates: {len(cand)} signals from {cand.tic.nunique()} stars ({cok.sum()} ok views); "
@@ -191,7 +193,8 @@ def score(args):
     out[out.matched_toi.ne("unmatched")].to_csv(RANKING, index=False)
     print(f"Spearman(shape, tree) = {out[['shape_score', 'tree_score']].corr('spearman').iloc[0, 1]:.2f}; "
           f"mean shape score: PC/APC-matched {shape[pc].mean():.2f} ({pc.sum()}), "
-          f"unmatched {shape[cand.label.eq('none')].mean():.2f} ({cand.label.eq('none').sum()}); "
+          f"unmatched {shape[cand.label.eq('none')].mean():.2f} ({cand.label.eq('none').sum()}, "
+          f"{(shape[cand.label.eq('none')] > 0.5).mean():.0%} above 0.5); "
           f"star radius or logg missing for {cand[['st_rad', 'st_logg']].isna().any(axis=1).mean():.0%} of candidate signals "
           f"(training: {df[['st_rad', 'st_logg']].isna().any(axis=1).mean():.0%})")
     print(f"score: {time.time() - start:.0f} s -> {RANKING}")
@@ -270,6 +273,8 @@ def main():
     parser.add_argument("--workers", type=int, default=96)
     parser.add_argument("--download-workers", type=int, default=48)
     parser.add_argument("--star-features", action="store_true", help="score: also use 06's STAR_FEATURES")
+    parser.add_argument("--name", default="dataset", help="score: step-5 training set to learn from")
+    parser.add_argument("--nt", action="store_true", help="score: count its random no-TOI signals as fakes")
     args = parser.parse_args()
     {"build": build, "score": score, "compare": compare}[args.stage](args)
 

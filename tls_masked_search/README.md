@@ -139,12 +139,15 @@ rules in every group of stars with the same number of months of data (planet sta
 more, so data-amount alone predicts the label; features are per-dip to limit that).
 
 **More months per star** (`dataset_v2`: up to 16 sectors instead of 8): shape model 0.90 -> 0.91,
-trees 0.86 -> 0.87, within the fold spread. **Random "nothing here" stars** (`--nt`): cost ~0.01 AUC
-on the task above, but without them over half of random-star signals score > 0.5; with them ~1%.
+trees 0.86 -> 0.87, within the fold spread. **Random "nothing here" stars** (`--nt`): cost ~0.01 (shape)
+to ~0.03 (trees) on the task above, within the fold spread; but without them over half of random-star
+signals score > 0.5, with them ~1%.
 
-**Undecided candidates** (`09_rank_candidates.py`, star features, 4,338 stars with 2-min data):
-we find 3,397 of NASA's undecided TOIs. On the 2,018 also scored by ExoMiner++, scores correlate at
-0.60 (Spearman) and agree on planet/fake at a 0.5 cutoff 74% of the time.
+**Undecided candidates** (`09_rank_candidates.py score --name dataset_v2 --nt`: trained with the random
+"nothing here" stars, no star features; 4,338 stars with 2-min data): we find 3,397 of NASA's undecided
+TOIs (3,416 dips); only those are ranked. Junk dips matching no TOI now score > 0.5 just 4% of the time.
+On the 2,018 also scored by ExoMiner++, scores correlate at 0.54 (Spearman) and agree on planet/fake at a
+0.5 cutoff 76% of the time.
 
 **Star features** (opt-in: `--star-features` in 06/08; writes `output/star_*_scores.csv`). Star radius,
 temperature and log g from the TOI table, plus two physics checks: the size of the dimming body
