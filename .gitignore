@@ -2,13 +2,16 @@
 __pycache__/
 .ipynb_checkpoints/
 .DS_Store
-data/raw/
+# all downloads (a directory or a symlink to one)
+/data/raw
 data/processed/
 reports/benchmark/plots/
 reports/benchmark/spectra/
 reports/walkthrough/figures/
 reports/walkthrough/*.html
-# tls_masked_search: cached MAST downloads
-tls_masked_search/data/
+# tls_masked_search: live runs and per-model score files (only the two the notebooks read are committed)
 tls_masked_search/output/live/
+tls_masked_search/output/*_scores.csv
+!tls_masked_search/output/classifier_scores.csv
+!tls_masked_search/output/shape_scores.csv
 runs/

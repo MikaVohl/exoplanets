@@ -1,27 +1,29 @@
-"""Step 9: rank NASA's undecided TESS candidates (TOIs with disposition PC or APC) and compare with ExoMiner++.
+"""Step 7: rank NASA's undecided TESS candidates (TOIs with disposition PC or APC) and compare with ExoMiner++.
 
 Stages (run in order):
-  build    (CPU) every star with a PC/APC TOI, minus the step-5 training stars (so nothing scored was
-           trained on), goes through exactly step 5's pipeline (same sector cap, chunked search,
-           vet_signal measurements, 1% period match to the star's TOIs) and step 7's views.
+  build    (CPU) every star with a PC/APC TOI, minus the step-2 training stars (so nothing scored was
+           trained on), goes through exactly step 2's pipeline (same sector cap, chunked search,
+           vet_signal measurements, 1% period match to the star's TOIs) and step 4's views.
            -> output/candidates_stars.csv, candidates_signals.csv, candidate_views.npz
-           Raw files go to tls_masked_search/data/raw_candidates/ (git-ignored, ~28 GB). ~45 min on 96 cores.
-  score    (GPU) step 6's trees and step 8's shape model (views + step-6 measurements, SEEDS seeds, each
-           early-stopped on a 15% star-grouped split) trained on ALL labeled step-6 rows; every
+           Raw files go to data/raw/candidates/ (git-ignored, ~28 GB). ~45 min on 96 cores.
+           Then `05_build_pixel_views.py --name candidates` -> output/candidate_pixel_views.npz (~13 min).
+  score    (GPU) step 3's trees and step 6's shape model (snapshots + pixel images + step-3 measurements,
+           SEEDS seeds, each early-stopped on a 15% star-grouped split) trained on ALL labeled step-3 rows; every
            TOI-matched candidate signal scored.  -> output/candidate_ranking.csv (sorted by shape score;
            shape_score_spread = std of the SEEDS copies' scores, the "unsure" flag).
            Unmatched signals are left out: the models never trained on them and score most of them
            as planets (86 of the top 100 when they were included).
-           --star-features adds 06's STAR_FEATURES to both models. --name picks the step-5 training set
-           (e.g. dataset_v2) and --nt adds its random no-TOI stars as fakes, so junk dips score low.
+           --star-features adds 03's STAR_FEATURES to both models. --name picks the step-2 training set
+           (e.g. dataset_v2; needs its output/<name>_pixel_views.npz) and --nt adds its random no-TOI stars
+           as fakes, so junk dips score low. --no-pixel leaves the pixel images out.
            Set OMP_NUM_THREADS on a busy node.
-  compare  (CPU) ExoMiner++ TESS 2-min catalog (Zenodo 10.5281/zenodo.15466292): matched to our
-           TOI-matched signals by TIC + period within 1% (the catalog has no TOI column); the TCE from
-           the longest sector run is used.  -> output/candidate_exominer.csv
+  compare  (CPU) ExoMiner++ TESS 2-min catalog (Zenodo 10.5281/zenodo.15466292, cached in data/raw/exominer/):
+           matched to our TOI-matched signals by TIC + period within 1% (the catalog has no TOI column); the TCE
+           from the longest sector run is used.  -> output/candidate_exominer.csv
 
-Usage (from tls_masked_search/):  python 09_rank_candidates.py build [--limit N]
-                                  python 09_rank_candidates.py score [--star-features] [--name N --nt]   (on a GPU)
-                                  python 09_rank_candidates.py compare
+Usage (from tls_masked_search/):  python 07_rank_candidates.py build [--limit N]
+                                  python 07_rank_candidates.py score [--star-features] [--name N --nt] [--no-pixel]   (on a GPU)
+                                  python 07_rank_candidates.py compare
 """
 import argparse
 import importlib
@@ -33,44 +35,46 @@ import numpy as np
 import pandas as pd
 import requests
 
-from common import HERE, OUT_DIR, ROOT, relation
+from common import OUT_DIR, ROOT, relation
 
-m6 = importlib.import_module("06_train_classifier")
-TOIS = ROOT / "data" / "dataset" / "toi_labeled.csv"  # step 5's cached TOI table
+m3 = importlib.import_module("03_train_trees")
+TOIS = ROOT / "data" / "dataset" / "toi_labeled.csv"  # step 2's cached TOI table
 PENDING = ["PC", "APC"]
 STARS, SIGNALS, VIEWS = (OUT_DIR / f for f in ["candidates_stars.csv", "candidates_signals.csv", "candidate_views.npz"])
+PIXELS = OUT_DIR / "candidate_pixel_views.npz"
 RANKING = OUT_DIR / "candidate_ranking.csv"
-EXOMINER = HERE / "data" / "exominer"
+RAW = ROOT / "data" / "raw" / "candidates"  # git-ignored; candidates' own download cache
+EXOMINER = ROOT / "data" / "raw" / "exominer"
 ZENODO = "https://zenodo.org/api/records/15466293/files/{}/content"
 CATALOGS = ["exominerplusplus_catalog_unk_tces_s1-s67_tess-spoc-2min_complete_1-16-2025_1014.csv",
             "exominerplusplus_catalog_labeled_tces_s1-s67_tess-spoc-2min_complete_1-14-2025_1039.csv"]
 
 
 def build(args):
-    # Steps 5 and 7 need transitleastsquares (CPU venv only), so they are imported here.
-    m5, m7 = (importlib.import_module(n) for n in ["05_build_dataset", "07_build_views"])
-    m5.CHUNK_SECTORS, m5.MAX_CHUNKS = 4, 2  # the training set's sector cap (8 sectors per star)
-    m5.RAW = m7.RAW = HERE / "data" / "raw_candidates"  # git-ignored; candidates' own download cache
+    # Steps 2 and 4 need transitleastsquares (CPU venv only), so they are imported here.
+    m2, m4 = (importlib.import_module(n) for n in ["02_build_dataset", "04_build_snapshots"])
+    m2.CHUNK_SECTORS, m2.MAX_CHUNKS = 4, 2  # the training set's sector cap (8 sectors per star)
+    m2.RAW = m4.RAW = RAW
 
     def safe_download(tic):
-        """05's download with its retries; NaN sectors_available = gave up."""
+        """02's download with its retries; NaN sectors_available = gave up."""
         for attempt in range(3):
             try:
-                return m5.download(tic)
+                return m2.download(tic)
             except Exception as e:
                 print(f"  download TIC {tic} attempt {attempt + 1} failed: {e!r}", flush=True)
                 time.sleep(10 * 2 ** attempt)
         return [], np.nan, 0.0, 0.0
 
     warnings.filterwarnings("ignore")
-    m5.RAW.mkdir(parents=True, exist_ok=True)
-    tois = m5.toi_table()
+    m2.RAW.mkdir(parents=True, exist_ok=True)
+    tois = m2.toi_table()
     if not tois.tfopwg_disp.isin(PENDING).any():  # an old cache without PCs: refetch
-        m5.LABELS.unlink()
-        tois = m5.toi_table()
+        m2.LABELS.unlink()
+        tois = m2.toi_table()
     cand = tois[tois.tfopwg_disp.isin(PENDING)].tid.unique()
     trained = set(pd.read_csv(OUT_DIR / "dataset_stars.csv").tic)
-    print(f"{len(cand)} stars with a PC/APC TOI; {sum(t in trained for t in cand)} are step-5 training stars, excluded")
+    print(f"{len(cand)} stars with a PC/APC TOI; {sum(t in trained for t in cand)} are step-2 training stars, excluded")
     cand = [int(t) for t in cand if t not in trained][:args.limit]
 
     stars, signals, failed = {}, [], []
@@ -94,7 +98,7 @@ def build(args):
                                   "download_seconds": sec, "sectors": len(paths)}
                     if paths:
                         job = {"tic": tic, "paths": paths, "tois": tois[tois.tid.eq(tic)]}
-                        pending[procs.submit(m5.search_star, job)] = ("search", tic)
+                        pending[procs.submit(m2.search_star, job)] = ("search", tic)
                     if len(stars) == len(cand):
                         t_down = time.time() - start
                         print(f"Downloads done: {t_down:.0f} s, {sum(s['download_mb'] for s in stars.values()):.0f} MB, "
@@ -124,11 +128,11 @@ def build(args):
     jobs = [(int(t), g[["signal", "period", "t0", "duration_h"]].to_dict("records")) for t, g in sig.groupby("tic")]
     results = []
     with ProcessPoolExecutor(args.workers) as pool:
-        for i, res in enumerate(pool.map(m7.star_views, jobs, chunksize=1), 1):
+        for i, res in enumerate(pool.map(m4.star_views, jobs, chunksize=1), 1):
             results += res
             if i % 500 == 0:
                 print(f"  views: {i}/{len(jobs)} stars, {time.time() - start:.0f} s", flush=True)
-    names = m7.FLUX_VIEWS + ["centroid"]
+    names = m4.FLUX_VIEWS + ["centroid"]
     np.savez_compressed(VIEWS, tic=np.array([r[0] for r in results], np.int64),
                         signal=np.array([r[1] for r in results], np.int64), ok=np.array([r[3] for r in results]),
                         **{k: np.stack([r[2][k] for r in results]).astype(np.float32) for k in names})
@@ -146,41 +150,48 @@ def score(args):
     import torch
     from sklearn.ensemble import HistGradientBoostingClassifier
     from sklearn.model_selection import GroupShuffleSplit
-    m8 = importlib.import_module("08_train_shape_model")
+    m6 = importlib.import_module("06_train_shape_model")
     start = time.time()
-    feats = m6.FEATURES if args.star_features else m6.DIP_FEATURES
-    df = m6.load(args.name, args.nt).reset_index(drop=True)
-    cand = m6.with_features(pd.read_csv(SIGNALS), pd.read_csv(STARS))
-    own = m6.own_data(cand.tic.values, HERE / "data" / "raw_candidates")
+    feats = m3.FEATURES if args.star_features else m3.DIP_FEATURES
+    df = m3.load(args.name, args.nt).reset_index(drop=True)
+    cand = m3.with_features(pd.read_csv(SIGNALS), pd.read_csv(STARS))
+    own = m3.own_data(cand.tic.values, RAW)
     print(f"candidates: dropped {(~own).sum()} signals of {cand.tic[~own].nunique()} stars with no light curve of their own")
     cand = cand[own].reset_index(drop=True)
-    keys = ["global"] + m8.LOCAL
+    keys = ["global"] + m6.LOCAL
     tv, _ = views_for(df, OUT_DIR / ("views.npz" if args.name == "dataset" else f"{args.name}_views.npz"), keys)
     cv, cok = views_for(cand, VIEWS, keys)
     print(f"training: {len(df)} rows from {df.tic.nunique()} stars ({df.y.sum()} planet); "
           f"candidates: {len(cand)} signals from {cand.tic.nunique()} stars ({cok.sum()} ok views); "
-          f"features: {len(feats)} ({'06 FEATURES = dip + star' if args.star_features else '06 DIP_FEATURES'}); "
-          f"device {m8.DEV}", flush=True)
+          f"features: {len(feats)} ({'03 FEATURES = dip + star' if args.star_features else '03 DIP_FEATURES'}); "
+          f"device {m6.DEV}", flush=True)
 
-    trees = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.05, random_state=m6.SEED)  # 06's settings
+    trees = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.05, random_state=m3.SEED)  # 03's settings
     tree = trees.fit(df[feats], df.y).predict_proba(cand[feats])[:, 1]
     print(f"trees: {time.time() - start:.0f} s", flush=True)
 
     both = pd.concat([df, cand], ignore_index=True)
     n = len(df)
-    dev = m8.DEV
+    dev = m6.DEV
     g = torch.as_tensor(np.concatenate([tv["global"], cv["global"]])[:, None], device=dev)
-    l = torch.as_tensor(np.stack([np.concatenate([tv[k], cv[k]]) for k in m8.LOCAL], 1), device=dev)
-    x = torch.as_tensor(m8.features(both, np.arange(n), feats), device=dev)  # standardized on training rows only
+    l = torch.as_tensor(np.stack([np.concatenate([tv[k], cv[k]]) for k in m6.LOCAL], 1), device=dev)
+    x = m6.features(both, np.arange(n), feats)  # standardized on training rows only
+    e = []
+    if not args.no_pixel:  # as in 06's (b): one image branch, ~ok as a missing flag
+        (tp, tpok), (cp, cpok) = m6.pixel_views_of(df, OUT_DIR / f"{args.name}_pixel_views.npz"), m6.pixel_views_of(cand, PIXELS)
+        print(f"pixel images ok: training {tpok.mean():.0%}, candidates {cpok.mean():.0%}", flush=True)
+        e = [torch.as_tensor(np.concatenate([tp, cp]), device=dev)]
+        x = np.hstack([x, ~np.concatenate([tpok, cpok])[:, None]]).astype(np.float32)
+    x = torch.as_tensor(x, device=dev)
     y = torch.as_tensor(df.y.values.astype(np.float32), device=dev)
     test = torch.as_tensor(np.arange(n, len(both)), device=dev)
     preds = []
-    for seed in range(m8.SEEDS):
+    for seed in range(m6.SEEDS):
         fit, val = next(GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=seed).split(np.arange(n), groups=df.tic))
-        net = m8.train_one(g, l, x, y, fit, val, seed)
+        net = m6.train_one(g, l, x, y, fit, val, seed, extra=e)
         with torch.no_grad():
-            preds.append(torch.sigmoid(net(g[test], l[test], x[test])).cpu().numpy())
-        print(f"  shape seed {seed + 1}/{m8.SEEDS}: {time.time() - start:.0f} s", flush=True)
+            preds.append(torch.sigmoid(net(g[test], l[test], x[test], *(a[test] for a in e))).cpu().numpy())
+        print(f"  shape seed {seed + 1}/{m6.SEEDS}: {time.time() - start:.0f} s", flush=True)
     shape = np.mean(preds, 0)
 
     pc = cand.label.isin(PENDING)
@@ -190,7 +201,7 @@ def score(args):
         "tic": cand.tic, "toi": cand.tic.map(star_tois), "signal": cand.signal, "period": cand.period,
         "depth_ppm": cand.depth_ppm, "duration_h": cand.duration_h, "shape_score": shape,
         "shape_score_spread": np.std(preds, 0), "tree_score": tree,
-        "average_score": (shape + tree) / 2,  # 08's variant (c), the best in StarDetails' CV with star features
+        "average_score": (shape + tree) / 2,  # 06's variant (c), the best in StarDetails' CV with star features
         "matched_toi": np.where(pc, cand.label_toi.astype(str), "unmatched"),
         "matched_other": np.where(~pc & cand.label.ne("none"), cand.label + " " + cand.label_toi.astype(str), ""),
         "sectors": cand.sectors, "views_ok": cok,
@@ -277,9 +288,10 @@ def main():
     parser.add_argument("--limit", type=int, default=None, help="build: only the first N candidate stars (smoke test)")
     parser.add_argument("--workers", type=int, default=96)
     parser.add_argument("--download-workers", type=int, default=48)
-    parser.add_argument("--star-features", action="store_true", help="score: also use 06's STAR_FEATURES")
-    parser.add_argument("--name", default="dataset", help="score: step-5 training set to learn from")
+    parser.add_argument("--star-features", action="store_true", help="score: also use 03's STAR_FEATURES")
+    parser.add_argument("--name", default="dataset", help="score: step-2 training set to learn from")
     parser.add_argument("--nt", action="store_true", help="score: count its random no-TOI signals as fakes")
+    parser.add_argument("--no-pixel", action="store_true", help="score: leave the step-5 pixel images out")
     args = parser.parse_args()
     {"build": build, "score": score, "compare": compare}[args.stage](args)
 

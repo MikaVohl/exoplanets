@@ -1,4 +1,4 @@
-"""Step 4: run the masked two-pass TLS search on the repo's
+"""Step 1: run the masked two-pass TLS search on the repo's
 100-star benchmark sample and compare recovery with the repo's existing BLS+TLS benchmark.
 
 Same stars, same raw files, same catalog check as reports/benchmark. Only the pipeline differs:
@@ -9,9 +9,9 @@ Same stars, same raw files, same catalog check as reports/benchmark. Only the pi
 Catalog periods are used only AFTER each search finishes, to score it.
 
 Usage (from tls_masked_search/; needs `python ../scripts/run_benchmark.py download` first):
-    python 04_benchmark_100_stars.py --limit 3     # smoke test
-    python 04_benchmark_100_stars.py               # all 100 stars (about an hour)
-    python 04_benchmark_100_stars.py --tics 26826078 4070275 --events run.jsonl --out output/live
+    python 01_benchmark.py --limit 3     # smoke test
+    python 01_benchmark.py               # all 100 stars (about an hour)
+    python 01_benchmark.py --tics 26826078 4070275 --events run.jsonl --out output/live
                                                    # two stars, recording events for the visualizer,
                                                    # CSVs kept out of output/ (not the full results)
 """

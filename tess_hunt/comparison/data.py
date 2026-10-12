@@ -26,8 +26,8 @@ LEGACY_FEATURES = ("period", "duration_h", "depth_ppm", "sde_per_transit", "dept
 
 
 def representation_hash():
-    files = [Path(__file__), ROOT / "tls_masked_search/07_build_views.py",
-             ROOT / "tls_masked_search/common.py", ROOT / "tls_masked_search/05_build_dataset.py"]
+    files = [Path(__file__), ROOT / "tls_masked_search/04_build_snapshots.py",
+             ROOT / "tls_masked_search/common.py", ROOT / "tls_masked_search/02_build_dataset.py"]
     return hashlib.sha256(b"".join(p.read_bytes() for p in files)).hexdigest()
 
 
@@ -35,7 +35,7 @@ def legacy_module():
     directory = str(ROOT / "tls_masked_search")
     if directory not in sys.path:
         sys.path.insert(0, directory)
-    return importlib.import_module("07_build_views")
+    return importlib.import_module("04_build_snapshots")
 
 
 def detrend(raw, signal, config, *, mask_transits=True, window_factor=1.0):
@@ -219,7 +219,7 @@ def prepare_job(job):
 
 
 def prepare(source, output, workers=6):
-    provenance = source_check(source)
+    source_check(source)
     original = pd.read_csv(source/"candidates.csv")
     if original.groupby("tic").split.nunique().max() != 1:
         raise ValueError("A star crosses partitions")

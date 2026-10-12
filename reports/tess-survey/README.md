@@ -35,7 +35,7 @@ are labeled V, not TESS magnitudes.
 ## Mission Control
 
 Mission Control shows the TLS masked-search benchmark
-(`tls_masked_search/04_benchmark_100_stars.py`) working star by star. Click
+(`tls_masked_search/01_benchmark.py`) working star by star. Click
 **Run pipeline** (top of the page) to start a run, or open the panel with the
 pulse button in the toolbar or `M`. Every target is a ring on the sky
 globe, colored by outcome once known: green recovered, cyan harmonic, red

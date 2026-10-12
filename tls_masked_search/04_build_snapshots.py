@@ -1,6 +1,6 @@
-"""Step 7: fixed-size folded views of every step-5 signal, for the shape model (step 8).
+"""Step 4: fixed-size folded views ("snapshots") of every step-2 signal, for the shape model (step 6).
 
-For each signal, the star's capped sectors (the same files step 5 searched) are cleaned with the dips
+For each signal, the star's capped sectors (the same files step 2 searched) are cleaned with the dips
 masked while flattening, folded at the signal's period and dip time, and binned (median per bin):
   global     whole orbit, GLOBAL_BINS bins
   local      +/-2 dip lengths around the dip, LOCAL_BINS bins
@@ -9,12 +9,12 @@ masked while flattening, folded at the signal's period and dip time, and binned 
   centroid   the local window of the star's position offset (mom_centr1/2, distance from the
              out-of-dip median), as a per-bin significance
 Flux views are shifted and scaled so the out-of-dip median is 0 and the local dip minimum is -1 (the
-depth itself is already a step-6 feature). Empty bins are interpolated; `ok` is False when a view has
+depth itself is already a step-3 feature). Empty bins are interpolated; `ok` is False when a view has
 too few filled bins or no dip.
 
-Usage (from tls_masked_search/):  python 07_build_views.py [--name dataset] [--max-chunks 2]   (~ minutes on 96 cores)
+Usage (from tls_masked_search/):  python 04_build_snapshots.py [--name dataset] [--max-chunks 2]   (~ minutes on 96 cores)
 Reads output/{name}_signals.csv; writes output/views.npz for "dataset", else output/{name}_views.npz.
---max-chunks must match the step-5 run, so the same sector files are used.
+--max-chunks must match the step-2 run, so the same sector files are used.
 """
 import argparse
 import importlib
@@ -28,8 +28,8 @@ import pandas as pd
 
 from common import OUT_DIR, clean_and_stitch
 
-m5 = importlib.import_module("05_build_dataset")
-capped, RAW = m5.capped, m5.RAW
+m2 = importlib.import_module("02_build_dataset")
+capped, RAW = m2.capped, m2.RAW
 GLOBAL_BINS, LOCAL_BINS = 201, 61
 HALF_WINDOW = 2.0      # local window half-width, in dip lengths
 MIN_FILLED = 1 / 3     # a view needs at least this share of bins with data
@@ -141,9 +141,9 @@ def star_views(job):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--name", default="dataset")
-    parser.add_argument("--max-chunks", type=int, default=m5.MAX_CHUNKS)
+    parser.add_argument("--max-chunks", type=int, default=m2.MAX_CHUNKS)
     args = parser.parse_args()
-    m5.MAX_CHUNKS = args.max_chunks  # read by capped() in the (forked) workers
+    m2.MAX_CHUNKS = args.max_chunks  # read by capped() in the (forked) workers
     start = time.time()
     s = pd.read_csv(OUT_DIR / f"{args.name}_signals.csv")
     jobs = [(int(tic), g[["signal", "period", "t0", "duration_h"]].to_dict("records")) for tic, g in s.groupby("tic")]

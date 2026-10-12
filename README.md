@@ -9,6 +9,21 @@ and CPU versus Apple Metal benchmarks.
 The [controlled experiment guide](docs/controlled_experiment.md) compares current, richer-input,
 and Abdullah's model on identical clean labels, then scales the selected neural family.
 
+## What's where
+
+| Path | Contents |
+| --- | --- |
+| `AGENTS.md` | Owners, how to run each pipeline, labels and evaluation rules (start here) |
+| `tess_hunt/`, `scripts/`, `config/` | Mika's pipeline: benchmark, learning, scaling and comparison experiments |
+| `tls_masked_search/` | Abdullah's pipeline: masked TLS search, labeled dataset, trees, shape model, candidate ranking ([README](tls_masked_search/README.md)) |
+| `notebooks/` | 01 starter EDA, 02 TOI-880 walkthrough, 03 masked-search walkthrough, 04 shape-model walkthrough |
+| `docs/` | Guides for Mika's learning, scaling and controlled experiments |
+| `data/benchmark/`, `data/catalogs/`, `data/dataset/` | Committed target lists and catalog snapshots |
+| `data/starter/` | Pi Mensae download manifest and archive search snapshot |
+| `data/raw/` | All downloads (git-ignored; re-downloaded automatically) |
+| `reports/` | `eda/` (starter EDA), `benchmark/`, `walkthrough/`, `learning-starter/`, `tess-controlled/`, `tess-survey/` |
+| `tests/` | `python -m unittest discover -s tests` |
+
 Real TESS observations for an initial exploratory data analysis. The starter target is **Pi Mensae (TIC 261136679)**, a known planet host used in NASA's hands-on tutorial. The downloader requests **SPOC, 120-second cadence, sectors 1, 4, and 8** from the public MAST archive. No account or API key is required.
 
 These are extracted light curves, not detector images. Original FITS files include aperture flux (`SAP_FLUX`), pipeline-corrected flux (`PDCSAP_FLUX`), uncertainties, background, centroids, and quality flags. All original rows are retained in those files.
@@ -83,14 +98,14 @@ The notebook runs offline once the data have been downloaded. Use **Run → Run 
 | Location | Contents |
 | --- | --- |
 | `data/raw/*.fits` | Untouched light curves downloaded from MAST |
-| `data/manifest_tic261136679.json` | Source URIs, target/sector metadata, sizes, and SHA-256 hashes |
-| `data/search_tic261136679.ecsv` | Archive search result with product metadata |
+| `data/starter/manifest_tic261136679.json` | Source URIs, target/sector metadata, sizes, and SHA-256 hashes |
+| `data/starter/search_tic261136679.ecsv` | Archive search result with product metadata |
 | `data/processed/pi_mensae_all_cadences.csv` | Selected FITS columns, every original row, normalization, and filter indicators |
 | `data/processed/pi_mensae_clean.csv` | Minimally filtered, per-sector normalized data |
 | `notebooks/01_tess_eda.ipynb` | Editable, executed EDA notebook |
-| `reports/eda_notes.md` | Measured dataset summary |
-| `reports/eda_summary.csv` | Per-sector sample counts, gaps, and scatter statistics |
-| `reports/*.png` | EDA figures |
+| `reports/eda/eda_notes.md` | Measured dataset summary |
+| `reports/eda/eda_summary.csv` | Per-sector sample counts, gaps, and scatter statistics |
+| `reports/eda/*.png` | EDA figures |
 
 CSV column names are lowercase. Flux units are electrons/second; columns ending in `_norm` are dimensionless. `time` is BTJD (BJD − 2,457,000), in TDB days. `quality` is an integer bitmask. `keep` records whether a row passes the initial filter. FITS files remain the authoritative original observations.
 

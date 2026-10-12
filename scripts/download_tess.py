@@ -69,7 +69,7 @@ def main():
     args = parser.parse_args()
     raw = ROOT / "data" / "raw"
     raw.mkdir(parents=True, exist_ok=True)
-    search_path = ROOT / "data" / f"search_tic{args.tic}.ecsv"
+    search_path = ROOT / "data" / "starter" / f"search_tic{args.tic}.ecsv"
     if args.use_saved_search:
         table = Table.read(search_path, format="ascii.ecsv")
         table = table[np.isin(table["sequence_number"], args.sectors)]
@@ -125,7 +125,7 @@ def main():
         "requested_sectors": args.sectors, "missing_sectors": sorted(missing),
         "files": entries,
     }
-    manifest_path = ROOT / "data" / f"manifest_tic{args.tic}.json"
+    manifest_path = ROOT / "data" / "starter" / f"manifest_tic{args.tic}.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     print(f"Saved {manifest_path}", flush=True)
     if missing:

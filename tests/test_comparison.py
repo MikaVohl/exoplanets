@@ -65,7 +65,7 @@ class ComparisonControlsTests(unittest.TestCase):
 
     def test_legacy_architecture_matches_original_weights_and_predictions(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[1]/"tls_masked_search"))
-        original = importlib.import_module("08_train_shape_model")
+        original = importlib.import_module("06_train_shape_model")
         torch.set_num_threads(1)
         for features in (False, True):
             before = original.ShapeNet(24 if features else 0).eval()

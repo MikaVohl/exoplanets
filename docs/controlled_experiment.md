@@ -37,7 +37,7 @@ The candidate JSON needs `period`, `t0` (BTJD), `duration_days`, and `search_sde
 
 ## Controlled comparison
 
-Abdullah's pipeline refers to [`08_train_shape_model.py`](../tls_masked_search/08_train_shape_model.py) and its associated data/view stages. The neural model is called Abdullah's model.
+Abdullah's pipeline refers to [`06_train_shape_model.py`](../tls_masked_search/06_train_shape_model.py) (without its pixel images) and its associated data/view stages. The neural model is called Abdullah's model.
 
 The cohort contains 423 training signals (264 CP, 159 FP/FA) and 85 validation signals (50 CP, 35 FP/FA), split by star. Unknown, PC, APC and KP signals are excluded from this CP-only supervised experiment. No additional signal inherits a negative label from its host.
 
@@ -51,13 +51,13 @@ Each variant is run for seeds 0, 1 and 2 on exactly the same complete training s
 | Masked CNN, width 32 | Same model, candidate-masked flattening only |
 | Rich CNN, width 32 | More observational channels, with the original cleaning |
 | Rich masked CNN, width 32 | Additional observational channels plus candidate-masked cleaning |
-| Abdullah's model, views only | Original step-7 representation and step-8 architecture |
+| Abdullah's model, views only | Original step-4 representation and step-6 architecture |
 | Abdullah's model, views + measurements | The same architecture plus measurements and missing flags |
 | Abdullah's model + augmentation | Original time-reversal/noise augmentation, separately controlled |
 
 Richer observations add odd/even transits, the phase-0.5 window, signed X/Y moment-centroid residuals, and longer-window SAP/PDCSAP flux. Formal uncertainties are raised to empirical noise where necessary, and missing bins carry occupancy masks. Odd/even/secondary fluxes share a normalization scale. All new input transformations use only observational data and the blind-search ephemeris. They receive no TOI ID, label, catalog period/epoch, TIC, sector number or host metadata.
 
-The views from Abdullah's pipeline are constructed with the actual `07_build_views.py` function on the same individual sector. Its flux normalization, interpolation and centroid-distance view are preserved. Width 16 is exactly the architecture of Abdullah's model in [`08_train_shape_model.py`](../tls_masked_search/08_train_shape_model.py); a test loads the original weights and checks identical CPU predictions. Measurements from Abdullah's pipeline adapt sector/chunk rates to the fixed one-sector context. The original feature-vector strength is therefore compared directly, while the old mixture of labels, multi-sector coverage, folds and ensemble is removed.
+The views from Abdullah's pipeline are constructed with the actual `04_build_snapshots.py` function on the same individual sector. Its flux normalization, interpolation and centroid-distance view are preserved. Width 16 is exactly the architecture of Abdullah's model in [`06_train_shape_model.py`](../tls_masked_search/06_train_shape_model.py) without pixel images; a test loads the original weights and checks identical CPU predictions. Measurements from Abdullah's pipeline adapt sector/chunk rates to the fixed one-sector context. The original feature-vector strength is therefore compared directly, while the old mixture of labels, multi-sector coverage, folds and ensemble is removed.
 
 All neural variants use weighted BCE, AdamW at learning rate 0.001 and weight decay 0.01, gradient clipping at 5, batch size 32, validation AP checkpoint selection, a 100-epoch ceiling and patience 20 after at least 25 epochs. Features/scalars are normalized using fit rows only. This uniform recipe differs from the original training recipe for Abdullah's model; architecture/representation comparisons do not establish best achievable performance for each model. Parameter counts differ and are reported rather than treated as equal compute.
 

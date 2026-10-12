@@ -50,7 +50,7 @@ def conv_branch(channels, blocks):
 
 
 class LegacyShapeNet(nn.Module):
-    """At width 16, exactly the architecture of 08_train_shape_model.ShapeNet."""
+    """At width 16, exactly the architecture of 06_train_shape_model.ShapeNet without pixel images."""
     def __init__(self, width=16, features=True):
         super().__init__()
         self.glob = conv_branch(1, [width, 2*width, 4*width])

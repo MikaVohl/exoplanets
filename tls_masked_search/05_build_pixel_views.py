@@ -1,6 +1,6 @@
-"""Step 11: difference images (which star dimmed during the dips), for the shape model (step 8, --extra-views pixel).
+"""Step 5: difference images (which star dimmed during the dips), an input of the shape model (step 6).
 
-For each labeled signal (06's load()), from the star's SPOC 2-min target pixel files (TPFs):
+For each labeled signal (03's load(), NT rows included), from the star's SPOC 2-min target pixel files (TPFs):
   in-dip cadences   within half a dip length of a dip centre
   out-of-dip        1-2 dip lengths from the centre, either side (local baseline)
   quality-flagged cadences dropped. Per dip: difference = mean out - mean in (positive where light was
@@ -15,13 +15,21 @@ Channels (SIZE x SIZE, NaN -> 0):
 offset_px: distance from the target to the brightest difference pixel (largest light loss); > OFF_TARGET px
 counts as off-target. Nearby-star (TIC) marker map skipped.
 
-Sectors: the TPFs of the MAX_SECTORS sectors (of the star's step-5 light-curve files) with the most good
+Sectors: the TPFs of the MAX_SECTORS sectors (of the star's step-2 light-curve files) with the most good
 in-dip cadences over the star's labeled signals; TPF names are the light curves' with _tp instead of _lc,
-downloaded straight from MAST into data/dataset_tpf/ (git-ignored).
+streamed from MAST through data/raw/tpf_dataset/ (git-ignored) and deleted once a star is built
+(~80 MB per star; keeping them would be hundreds of GB).
 
-Usage (from tls_masked_search/):  python 11_build_pixel_views.py [--name dataset] [--max-sectors 2] [--limit N]
+Usage (from tls_masked_search/):  python 05_build_pixel_views.py [--name dataset] [--max-sectors 2] [--limit N]
 Writes output/{name}_pixel_views.npz (tic, signal, ok, x (N, 4, SIZE, SIZE), offset_px, reason, meta).
 --limit N: only N random stars (download-size pilot).
+--max-chunks K: as given to step 2 for this dataset (dataset_v2: 4).
+--reuse NAME: copy rows of output/NAME_pixel_views.npz for stars whose signals are identical in NAME and that
+pick the same sectors there; only the other stars are downloaded.
+  e.g. python 05_build_pixel_views.py --name dataset_v2 --max-chunks 4 --reuse dataset   # ~15 min
+--name candidates: step 7's undecided-TOI signals (output/candidates_signals.csv) of stars with light curves of
+their own (data/raw/candidates/) -> output/candidate_pixel_views.npz; TPFs pass through
+data/raw/tpf_candidates/ (~13 min, ~380 GB streamed).
 """
 import argparse
 import importlib
@@ -38,11 +46,11 @@ import requests
 from astropy.coordinates import SkyCoord
 from astropy.io import fits
 
-from common import HERE, OUT_DIR
+from common import OUT_DIR, ROOT
 
-m5 = importlib.import_module("05_build_dataset")
-m6 = importlib.import_module("06_train_classifier")
-TPF_DIR = HERE / "data" / "dataset_tpf"
+m2 = importlib.import_module("02_build_dataset")
+m3 = importlib.import_module("03_train_trees")
+TPF_DIR = ROOT / "data" / "raw" / "tpf_dataset"
 MAST = "https://mast.stsci.edu/api/v0.1/Download/file"
 SIZE = 11
 MIN_IN = 10            # good in-dip cadences needed (20 min of 2-min data)
@@ -50,6 +58,7 @@ MAX_SECTORS = 2
 MARKER_SIGMA = 1.0
 OFF_TARGET = 1.0       # px
 WORKERS = 48
+REUSE_CHUNKS = None    # --reuse: the MAX_CHUNKS the reused views were built with
 CHANNELS = ["diff_over_peak", "diff_snr_log1p", "out_over_max", "target_marker"]
 
 
@@ -62,9 +71,9 @@ def windows(t, period, t0, dur):
 
 
 def pick_sectors(tic, rows, k):
-    """The k step-5 light-curve files of this star with the most good in-dip cadences (all if k is None),
+    """The k step-2 light-curve files of this star with the most good in-dip cadences (all if k is None),
     as TPF names. Stars whose light curves are not on disk: the k most recent SPOC 2-min TPFs MAST lists."""
-    paths = m5.capped(sorted(str(p) for p in m5.RAW.glob(f"*{tic:016d}*_lc.fits")))
+    paths = m2.capped(sorted(str(p) for p in m2.RAW.glob(f"*{tic:016d}*_lc.fits")))
     if not paths:
         found = lk.search_targetpixelfile(f"TIC {tic}", author="SPOC", exptime=120)
         names = sorted({u.split("/")[-1] for u in (found.table["dataURI"] if len(found) else []) if f"{tic:016d}" in u})
@@ -182,13 +191,22 @@ def build(tic, signal_rows, paths):
 
 
 def star_job(job):
-    """Pick sectors, download, build. Returns (results, stats)."""
+    """Pick sectors, download, build; or copy `cached` (signal -> result, --reuse) if the reused run picked the
+    same sectors. Returns (results, stats)."""
     warnings.filterwarnings("ignore")
-    tic, rows, k = job
-    stats = {"tic": tic, "mb": 0.0, "seconds": 0.0, "sectors": 0, "files": []}
+    tic, rows, k, cached = job
+    stats = {"tic": tic, "mb": 0.0, "seconds": 0.0, "sectors": 0, "files": [], "reused": False}
+    paths = []
     try:
         names = pick_sectors(tic, rows, k)
-        start, paths = time.time(), []
+        if cached:
+            m2.MAX_CHUNKS, chunks = REUSE_CHUNKS, m2.MAX_CHUNKS
+            same = pick_sectors(tic, rows, k) == names
+            m2.MAX_CHUNKS = chunks
+            if same:
+                stats["reused"] = True
+                return [(tic, s, *v) for s, v in cached.items()], stats
+        start = time.time()
         with requests.Session() as session:
             for name in names:
                 p, mb = fetch(name, session)
@@ -199,23 +217,58 @@ def star_job(job):
         res = build(tic, rows, paths)
     except Exception as e:  # download or unreadable file: every signal of this star fails
         res = {r["signal"]: (None, np.nan, f"error: {type(e).__name__}: {e}"[:200]) for r in rows}
+    finally:
+        for p in paths:  # streamed, not kept: ~80 MB per star
+            p.unlink(missing_ok=True)
     return [(tic, s, *v) for s, v in res.items()], stats
+
+
+def reusable(s, name, max_sectors):
+    """tic -> {signal: (x or None, offset_px, reason)} from output/<name>_pixel_views.npz, for stars whose
+    signal rows (signal, period, t0, duration_h) are identical in `name`'s labeled set; and its MAX_CHUNKS."""
+    npz = np.load(OUT_DIR / f"{name}_pixel_views.npz")
+    meta = json.loads(str(npz["meta"]))
+    assert meta["max_sectors"] == max_sectors, f"{name} pixel views were built with --max-sectors {meta['max_sectors']}"
+    cols = ["tic", "signal", "period", "t0", "duration_h"]
+    old = m3.load(name, nt=True)[cols].sort_values(cols).reset_index(drop=True)
+    new = s[cols].sort_values(cols).reset_index(drop=True)
+    same = [t for t, g in new.groupby("tic") if g.reset_index(drop=True).equals(
+        old[old.tic == t].reset_index(drop=True))]
+    res = {}
+    for i in np.flatnonzero(np.isin(npz["tic"], same)):
+        res.setdefault(int(npz["tic"][i]), {})[int(npz["signal"][i])] = (
+            npz["x"][i] if npz["ok"][i] else None, float(npz["offset_px"][i]), str(npz["reason"][i]))
+    return res, meta.get("max_chunks", 2)  # 2: step 2's default, before max_chunks was recorded
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--name", default="dataset")
-    parser.add_argument("--max-sectors", type=int, default=MAX_SECTORS, help="0 = every step-5 sector")
+    parser.add_argument("--max-sectors", type=int, default=MAX_SECTORS, help="0 = every step-2 sector")
+    parser.add_argument("--max-chunks", type=int, default=m2.MAX_CHUNKS, help="as given to step 2")
+    parser.add_argument("--reuse", help="dataset name whose pixel views are copied where identical")
     parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args()
     start = time.time()
+    global TPF_DIR, REUSE_CHUNKS
+    m2.MAX_CHUNKS = args.max_chunks  # read by capped() in the (forked) workers
+    if args.name == "candidates":  # 07's candidate set; like 07, drop stars with no light curve of their own
+        m2.RAW, TPF_DIR = ROOT / "data" / "raw" / "candidates", ROOT / "data" / "raw" / "tpf_candidates"
+        s = pd.read_csv(OUT_DIR / "candidates_signals.csv")
+        s = s[m3.own_data(s.tic.values, m2.RAW)]
+    else:
+        s = m3.load(args.name, nt=True)
+    cached = {}
+    if args.reuse:
+        cached, REUSE_CHUNKS = reusable(s, args.reuse, args.max_sectors)
+        print(f"--reuse {args.reuse}: {len(cached)} of {s.tic.nunique()} stars have identical signals", flush=True)
     TPF_DIR.mkdir(parents=True, exist_ok=True)
-    s = m6.load(args.name)
     tics = s.tic.unique()
     if args.limit:
-        tics = np.random.default_rng(m6.SEED).choice(tics, args.limit, replace=False)
+        tics = np.random.default_rng(m3.SEED).choice(tics, args.limit, replace=False)
     cols = ["signal", "period", "t0", "duration_h"]
-    jobs = [(int(t), s[s.tic == t][cols].to_dict("records"), args.max_sectors or None) for t in tics]
+    jobs = [(int(t), s[s.tic == t][cols].to_dict("records"), args.max_sectors or None, cached.get(int(t)))
+            for t in tics]
 
     results, stats = [], []
     with ProcessPoolExecutor(WORKERS) as pool:
@@ -228,9 +281,10 @@ def main():
 
     files = [f for st in stats for f in st["files"]]
     sizes = np.array([f[1] for f in files]) if files else np.zeros(1)
-    print(f"\nTPFs: {len(files)} files, {sizes.sum() / 1e3:.1f} GB on disk, per sector median {np.median(sizes):.0f} MB "
+    print(f"\nTPFs: {len(files)} files, {sizes.sum() / 1e3:.1f} GB downloaded, per sector median {np.median(sizes):.0f} MB "
           f"(p90 {np.percentile(sizes, 90):.0f}, max {sizes.max():.0f}); stars with no TPF: "
-          f"{sum(st['sectors'] == 0 for st in stats)}; wall {time.time() - start:.0f} s; "
+          f"{sum(st['sectors'] == 0 and not st['reused'] for st in stats)}; reused stars: {sum(st['reused'] for st in stats)}; "
+          f"wall {time.time() - start:.0f} s; "
           f"download seconds per star median {np.median([st['seconds'] for st in stats]):.0f}")
 
     ok = np.array([r[2] is not None for r in results])
@@ -240,12 +294,14 @@ def main():
     offset = np.array([r[3] for r in results], np.float32)
     reason = np.array([r[4] for r in results])
     meta = {"channels": CHANNELS, "size": SIZE, "min_in_dip_cadences": MIN_IN, "max_sectors": args.max_sectors,
+            "max_chunks": m2.MAX_CHUNKS,
             "marker_sigma_px": MARKER_SIGMA, "off_target_px": OFF_TARGET,
             "built": "SPOC 2-min TPFs, quality==0; in-dip |dt|<dur/2, out 1-2 dur from centre; per-dip "
                      "difference out-in weighted by in-dip cadences; sectors combined inverse-variance on a "
                      "target-centred crop (no rotation between sectors); offset_px = distance of the largest "
                      "positive difference pixel from the target's sub-pixel position"}
-    out = OUT_DIR / f"{args.name}_pixel_views{'_pilot' if args.limit else ''}.npz"
+    stem = "candidate" if args.name == "candidates" else args.name
+    out = OUT_DIR / f"{stem}_pixel_views{'_pilot' if args.limit else ''}.npz"
     np.savez_compressed(out, tic=tic, signal=signal, ok=ok, x=x, offset_px=offset, reason=reason, meta=json.dumps(meta))
     print(f"wrote {out} ({os.path.getsize(out) / 1e6:.1f} MB): x {x.shape}, {ok.sum()} ok, {(~ok).sum()} failed")
     print(pd.Series([r.split(" (")[0].split(":")[0] + (": " + r.split(": ")[1] if r.startswith("error") else "")
@@ -264,6 +320,10 @@ def main():
     border = np.isin(raw_peak // SIZE, [0, SIZE - 1]) | np.isin(raw_peak % SIZE, [0, SIZE - 1])
     outer = x[ok][:, 1][:, np.hypot(yy - SIZE // 2, xx - SIZE // 2) > 3]
     print(f"noise check: median log1p-SNR of pixels > 3 px from the centre {np.median(outer[outer != 0]):.3f} (0 = unbiased)")
+    if args.name == "candidates":  # unlabeled: just how many dim off the target
+        print(f"candidates: {ok.sum()} ok rows, offset_px median {np.nanmedian(offset[ok]):.2f} px, "
+              f"> {OFF_TARGET} px (off-target) in {(offset[ok] > OFF_TARGET).mean():.0%}, > 2 px in {(offset[ok] > 2).mean():.0%}")
+        return
     for name, cls in [("planets CP/KP", ["CP", "KP"]), ("fakes FP/FA", ["FP", "FA"])]:
         m = ok & np.isin(lab, cls)
         for what, off in [("raw diff peak (offset_px)", offset), ("SNR peak", snr_off)]:

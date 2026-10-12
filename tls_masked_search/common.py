@@ -115,7 +115,7 @@ def two_pass(lc, star, config):
 
 
 # --- Mission Control: a log of what the pipeline is doing, one JSON object per line, read by the
-# TESS visualizer (live via live.py, or replayed from a file). Off unless 04 is run with --events.
+# TESS visualizer (live via live.py, or replayed from a file). Off unless 01 is run with --events.
 _events = None    # the open log file while recording, else None (then emit() does nothing)
 CONTEXT = {}      # tic and signal (1 or 2) of the search in progress, added to the events two_pass emits
 

@@ -12,7 +12,7 @@ import pandas as pd
 import torch
 from sklearn.metrics import average_precision_score
 
-from tess_hunt.learning.dataset import save_json, sha256
+from tess_hunt.learning.dataset import save_json
 from tess_hunt.learning.model import metrics
 from .experiment import load_prepared, training_hash, predict, resident
 from .models import make_model, model_inputs
@@ -157,7 +157,6 @@ def audit(prepared, output, report_dir):
 
 def report(prepared, output, report_dir):
     report_dir.mkdir(parents=True, exist_ok=True)
-    provenance = json.loads((prepared/"provenance.json").read_text())
     comparison = pd.read_csv(output/"comparison/results.csv")
     c = summary(comparison, ["variant", "family", "width"]).sort_values("ap_mean", ascending=False)
     c.insert(0, "model_name", c.variant.map(NAMES))
@@ -194,7 +193,7 @@ def report(prepared, output, report_dir):
              "All models train on the same 423 CP/FP/FA signals and validate on the same 85 signals "
              "(50 confirmed planets, 35 FP/FA), with stars kept in separate partitions. "
              "The source is the previous scaling dataset. Test signals are excluded even from view preparation.", "",
-             "Abdullah's pipeline refers to [08_train_shape_model.py](../../tls_masked_search/08_train_shape_model.py) and its associated data/view stages. Its neural variants are referred to as Abdullah's model.", "",
+             "Abdullah's pipeline refers to [06_train_shape_model.py](../../tls_masked_search/06_train_shape_model.py) (without its pixel images) and its associated data/view stages. Its neural variants are referred to as Abdullah's model.", "",
              "![Controlled comparison](controlled_comparison.png)", "",
              "| Model | Parameters | Validation AP ± seed SD | ROC-AUC | Recall at ≤3/35 FP | Mean fit seconds |",
              "| --- | ---: | ---: | ---: | ---: | ---: |"]
@@ -205,7 +204,7 @@ def report(prepared, output, report_dir):
               "Current CNN: the original full-orbit, transit-close-up and individual-event views, with flux, uncertainty and occupancy channels and four basic scalar measurements.", "",
               "Masked cleaning: exactly the current quality/gap/window recipe, but fits the flattening trend while masking the blind candidate's transit windows. It receives no catalog ephemeris.", "",
               "Richer inputs: adds separate odd/even and phase-0.5 close-ups, signed X/Y centroid residuals, and SAP/PDCSAP full-orbit views with a three-times-longer flattening window. Each observational series has uncertainty and occupancy channels. Odd/even/secondary fluxes share the same normalization to retain their relative depths. Richer models use four basic scalars, without the diagnostic feature vector from Abdullah's pipeline.", "",
-              "Abdullah's model: uses the original step-7 code on this same single FITS sector, including its masked flattening, depth normalization and missing-bin interpolation. At width 16, its architecture and predictions for identical weights match Abdullah's model in step 8 exactly. The hybrid adds the original twelve measurement definitions and missing flags; one-sector/chunk rates are adapted accordingly. The views-only comparison isolates the feature vector within this architecture.", "",
+              "Abdullah's model: uses the original step-4 snapshot code on this same single FITS sector, including its masked flattening, depth normalization and missing-bin interpolation. At width 16, its architecture and predictions for identical weights match Abdullah's model in step 6 (without pixel images) exactly. The hybrid adds the original twelve measurement definitions and missing flags; one-sector/chunk rates are adapted accordingly. The views-only comparison isolates the feature vector within this architecture.", "",
               "All neural fits use the same weighted binary loss, AdamW, batch size 32, learning rate 0.001, weight decay 0.01, AP checkpoint criterion, 100-epoch ceiling and patience 20. The augmentation from Abdullah's pipeline is a separate variant. This replaces Abdullah's original five-seed ensemble and cross-validation recipe with the shared protocol. Models differ in parameter count and architecture; this is not an equal-FLOP comparison.", "",
               f"All {len(diagnostics)} prepared signals have usable centroid measurements. View-validity flags from Abdullah's pipeline are true for {int(diagnostics.legacy_ok.sum())}/{len(diagnostics)} signals; no variant drops rows based on those flags, keeping cohorts identical.", "",
               "The current tree baseline and the tree baseline from Abdullah's pipeline differ in feature set and original hyperparameters; both are trained on the same clean rows. No unmatched signals are treated as negatives.", "",

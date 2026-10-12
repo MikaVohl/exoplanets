@@ -1,4 +1,4 @@
-"""Step 5: build the labeled training set from TESS 2-min data.
+"""Step 2: build the labeled training set from TESS 2-min data.
 
 Labels: NASA Exoplanet Archive TOI table, expert (TFOPWG) dispositions.
   planet = CP (confirmed) or KP (known planet); false = FP (false positive) or FA (false alarm).
@@ -20,7 +20,7 @@ Reports data availability, download size/time, search time, and how often the la
 Writes output/{name}_stars.csv (one row per star) and output/{name}_signals.csv (one row per signal);
 name defaults to "dataset".
 
-Usage (from tls_masked_search/):  python 05_build_dataset.py [--per-class N] [--workers 96]
+Usage (from tls_masked_search/):  python 02_build_dataset.py [--per-class N] [--workers 96]
     [--name dataset] [--max-chunks 2] [--random-stars 0]
 Full set (~2,450 stars): ~25 min, mostly MAST downloads (latency-bound), ~15 GB in data/raw/dataset/.
 """

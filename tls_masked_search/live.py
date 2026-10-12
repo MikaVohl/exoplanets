@@ -1,7 +1,7 @@
-"""Mission Control, live: run the benchmark (step 4) and watch it in the TESS visualizer as it happens.
+"""Mission Control, live: run the benchmark (step 1) and watch it in the TESS visualizer as it happens.
 
 Serves the visualizer page (reports/tess-survey/index.html) at http://127.0.0.1:8765/ and opens the
-browser. Click "Run pipeline" there to start 04_benchmark_100_stars.py, or pass its arguments here to
+browser. Click "Run pipeline" there to start 01_benchmark.py, or pass its arguments here to
 start a run right away. The page follows the run's event log at /events (Server-Sent Events: every event
 so far, then each new one as it is written). Runs write the log and their CSVs to output/live/ (so the
 committed output/benchmark_100*.csv stay untouched); a new run replaces the one in progress. Keeps
@@ -12,7 +12,7 @@ GET /run (the run's state: idle, running, finished, failed or stopped, and its e
 POST /run with JSON {"tics": [...]} or {"limit": N} (stops the run in progress, starts a new one),
 POST /stop.
 
-Usage (from tls_masked_search/); any extra arguments go to 04_benchmark_100_stars.py:
+Usage (from tls_masked_search/); any extra arguments go to 01_benchmark.py:
     python live.py                     # serve and wait for the page's Run pipeline button
     python live.py --limit 5
     python live.py --tics 26826078 4070275
@@ -49,7 +49,7 @@ def start(bench_args):
         stop()
         EVENTS.write_bytes(b"")
         gen += 1
-        run = subprocess.Popen([sys.executable, "04_benchmark_100_stars.py", "--events", str(EVENTS),
+        run = subprocess.Popen([sys.executable, "01_benchmark.py", "--events", str(EVENTS),
                                 "--out", str(LIVE), *bench_args], cwd=HERE)
         run.stopped = False
 
@@ -71,7 +71,7 @@ def status():
 
 
 def run_args(body):
-    """04_benchmark_100_stars.py arguments for a POST /run body; ValueError if it isn't valid."""
+    """01_benchmark.py arguments for a POST /run body; ValueError if it isn't valid."""
     key, value = next(iter(body.items())) if isinstance(body, dict) and len(body) == 1 else (None, None)
     values = value if key == "tics" and isinstance(value, list) else [value]
     if key not in ("tics", "limit") or not values or any(type(v) is not int for v in values):

@@ -1,4 +1,4 @@
-"""Step 6: planet-vs-fake model on the step-5 dataset, compared with the repo's fixed rules.
+"""Step 3: planet-vs-fake model (gradient-boosted trees) on the step-2 dataset, compared with the repo's fixed rules.
 
 Examples (one row per signal our search found):
   planet = signal matches a CP/KP TOI; fake = matches an FP/FA TOI (with --nt also NT: signals on
@@ -15,7 +15,7 @@ Checks:
   - the fixed rules (tess_hunt: SDE >= 7, noise-aware SNR >= 7.1, >= 2 dips, no warning flags):
     how many planets does the model catch when it lets through the same share of fakes?
 
-Usage (from tls_masked_search/):  python 06_train_classifier.py [--name dataset]   (~1 min)
+Usage (from tls_masked_search/):  python 03_train_trees.py [--name dataset]   (~1 min)
   --name N reads output/N_stars.csv, N_signals.csv and writes N_classifier_scores.csv
   (default "dataset": dataset_*.csv -> classifier_scores.csv).
 """
@@ -39,11 +39,11 @@ STAR_FEATURES = ["st_rad", "st_teff", "st_logg", "companion_radius_earth", "dura
 FEATURES = DIP_FEATURES + STAR_FEATURES
 AMOUNT_FEATURES = ["sectors", "sectors_available", "span_days", "chunks"]
 SEED = 0
-RAW = ROOT / "data" / "raw" / "dataset"  # step 5's light curves (every dataset name)
+RAW = ROOT / "data" / "raw" / "dataset"  # step 2's light curves (every dataset name)
 
 
 def star_props(stars):
-    """STAR_PROPS per tic: from the stars file if step 5 wrote them (every star, same source), else the first
+    """STAR_PROPS per tic: from the stars file if step 2 wrote them (every star, same source), else the first
     non-null value per star in the TOI table (every star of the original dataset is a TOI host)."""
     if set(STAR_PROPS) <= set(stars.columns):
         return stars[["tic"] + STAR_PROPS]
@@ -80,7 +80,7 @@ def with_features(s, stars):
 
 
 def own_data(tics, raw=RAW):
-    """Whether each star has a light-curve file of its own TIC in `raw`. Older step-5 runs kept a
+    """Whether each star has a light-curve file of its own TIC in `raw`. Older step-2 runs kept a
     neighbour's file (lightkurve cone search) for stars with no 2-min data of their own."""
     have = {int(p.name.split("-")[2]) for p in raw.glob("*.fits")}  # tess<date>-s<sector>-<16-digit TIC>-...
     assert have, f"no light curves in {raw}"

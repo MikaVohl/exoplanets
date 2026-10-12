@@ -1,24 +1,23 @@
-"""Step 8: a small 1D CNN on the step-7 folded views ("shape model"), compared with the step-6 model.
+"""Step 6: a small CNN on the step-4 snapshots and step-5 pixel images ("shape model"), compared with step 3's trees.
 
-Rows, labels and the 5 star-grouped folds are exactly step 6's (its `load()` and fold seed).
-Model: one conv branch for the global view, one for the stacked local views (local, odd, even,
-secondary, centroid), optionally concatenated with step 6's dip measurements (standardized, NaN -> 0
-plus a missing flag), then a small MLP -> planet probability. Each training fold holds out 15% of
+Rows, labels and the 5 star-grouped folds are exactly step 3's (its `load()` and fold seed).
+Model: one 1D conv branch for the global view, one for the stacked local views (local, odd, even,
+secondary, centroid), one small 2D conv branch for the difference images (plus a missing flag),
+optionally concatenated with step 3's dip measurements (standardized, NaN -> 0 plus a missing flag),
+then a small MLP -> planet probability. Each training fold holds out 15% of
 its stars for early stopping (the test fold never influences training). Augmentation: time-reversed
-views and small noise. 5 seeds per fold, averaged; their standard deviation is saved as the
+views and small noise (not on the images). 5 seeds per fold, averaged; their standard deviation is saved as the
 "unsure" flag (shape_score_spread).
-Variants: (a) views only, (b) views + measurements, (c) average of (b) and the step-6 model.
+Variants: (a) snapshots only, (b) snapshots + pixel images + measurements (the production model),
+(c) average of (b) and step 3's trees.
 
-Usage (from tls_masked_search/, on a GPU):  python 08_train_shape_model.py [--name dataset]
-  --name N reads output/N_stars.csv, N_signals.csv, N_views.npz and writes N_shape_scores.csv
-  (default "dataset": dataset_*.csv, views.npz -> shape_scores.csv).
-  --extra-views pixel adds output/N_pixel_views.npz (step 11's difference images) to (b): one small 2D
-  conv branch plus a missing flag; runs (b) without and with it (same session, seeds, folds); output
-  prefix xv_.
+Usage (from tls_masked_search/, on a GPU):  python 06_train_shape_model.py [--name dataset]
+  --name N reads output/N_stars.csv, N_signals.csv, N_views.npz, N_pixel_views.npz and writes N_shape_scores.csv
+  (default "dataset": dataset_*.csv, views.npz, dataset_pixel_views.npz -> shape_scores.csv).
+  --no-pixel leaves the pixel images out of (b); output prefix nopixel_.
 """
 import argparse
 import importlib
-import json
 import time
 
 import numpy as np
@@ -28,7 +27,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold
 from torch import nn
 
-m6 = importlib.import_module("06_train_classifier")
+m3 = importlib.import_module("03_train_trees")
 LOCAL = ["local", "odd", "even", "secondary", "centroid"]
 SEEDS = 5
 MAX_EPOCHS, PATIENCE, BATCH = 200, 15, 128
@@ -51,7 +50,7 @@ def image_branch(channels):
 
 class ShapeNet(nn.Module):
     def __init__(self, n_feat, extra_shapes=()):
-        """`extra_shapes`: per-row shape (C, H, W) of each extra image view, one 2D branch each."""
+        """`extra_shapes`: per-row shape (C, H, W) of each extra image view (the pixel images), one 2D branch each."""
         super().__init__()
         self.glob = conv_branch(1, [16, 32, 64])
         self.loc = conv_branch(len(LOCAL), [16, 32])
@@ -64,8 +63,8 @@ class ShapeNet(nn.Module):
 
 
 def features(df, train, cols=None):
-    """Step-6 measurements (`cols`, default DIP_FEATURES) standardized on the training rows, NaN -> 0, plus missing flags."""
-    x = df[cols or m6.DIP_FEATURES].replace([np.inf, -np.inf], np.nan).values.astype(float)
+    """Step-3 measurements (`cols`, default DIP_FEATURES) standardized on the training rows, NaN -> 0, plus missing flags."""
+    x = df[cols or m3.DIP_FEATURES].replace([np.inf, -np.inf], np.nan).values.astype(float)
     miss = np.isnan(x)
     mu, sd = np.nanmean(x[train], 0), np.nanstd(x[train], 0) + 1e-9
     z = np.nan_to_num(np.clip((x - mu) / sd, -10, 10))
@@ -108,17 +107,17 @@ def train_one(g, l, x, y, train, val, seed, history=None, extra=()):
     return net
 
 
-def shape_cv(df, views, use_features, cols=None, xviews=()):
-    """Out-of-fold planet scores, step 6's folds, and the spread (std) of the SEEDS copies' scores.
+def shape_cv(df, views, use_features, cols=None, pixel=None):
+    """Out-of-fold planet scores, step 3's folds, and the spread (std) of the SEEDS copies' scores.
     `cols`: measurements to add (default DIP_FEATURES).
-    `xviews`: (array, ok) per extra view kind for df's rows; ~ok joins the features as a flag."""
+    `pixel`: (array, ok) of df's rows' pixel images, or None; ~ok joins the features as a flag."""
     g = torch.as_tensor(views["global"][:, None], device=DEV)
     l = torch.as_tensor(np.stack([views[k] for k in LOCAL], 1), device=DEV)
-    e = [torch.as_tensor(a, device=DEV) for a, _ in xviews]
-    flags = np.stack([~ok for _, ok in xviews], 1).astype(np.float32) if xviews else np.zeros((len(df), 0), np.float32)
+    e = [] if pixel is None else [torch.as_tensor(pixel[0], device=DEV)]
+    flags = np.zeros((len(df), 0), np.float32) if pixel is None else (~pixel[1])[:, None].astype(np.float32)
     y = torch.as_tensor(df.y.values.astype(np.float32), device=DEV)
     scores, spread, fold_of = np.zeros(len(df)), np.zeros(len(df)), np.zeros(len(df), int)
-    folds = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=m6.SEED)
+    folds = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=m3.SEED)
     for k, (train, test) in enumerate(folds.split(df, df.y, groups=df.tic)):
         x = features(df, train, cols) if use_features else np.zeros((len(df), 0), np.float32)
         x = torch.as_tensor(np.hstack([x, flags]), device=DEV)
@@ -136,9 +135,9 @@ def shape_cv(df, views, use_features, cols=None, xviews=()):
 
 
 def evaluate(df, s, folds):
-    """The step-6 numbers on the hard task, plus all-signals AUC."""
+    """The step-3 numbers on the hard task, plus all-signals AUC."""
     h = df.hard.values
-    mean, std = m6.fold_stats(df, s, folds, h)
+    mean, std = m3.fold_stats(df, s, folds, h)
     y, call = df.y.values[h], s[h] > 0.5
     r = {"ROC AUC (hard)": f"{mean.roc_auc:.2f} ± {std.roc_auc:.2f}",
          "planets caught at rules' fake rate": f"{mean.model_planets_caught:.0%} ± {std.model_planets_caught:.0%}",
@@ -151,7 +150,7 @@ def evaluate(df, s, folds):
         cut = np.quantile(grp.score[grp.y == 0], 1 - fake_rate)
         r[f"{months} months ({len(grp)} dips): rules / model"] = (
             f"{grp.rules_pass[grp.y == 1].mean():.0%} / {(grp.score[grp.y == 1] > cut).mean():.0%}")
-    am, asd = m6.fold_stats(df, s, folds)
+    am, asd = m3.fold_stats(df, s, folds)
     r["ROC AUC (all signals)"] = f"{am.roc_auc:.2f} ± {asd.roc_auc:.2f} (pooled {roc_auc_score(df.y, s):.2f})"
     return r
 
@@ -163,17 +162,17 @@ def rows_of(npz, df):
 
 
 def views_of(df, name):
-    """Step-7 views (clipped) of `df`'s rows from output/<name>_views.npz (views.npz for "dataset"), and ok flags."""
-    npz = np.load(m6.out_path(name, "views.npz"))
+    """Step-4 views (clipped) of `df`'s rows from output/<name>_views.npz (views.npz for "dataset"), and ok flags."""
+    npz = np.load(m3.out_path(name, "views.npz"))
     idx = rows_of(npz, df)
     return {k: np.clip(npz[k][idx], -10, 10) for k in ["global"] + LOCAL}, npz["ok"][idx]
 
 
-def extra_views_of(df, name, kind):
-    """Step 11 views of `df`'s rows from output/<name>_<kind>_views.npz: (x clipped, NaN -> 0; ok; npz, index)."""
-    npz = dict(np.load(m6.OUT_DIR / f"{name}_{kind}_views.npz"))
+def pixel_views_of(df, path):
+    """Step-5 pixel images of `df`'s rows from `path` (an output/*_pixel_views.npz): (x clipped, NaN -> 0; ok)."""
+    npz = np.load(path)
     idx = rows_of(npz, df)
-    return np.clip(np.nan_to_num(npz["x"][idx].astype(np.float32)), -10, 10), npz["ok"][idx], npz, idx
+    return np.clip(np.nan_to_num(npz["x"][idx].astype(np.float32)), -10, 10), npz["ok"][idx]
 
 
 def spread_table(df, s, spread):
@@ -193,78 +192,42 @@ def spread_table(df, s, spread):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--name", default="dataset", help="dataset name, as in step 6")
+    ap.add_argument("--name", default="dataset", help="dataset name, as in step 3")
     ap.add_argument("--star-features", action="store_true",
-                    help="add step 6's STAR_FEATURES (trees and (b)); output prefix star_")
-    ap.add_argument("--nt", action="store_true", help="NT signals as fakes, as in step 6; output prefix nt_")
-    ap.add_argument("--extra-views", help="comma list of extra view kinds (pixel) for (b); "
-                    "runs (b) without and with each; output prefix xv_")
+                    help="add step 3's STAR_FEATURES (trees and (b)); output prefix star_")
+    ap.add_argument("--nt", action="store_true", help="NT signals as fakes, as in step 3; output prefix nt_")
+    ap.add_argument("--no-pixel", action="store_true", help="leave the step-5 pixel images out of (b); output prefix nopixel_")
     args = ap.parse_args()
-    kinds = args.extra_views.split(",") if args.extra_views else []
-    cols = m6.FEATURES if args.star_features else m6.DIP_FEATURES
+    cols = m3.FEATURES if args.star_features else m3.DIP_FEATURES
     start = time.time()
-    df = m6.load(args.name, args.nt).reset_index(drop=True)
+    df = m3.load(args.name, args.nt).reset_index(drop=True)
     views, ok = views_of(df, args.name)
-    print(f"{len(df)} rows ({df.hard.sum()} hard), {ok.sum()} with ok views; device {DEV} "
+    pixel = None if args.no_pixel else pixel_views_of(df, m3.OUT_DIR / f"{args.name}_pixel_views.npz")
+    print(f"{len(df)} rows ({df.hard.sum()} hard), {ok.sum()} with ok views, "
+          f"{'no' if pixel is None else pixel[1].sum()} with ok pixel images; device {DEV} "
           f"({torch.cuda.get_device_name(0) if DEV == 'cuda' else 'cpu'})")
 
-    print("step-6 model (gradient-boosted trees)...", flush=True)
-    gbt, folds, _ = m6.cross_validate(df, cols)
+    print("step-3 model (gradient-boosted trees)...", flush=True)
+    gbt, folds, _ = m3.cross_validate(df, cols)
     print(f"  {time.time() - start:.0f} s")
-    out, spread = {"GBT (06)": gbt}, {}
-    runs = [("(b) views + features", True)] if kinds else [("(a) views", False), ("(b) views + features", True)]
-    for name, use in runs:
+    b = "(b) views + features" + ("" if pixel is None else " + pixels")
+    out, spread = {"GBT (03)": gbt}, {}
+    for name, use, pix in [("(a) views", False, None), (b, True, pixel)]:
         t = time.time()
         print(f"{name}...", flush=True)
-        out[name], f2, spread[name] = shape_cv(df, views, use, cols)
-        assert (f2 == folds).all(), "folds differ from step 6"
+        out[name], f2, spread[name] = shape_cv(df, views, use, cols, pix)
+        assert (f2 == folds).all(), "folds differ from step 3"
         print(f"  {time.time() - t:.0f} s")
-    xv = {k: extra_views_of(df, args.name, k) for k in kinds}
-    for k, (a, kok, _, _) in xv.items():
-        print(f"+ {k} views {a.shape[1:]}, ok for {kok.mean():.0%} of rows", flush=True)
-    for k in kinds:
-        name, t = f"(b) + {k}", time.time()
-        print(f"{name}...", flush=True)
-        out[name], _, spread[name] = shape_cv(df, views, True, cols, xviews=[xv[k][:2]])
-        print(f"  {time.time() - t:.0f} s", flush=True)
-    if not kinds:
-        out["(c) avg (b) + GBT"] = (out["(b) views + features"] + gbt) / 2
+    out["(c) avg (b) + GBT"] = (out[b] + gbt) / 2
 
     table = pd.DataFrame({name: evaluate(df, s, folds) for name, s in out.items()})
     with pd.option_context("display.width", 250, "display.max_colwidth", 40):
         print("\n" + table.to_string())
-    spread_table(df, out["(b) views + features"], spread["(b) views + features"])
-    prefix = ("nt_" if args.nt else "") + ("star_" if args.star_features else "")
-    if kinds:
-        h, a = df.hard.values, "(b) views + features"
-        fake = h & (df.y.values == 0)
-        all_ok = h & np.all([v[1] for v in xv.values()], 0)  # missing views can mark fakes (neighbour's light curve)
-        checks = {}
-        if "pixel" in xv:
-            npz, idx = xv["pixel"][2:]
-            off = npz["offset_px"][idx] > json.loads(str(npz["meta"]))["off_target_px"]
-            checks["pixel"] = {"centroid_snr > 3": fake & (df.centroid_snr > 3).values, "off-target pixel peak": fake & off,
-                               "either": fake & ((df.centroid_snr > 3).values | off)}
-        for b in out:
-            if b.startswith("(b) + "):
-                d = m6.fold_table(df, out[b], folds, h) - m6.fold_table(df, out[a], folds, h)
-                print(f"{b} - (b), per fold (hard): ROC AUC " + " ".join(f"{v:+.3f}" for v in d.roc_auc)
-                      + f" (mean {d.roc_auc.mean():+.3f}), planets caught " + " ".join(f"{v:+.0%}" for v in d.model_planets_caught)
-                      + f" (mean {d.model_planets_caught.mean():+.1%})")
-                d = m6.fold_table(df, out[b], folds, all_ok) - m6.fold_table(df, out[a], folds, all_ok)
-                print(f"    on the {all_ok.sum()} hard rows with every extra view ok: ROC AUC "
-                      + " ".join(f"{v:+.3f}" for v in d.roc_auc) + f" (mean {d.roc_auc.mean():+.3f}), planets caught "
-                      + " ".join(f"{v:+.0%}" for v in d.model_planets_caught) + f" (mean {d.model_planets_caught.mean():+.1%})")
-                for what, m in checks.get(b[6:], {}).items():
-                    print(f"    real NASA fakes with {what} ({m.sum()}): scored > 0.5 {(out[a][m] > 0.5).mean():.0%} "
-                          f"without, {(out[b][m] > 0.5).mean():.0%} with")
-        df[["tic", "signal", "label", "y", "hard"]].assign(fold=folds, **out, **{f"{b} spread": v for b, v in spread.items()}).to_csv(
-            m6.out_path(args.name, "xv_" + prefix + "shape_scores.csv"), index=False)
-    else:
-        df[["tic", "signal", "label", "y", "hard"]].assign(
-            gbt=gbt, views=out["(a) views"], views_features=out["(b) views + features"],
-            shape_score_spread=spread["(b) views + features"],
-            average=out["(c) avg (b) + GBT"], fold=folds).to_csv(m6.out_path(args.name, prefix + "shape_scores.csv"), index=False)
+    spread_table(df, out[b], spread[b])
+    prefix = ("nopixel_" if pixel is None else "") + ("nt_" if args.nt else "") + ("star_" if args.star_features else "")
+    df[["tic", "signal", "label", "y", "hard"]].assign(
+        gbt=gbt, views=out["(a) views"], views_features=out[b], shape_score_spread=spread[b],
+        average=out["(c) avg (b) + GBT"], fold=folds).to_csv(m3.out_path(args.name, prefix + "shape_scores.csv"), index=False)
     print(f"\ntotal {time.time() - start:.0f} s")
 
 
