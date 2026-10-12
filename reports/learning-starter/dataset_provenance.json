@@ -1,0 +1,21 @@
+{
+  "fingerprint": "a8f0279239ff71421da33ccf265272e497e2903a836e7e646bb1fe1306ac022f",
+  "code_hash": "1980a1a7d55bb70f484aedd2fc28186366fb7e72c6ca99de79c4eacb1f1da8c8",
+  "catalog_sha256": "66ecaab09728758b36796e154bf51f653e33b3f5c6d6a7e224c906d3b18e638d",
+  "candidate_sha256": "565b72236af4c001e370b189a94703d80b32ca6f3a93bcf1ed9a6023a8f89bfa",
+  "views_sha256": "d98e7ac4e75af85f99f172e1c99a584148d6c6ae7d17a97e52bee53e715c37eb",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "astropy": "8.0.1",
+    "lightkurve": "2.6.0",
+    "transitleastsquares": "2.0",
+    "scipy": "1.18.1",
+    "torch": "2.14.1",
+    "scikit-learn": "1.9.1",
+    "batman-package": "2.5.3"
+  },
+  "photometry": "SPOC PDCSAP 120-second; one search per sector",
+  "successful_stars": 228,
+  "failed_stages": 1
+}

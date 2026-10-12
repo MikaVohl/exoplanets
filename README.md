@@ -1,10 +1,25 @@
 # TESS planet-hunting starter
 
+For the confirmed-label learning and discovery pipeline, see [the learning pipeline guide](docs/learning_pipeline.md).
+It includes a blind TLS search, a light-curve CNN, a feature baseline, separate training/validation/test
+stars, inference on unmatched signals, and injection recovery through the frozen pipeline.
+The [executed starter report](reports/learning-starter/README.md) includes both model comparisons and injection diagnostics.
+The [scaling experiment guide](docs/scaling_experiment.md) covers nested training datasets, CNN sizes,
+and CPU versus Apple Metal benchmarks.
+The [controlled experiment guide](docs/controlled_experiment.md) compares current, richer-input,
+and Abdullah's model on identical clean labels, then scales the selected neural family.
+
 Real TESS observations for an initial exploratory data analysis. The starter target is **Pi Mensae (TIC 261136679)**, a known planet host used in NASA's hands-on tutorial. The downloader requests **SPOC, 120-second cadence, sectors 1, 4, and 8** from the public MAST archive. No account or API key is required.
 
 These are extracted light curves, not detector images. Original FITS files include aperture flux (`SAP_FLUX`), pipeline-corrected flux (`PDCSAP_FLUX`), uncertainties, background, centroids, and quality flags. All original rows are retained in those files.
 
 ## 100-star BLS/TLS benchmark
+
+For Abdullah's alternative TLS search and classifier, open [the masked-search walkthrough](notebooks/03_tls_masked_search_walkthrough.ipynb).
+It starts with a dataset census, zooms in on TOI-880's cleaning and two-signal search, and returns its
+result to the aggregate benchmark. A real classifier-dataset entry then connects labeling and feature
+transformations to a held-out score and the aggregate classifier evaluation. Outputs are
+included in the executed notebook; a local read-only export is in `reports/walkthrough/tls_masked_search.html`.
 
 For a worked example, open [the TOI-880 notebook walkthrough](notebooks/02_toi880_pipeline_walkthrough.ipynb). It reconstructs each preprocessing transformation from the original FITS data, shows BLS/TLS intermediate results, inspects the first signal's warning flags, masks its events, finds a weaker second signal, and only then compares the periods with the catalog. All intermediate tables and figures are included after execution. A read-only export is in `reports/walkthrough/toi880.html`.
 

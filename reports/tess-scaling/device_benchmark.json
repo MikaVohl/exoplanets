@@ -1,0 +1,415 @@
+{
+  "machine": "Apple M5 Pro",
+  "platform": "macOS-26.4-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "astropy": "8.0.1",
+    "lightkurve": "2.6.0",
+    "transitleastsquares": "2.0",
+    "scipy": "1.18.1",
+    "torch": "2.14.1",
+    "scikit-learn": "1.9.1",
+    "batman-package": "2.5.3"
+  },
+  "mps_available": true,
+  "mps_built": true,
+  "steps_per_trial": 8,
+  "trials": 3,
+  "warmup_steps": 5,
+  "candidate_sha256": "1a9d0f780128c9db2b8bbe80d6f838a7d81412c40854509112653f4b6b568108",
+  "results": [
+    {
+      "width": 8,
+      "parameters": 10673,
+      "batch_size": 32,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.05748556250182446,
+      "transfer_step_seconds": 0.05672329687513411,
+      "resident_trials": [
+        0.05554136462887982,
+        0.05802825000137091,
+        0.05748556250182446
+      ],
+      "transfer_trials": [
+        0.0533374062506482,
+        0.05672329687513411,
+        0.05862808850361034
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 8,
+      "parameters": 10673,
+      "batch_size": 32,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.003082088500377722,
+      "transfer_step_seconds": 0.005119619752804283,
+      "resident_trials": [
+        0.003303916622826364,
+        0.003082088500377722,
+        0.0030139480004436336
+      ],
+      "transfer_trials": [
+        0.005247088629403152,
+        0.004831651000131387,
+        0.005119619752804283
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 2.60770320892334e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 1.862645149230957e-08,
+      "eval_gradient_relative_l2_difference_from_cpu": 3.564197951716292e-07,
+      "eval_abs_loss_difference_from_cpu": 5.960464477539063e-08,
+      "mps_allocated_bytes": 724992
+    },
+    {
+      "width": 8,
+      "parameters": 10673,
+      "batch_size": 128,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.2180574322483153,
+      "transfer_step_seconds": 0.21478743237094022,
+      "resident_trials": [
+        0.21849092187039787,
+        0.21335670312691946,
+        0.2180574322483153
+      ],
+      "transfer_trials": [
+        0.21977298437559512,
+        0.21477333324583014,
+        0.21478743237094022
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 8,
+      "parameters": 10673,
+      "batch_size": 128,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.0033124740002676845,
+      "transfer_step_seconds": 0.0048800104996189475,
+      "resident_trials": [
+        0.003519213503750507,
+        0.0033124740002676845,
+        0.003124453127384186
+      ],
+      "transfer_trials": [
+        0.005098426998301875,
+        0.004702145874034613,
+        0.0048800104996189475
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 3.073364496231079e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 2.5902409106492996e-09,
+      "eval_gradient_relative_l2_difference_from_cpu": 1.7114480319988857e-07,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": 2354944
+    },
+    {
+      "width": 16,
+      "parameters": 41057,
+      "batch_size": 32,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.07257608337386046,
+      "transfer_step_seconds": 0.07539898950199131,
+      "resident_trials": [
+        0.07206434899853775,
+        0.07712165624980116,
+        0.07257608337386046
+      ],
+      "transfer_trials": [
+        0.07616128649533493,
+        0.07302093749603955,
+        0.07539898950199131
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 16,
+      "parameters": 41057,
+      "batch_size": 32,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.00311230200168211,
+      "transfer_step_seconds": 0.004862307374423835,
+      "resident_trials": [
+        0.0032209739947575144,
+        0.00311230200168211,
+        0.002838005129888188
+      ],
+      "transfer_trials": [
+        0.004862307374423835,
+        0.004677244745835196,
+        0.005147463496541604
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 2.2351741790771484e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 3.725290298461914e-09,
+      "eval_gradient_relative_l2_difference_from_cpu": 2.651392876117728e-07,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": 1209344
+    },
+    {
+      "width": 16,
+      "parameters": 41057,
+      "batch_size": 128,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.29000670312234433,
+      "transfer_step_seconds": 0.2872147916277754,
+      "resident_trials": [
+        0.2884613177520805,
+        0.29848221362772165,
+        0.29000670312234433
+      ],
+      "transfer_trials": [
+        0.2854068281230866,
+        0.2889471144953859,
+        0.2872147916277754
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 16,
+      "parameters": 41057,
+      "batch_size": 128,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.003488161375571508,
+      "transfer_step_seconds": 0.005300812503264751,
+      "resident_trials": [
+        0.0038092083705123514,
+        0.003488161375571508,
+        0.0034437448775861412
+      ],
+      "transfer_trials": [
+        0.005300812503264751,
+        0.005354531247576233,
+        0.005206119756621774
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 4.470348358154297e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 7.450580596923828e-09,
+      "eval_gradient_relative_l2_difference_from_cpu": 2.7028752680493953e-07,
+      "eval_abs_loss_difference_from_cpu": 1.1920928955078125e-07,
+      "mps_allocated_bytes": 2839296
+    },
+    {
+      "width": 32,
+      "parameters": 160961,
+      "batch_size": 32,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.11070330737857148,
+      "transfer_step_seconds": 0.11159923437662655,
+      "resident_trials": [
+        0.11027926562383072,
+        0.11295228650124045,
+        0.11070330737857148
+      ],
+      "transfer_trials": [
+        0.10969654162181541,
+        0.11287154687306611,
+        0.11159923437662655
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 32,
+      "parameters": 160961,
+      "batch_size": 32,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.0035430468706181273,
+      "transfer_step_seconds": 0.005184937501326203,
+      "resident_trials": [
+        0.0035430468706181273,
+        0.0032341406258638017,
+        0.0035709166259039193
+      ],
+      "transfer_trials": [
+        0.005294843744195532,
+        0.005184937501326203,
+        0.005116489628562704
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 2.9802322387695312e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 1.1175870895385742e-08,
+      "eval_gradient_relative_l2_difference_from_cpu": 2.9351803678416375e-07,
+      "eval_abs_loss_difference_from_cpu": 1.1920928955078125e-07,
+      "mps_allocated_bytes": 3123200
+    },
+    {
+      "width": 32,
+      "parameters": 160961,
+      "batch_size": 128,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.43980809899949236,
+      "transfer_step_seconds": 0.43236643225100124,
+      "resident_trials": [
+        0.43980809899949236,
+        0.44478506775340065,
+        0.4342315832473105
+      ],
+      "transfer_trials": [
+        0.43236643225100124,
+        0.4321162603737321,
+        0.43623827612464083
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 32,
+      "parameters": 160961,
+      "batch_size": 128,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.005256349002593197,
+      "transfer_step_seconds": 0.007907119746960234,
+      "resident_trials": [
+        0.005217223995714448,
+        0.005281317746266723,
+        0.005256349002593197
+      ],
+      "transfer_trials": [
+        0.007907119746960234,
+        0.007761244873108808,
+        0.008060161497269291
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 3.725290298461914e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 3.725290298461914e-09,
+      "eval_gradient_relative_l2_difference_from_cpu": 2.751319590019267e-07,
+      "eval_abs_loss_difference_from_cpu": 5.960464477539063e-08,
+      "mps_allocated_bytes": 4753152
+    },
+    {
+      "width": 64,
+      "parameters": 637313,
+      "batch_size": 32,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.20221014587878017,
+      "transfer_step_seconds": 0.20155257287842687,
+      "resident_trials": [
+        0.20139636450039688,
+        0.20331161462672753,
+        0.20221014587878017
+      ],
+      "transfer_trials": [
+        0.20265584375010803,
+        0.20155257287842687,
+        0.20148091149894753
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 64,
+      "parameters": 637313,
+      "batch_size": 32,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.005011718749301508,
+      "transfer_step_seconds": 0.007136494750739075,
+      "resident_trials": [
+        0.005011718749301508,
+        0.004957536373694893,
+        0.0051055884978268296
+      ],
+      "transfer_trials": [
+        0.007441937494149897,
+        0.007136494750739075,
+        0.0070038906269473955
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 1.955777406692505e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 1.1175870895385742e-08,
+      "eval_gradient_relative_l2_difference_from_cpu": 5.450923125967488e-07,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": 12888064
+    },
+    {
+      "width": 64,
+      "parameters": 637313,
+      "batch_size": 128,
+      "device": "cpu",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.8806779218721204,
+      "transfer_step_seconds": 0.8797371771215694,
+      "resident_trials": [
+        0.8325674791267375,
+        0.8806779218721204,
+        0.8900071093812585
+      ],
+      "transfer_trials": [
+        0.8895407656236785,
+        0.8770617656191462,
+        0.8797371771215694
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 0.0,
+      "eval_max_abs_gradient_difference_from_cpu": 0.0,
+      "eval_gradient_relative_l2_difference_from_cpu": 0.0,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": null
+    },
+    {
+      "width": 64,
+      "parameters": 637313,
+      "batch_size": 128,
+      "device": "mps",
+      "cpu_threads": 4,
+      "resident_step_seconds": 0.014206859370460734,
+      "transfer_step_seconds": 0.016519708377018105,
+      "resident_trials": [
+        0.014165729124215432,
+        0.014220859375200234,
+        0.014206859370460734
+      ],
+      "transfer_trials": [
+        0.016504437502590008,
+        0.016519708377018105,
+        0.016554255118535366
+      ],
+      "eval_max_abs_logit_difference_from_cpu": 8.568167686462402e-08,
+      "eval_max_abs_gradient_difference_from_cpu": 4.132743924856186e-09,
+      "eval_gradient_relative_l2_difference_from_cpu": 5.705912067925866e-07,
+      "eval_abs_loss_difference_from_cpu": 0.0,
+      "mps_allocated_bytes": 14026496
+    }
+  ],
+  "backend_environment": {},
+  "notes": [
+    "Median synchronized forward/backward/clipped-gradient/AdamW step; five warmup steps excluded.",
+    "Resident means inputs already on device; transfer includes moving each batch to device.",
+    "Real training photometry inputs; repeating a batch here benchmarks compute, not learning.",
+    "CPU uses four threads; this is the configured CPU workload, not an exhaustive CPU tuning sweep.",
+    "MPS CPU fallback is not enabled. Logit, loss and gradient agreement checked with identical weights/input and dropout disabled."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "seed": 42,
+  "positive_dispositions": [
+    "CP"
+  ],
+  "negative_dispositions": [
+    "FP",
+    "FA"
+  ],
+  "period_min_days": 0.5,
+  "period_max_days": 12.0,
+  "search_method": "tls",
+  "maximum_signals": 3,
+  "bin_minutes": 10,
+  "flatten_window_days": 1.4,
+  "split_gap_days": 0.5,
+  "minimum_points": 1000,
+  "period_tolerance": 0.005,
+  "epoch_tolerance_durations": 0.75,
+  "global_bins": 256,
+  "local_bins": 128,
+  "event_bins": 64,
+  "maximum_events": 16,
+  "local_half_width_durations": 2.5,
+  "train_fraction": 0.7,
+  "validation_fraction": 0.15,
+  "target_validation_fpr": 0.1,
+  "width": 16,
+  "epochs": 40,
+  "patience": 10,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "torch_threads": 4
+}

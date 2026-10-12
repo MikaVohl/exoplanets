@@ -1,0 +1,50 @@
+{
+  "cells_checked": 120,
+  "test_evaluated": false,
+  "whole_star_partitions": true,
+  "identical_subsets_within_seed": true,
+  "nested_data_subsets": true,
+  "saved_metrics_recomputed": true,
+  "train_only_normalization": true,
+  "checkpoint_reload_checks": [
+    {
+      "stage": "comparison",
+      "cell_id": "rich32-w32-n423-lr0.001-e100-s0",
+      "max_absolute_score_difference": 2.9194641149032918e-08
+    },
+    {
+      "stage": "optimization",
+      "cell_id": "rich-w64-n423-lr0.003-e150-s2",
+      "max_absolute_score_difference": 2.7157592730198132e-08
+    },
+    {
+      "stage": "scaling",
+      "cell_id": "rich-w64-n423-lr0.003-e150-s2",
+      "max_absolute_score_difference": 2.7157592730198132e-08
+    }
+  ],
+  "candidate_sha256": "d4acd89ecb1e3dfa11c2161a30f7bf58fa96b52b17dd9f955904e8717ec05b26",
+  "views_sha256": "0d9b65ffca34652e8ddd7b21dd1b9ec5c50612252ab5520f9e4a5e8693d0a1a2",
+  "scientific_tests_passed": 23,
+  "inference_rebuild_check": {
+    "candidate_id": "301051430-s31-1",
+    "expected_score": 0.51628757,
+    "inference_rebuild_score_error": 5.4835967988609013e-08,
+    "extraneous_label_ignored": true,
+    "result": {
+      "score": 0.516287624835968,
+      "validation_threshold": 0.9951768517494202,
+      "selected_for_review": false,
+      "score_kind": "uncalibrated ranking",
+      "star_partition": "validation",
+      "candidate_ephemeris": {
+        "period": 3.275447569942662,
+        "t0": 2146.8532223656284,
+        "duration_days": 0.0819226673716773
+      },
+      "fits_sha256": "4624c1ded339d512d0a45c7dfe74161e1e8eccc97c59abb15ea3d93d672063cc",
+      "checkpoint_sha256": "782e5b408f0fd89d9e4fa49c9ba7007a71925524ee8e87862e5d48091b668adb",
+      "catalog_features_used": false
+    }
+  }
+}

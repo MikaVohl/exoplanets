@@ -1,0 +1,53 @@
+{
+  "count": 120,
+  "seed": 2026,
+  "held_out_stars": 26,
+  "eligible": {
+    "injections": 118,
+    "search_recovered": 70,
+    "pipeline_recovered": 42,
+    "search_recall": 0.5932203389830508,
+    "pipeline_recall": 0.3559322033898305
+  },
+  "all": {
+    "injections": 120,
+    "search_recovered": 70,
+    "pipeline_recovered": 42,
+    "search_recall": 0.5833333333333334,
+    "pipeline_recall": 0.35
+  },
+  "excluded_preexisting_matches": 0,
+  "excluded_fewer_than_two_observed_events": 2,
+  "by_nominal_depth_ppm": {
+    "300-1000": {
+      "injections": 39,
+      "search_recovered": 13,
+      "pipeline_recovered": 9,
+      "search_recall": 0.3333333333333333,
+      "pipeline_recall": 0.23076923076923078
+    },
+    "1000-3000": {
+      "injections": 39,
+      "search_recovered": 23,
+      "pipeline_recovered": 10,
+      "search_recall": 0.5897435897435898,
+      "pipeline_recall": 0.2564102564102564
+    },
+    "3000-10000": {
+      "injections": 40,
+      "search_recovered": 34,
+      "pipeline_recovered": 23,
+      "search_recall": 0.85,
+      "pipeline_recall": 0.575
+    }
+  },
+  "threshold": 0.532637357711792,
+  "model_sha256": "fa969c26d721dec84eb6f2792b4cc43b180d3d7abdc150643cb8aefb4f2adf66",
+  "notes": [
+    "Physical batman transits injected into real PDCSAP flux before cleaning, flattening, binning, search and scoring.",
+    "Frozen model and validation threshold; held-out test stars only; no injection training or tuning.",
+    "Solar-host circular-orbit injections with fixed limb darkening; not a population model.",
+    "Tests post-PDCSAP processing, not pixel extraction, SPOC correction, blending, or all false positives.",
+    "Unmodified controls can contain real astrophysical signals; their selected scores are not a false-alarm rate."
+  ]
+}

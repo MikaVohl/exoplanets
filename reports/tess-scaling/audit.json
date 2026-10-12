@@ -1,0 +1,9 @@
+{
+  "completed_cells": 75,
+  "scientific_tests_passed": 18,
+  "matched_model_subsets": true,
+  "nested_star_groups": true,
+  "validation_predictions_only": true,
+  "test_partition_evaluated": false,
+  "reloaded_checkpoint_max_score_difference": 2.948303223782034e-08
+}

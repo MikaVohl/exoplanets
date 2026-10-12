@@ -1,0 +1,5 @@
+-r requirements.in
+scikit-learn>=1.5,<2
+joblib>=1.4,<2
+torch>=2.5,<3
+batman-package>=2.4,<3

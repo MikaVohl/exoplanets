@@ -1,0 +1,8 @@
+a_name,b_name,a,b,mean_ap_difference,paired_star_bootstrap_90_low,paired_star_bootstrap_90_high,samples,selection_adjusted
+"Current CNN, width 64","Current CNN, width 32",current64,current32,0.006260911633441409,-0.03318365614932592,0.049078372615630826,1000,False
+"Masked cleaning, width 32","Current CNN, width 32",masked32,current32,0.012774973373863166,-0.025258262858361618,0.050189241578508376,1000,False
+"Richer inputs, width 32","Current CNN, width 32",rich32,current32,0.017996098818545248,-0.02617396906214625,0.059330450431466314,1000,False
+Richer inputs + masked cleaning,"Masked cleaning, width 32",rich_masked32,masked32,-0.01422892620750619,-0.0720094520459822,0.05399368496754467,1000,False
+Abdullah's model: views + measurements,Abdullah's model: views,legacy_hybrid,legacy_views,0.033297125379819804,-0.0047066714296245616,0.0661624867627245,1000,False
+Abdullah's model: views + measurements + augmentation,Abdullah's model: views + measurements,legacy_hybrid_aug,legacy_hybrid,-0.00807606362265878,-0.029232113349030198,0.01387707463797215,1000,False
+Abdullah's model: views + measurements,"Current CNN, width 64",legacy_hybrid,current64,0.010026840184169883,-0.04009395985220183,0.05465294949830941,1000,False

@@ -1,8 +1,8 @@
 """Step 6: planet-vs-fake model on the step-5 dataset, compared with the repo's fixed rules.
 
 Examples (one row per signal our search found):
-  planet = signal matches a CP/KP TOI; fake = matches an FP/FA TOI, or an unmatched signal on a
-  fake-only star. Left out: unmatched signals on planet stars (may be unlisted planets), half/double
+  planet = signal matches a CP/KP TOI; fake = matches an FP/FA TOI. Left out: unmatched signals
+  on every star (may be unlisted planets), half/double
   matches, and PC (undecided) matches.
 Model: scikit-learn HistGradientBoostingClassifier on dip measurements only.
 Evaluation: 5-fold cross-validation grouped by star (a star is never in both training and testing).
@@ -46,7 +46,7 @@ def load():
     s["depth_snr_per_transit"] = s.depth_snr / per_dip
     s["pink_snr_per_transit"] = s.pink_snr / per_dip
     planet = s.label.isin(["CP", "KP"])
-    fake = s.label.isin(["FP", "FA"]) | (s.label.eq("none") & s.star_class.eq("false") & s.harmonic_of_toi.isna())
+    fake = s.label.isin(["FP", "FA"])
     s = s[planet | fake].copy()
     s["y"] = s.label.isin(["CP", "KP"]).astype(int)
     s["hard"] = s.label.ne("none")  # NASA-flagged dips only
@@ -108,7 +108,7 @@ def main():
 
     print("\nMain model (dip measurements only), 5-fold cross-validation by star:")
     s, folds, imp = cross_validate(df, DIP_FEATURES)
-    show("all signals (NASA-flagged dips + unmatched noise on fake stars)", *fold_stats(df, s, folds))
+    show("catalog-labeled signals only (unmatched signals stay unlabeled)", *fold_stats(df, s, folds))
     show("hard task: NASA-flagged dips only (real planet vs known fake)", *fold_stats(df, s, folds, df.hard.values))
 
     print("\nCheck 2: model vs rules among stars with the same amount of data (hard task):")

@@ -1,0 +1,21 @@
+{
+  "candidate_id": "301051430-s31-1",
+  "expected_score": 0.51628757,
+  "inference_rebuild_score_error": 5.4835967988609013e-08,
+  "extraneous_label_ignored": true,
+  "result": {
+    "score": 0.516287624835968,
+    "validation_threshold": 0.9951768517494202,
+    "selected_for_review": false,
+    "score_kind": "uncalibrated ranking",
+    "star_partition": "validation",
+    "candidate_ephemeris": {
+      "period": 3.275447569942662,
+      "t0": 2146.8532223656284,
+      "duration_days": 0.0819226673716773
+    },
+    "fits_sha256": "4624c1ded339d512d0a45c7dfe74161e1e8eccc97c59abb15ea3d93d672063cc",
+    "checkpoint_sha256": "782e5b408f0fd89d9e4fa49c9ba7007a71925524ee8e87862e5d48091b668adb",
+    "catalog_features_used": false
+  }
+}

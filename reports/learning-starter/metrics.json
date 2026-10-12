@@ -1,0 +1,171 @@
+{
+  "cnn": {
+    "train": {
+      "signals": 116,
+      "planets": 72,
+      "negatives": 44,
+      "roc_auc": 0.9043560606060606,
+      "average_precision": 0.9433305140276276,
+      "recall": 0.7916666666666666,
+      "false_positive_rate": 0.1590909090909091,
+      "sample_precision": 0.890625,
+      "accepted_signals": 64,
+      "threshold": 0.532637357711792
+    },
+    "validation": {
+      "signals": 20,
+      "planets": 10,
+      "negatives": 10,
+      "roc_auc": 0.9,
+      "average_precision": 0.898683261183261,
+      "recall": 0.8,
+      "false_positive_rate": 0.1,
+      "sample_precision": 0.8888888888888888,
+      "accepted_signals": 9,
+      "threshold": 0.532637357711792
+    },
+    "test": {
+      "signals": 16,
+      "planets": 7,
+      "negatives": 9,
+      "roc_auc": 0.6825396825396826,
+      "average_precision": 0.581174777603349,
+      "recall": 0.7142857142857143,
+      "false_positive_rate": 0.3333333333333333,
+      "sample_precision": 0.625,
+      "accepted_signals": 8,
+      "threshold": 0.532637357711792
+    }
+  },
+  "baseline": {
+    "train": {
+      "signals": 116,
+      "planets": 72,
+      "negatives": 44,
+      "roc_auc": 1.0,
+      "average_precision": 0.9999999999999998,
+      "recall": 0.8888888888888888,
+      "false_positive_rate": 0.0,
+      "sample_precision": 1.0,
+      "accepted_signals": 64,
+      "threshold": 0.8483070537221284
+    },
+    "validation": {
+      "signals": 20,
+      "planets": 10,
+      "negatives": 10,
+      "roc_auc": 0.84,
+      "average_precision": 0.841078921078921,
+      "recall": 0.4,
+      "false_positive_rate": 0.1,
+      "sample_precision": 0.8,
+      "accepted_signals": 5,
+      "threshold": 0.8483070537221284
+    },
+    "test": {
+      "signals": 16,
+      "planets": 7,
+      "negatives": 9,
+      "roc_auc": 0.8253968253968254,
+      "average_precision": 0.7596165739022882,
+      "recall": 0.8571428571428571,
+      "false_positive_rate": 0.2222222222222222,
+      "sample_precision": 0.75,
+      "accepted_signals": 8,
+      "threshold": 0.8483070537221284
+    }
+  },
+  "partitions": {
+    "train": {
+      "stars": 111,
+      "signals": 116,
+      "planet_stars": 67,
+      "negative_stars": 44
+    },
+    "validation": {
+      "stars": 20,
+      "signals": 20,
+      "planet_stars": 10,
+      "negative_stars": 10
+    },
+    "test": {
+      "stars": 16,
+      "signals": 16,
+      "planet_stars": 7,
+      "negative_stars": 9
+    }
+  },
+  "test_subgroups": {
+    "depth_below_2000ppm": {
+      "signals": 10,
+      "planets": 5,
+      "negatives": 5,
+      "roc_auc": 0.6000000000000001,
+      "average_precision": 0.6644444444444444,
+      "recall": 0.6,
+      "false_positive_rate": 0.4,
+      "sample_precision": 0.6,
+      "accepted_signals": 5,
+      "threshold": 0.532637357711792
+    },
+    "depth_2000ppm_or_more": {
+      "signals": 6,
+      "planets": 2,
+      "negatives": 4,
+      "roc_auc": 0.75,
+      "average_precision": 0.5833333333333333,
+      "recall": 1.0,
+      "false_positive_rate": 0.25,
+      "sample_precision": 0.6666666666666666,
+      "accepted_signals": 3,
+      "threshold": 0.532637357711792
+    },
+    "period_below_5days": {
+      "signals": 13,
+      "planets": 6,
+      "negatives": 7,
+      "roc_auc": 0.7857142857142858,
+      "average_precision": 0.6916666666666668,
+      "recall": 0.6666666666666666,
+      "false_positive_rate": 0.14285714285714285,
+      "sample_precision": 0.8,
+      "accepted_signals": 5,
+      "threshold": 0.532637357711792
+    },
+    "period_5days_or_more": {
+      "signals": 3,
+      "planets": 1,
+      "negatives": 2,
+      "roc_auc": 0.0,
+      "average_precision": 0.3333333333333333,
+      "recall": 1.0,
+      "false_positive_rate": 1.0,
+      "sample_precision": 0.3333333333333333,
+      "accepted_signals": 3,
+      "threshold": 0.532637357711792
+    }
+  },
+  "versions": {
+    "python": "3.12.13",
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "astropy": "8.0.1",
+    "lightkurve": "2.6.0",
+    "transitleastsquares": "2.0",
+    "scipy": "1.18.1",
+    "torch": "2.14.1",
+    "scikit-learn": "1.9.1",
+    "batman-package": "2.5.3"
+  },
+  "device": "cpu",
+  "model_parameters": 41057,
+  "best_epoch": 28,
+  "unlabeled_signals_scored": 532,
+  "notes": [
+    "Scores are uncalibrated rankings, not planet probabilities.",
+    "Precision describes this selected labeled sample, not survey candidate yield.",
+    "Thresholds selected on validation only; test labels never enter fitting or selection.",
+    "A catalog false positive is a negative signal; other signals on its star remain unlabeled.",
+    "Small test samples and confirmed-planet selection limit generalization claims."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "family": "rich",
+  "width": 64,
+  "learning_rate": 0.003,
+  "epoch_ceiling": 150,
+  "selection_rule": "Highest mean individual-model validation AP at full training data after adaptive development",
+  "validation_ap_mean": 0.8627410929924194,
+  "validation_ap_seed_sd": 0.01743232068695535,
+  "validation_roc_auc_mean": 0.8171428571428572,
+  "validation_recall_mean": 0.5066666666666667,
+  "checkpoints": [
+    "/Users/mikavohl/Projects/exoplanet/runs/tess-controlled-experiment/scaling/cells/rich-w64-n423-lr0.003-e150-s0.pt",
+    "/Users/mikavohl/Projects/exoplanet/runs/tess-controlled-experiment/scaling/cells/rich-w64-n423-lr0.003-e150-s1.pt",
+    "/Users/mikavohl/Projects/exoplanet/runs/tess-controlled-experiment/scaling/cells/rich-w64-n423-lr0.003-e150-s2.pt"
+  ],
+  "ensemble": false,
+  "test_evaluated": false
+}

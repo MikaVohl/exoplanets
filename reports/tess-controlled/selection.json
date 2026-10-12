@@ -1,0 +1,12 @@
+{
+  "selected_variant": "rich32",
+  "selected_family": "rich",
+  "selection_rule": "Highest mean individual-model validation AP across the three comparison seeds",
+  "comparison_results_sha256": "67804983b69005829fbb2074368c757fa32a059f3e0b7d3f1733104316c2a9d7",
+  "test_evaluated": false,
+  "learning_rate": 0.003,
+  "epoch_ceiling": 150,
+  "recipe_selection_rule": "Highest validation AP averaged across all three widths and seeds",
+  "optimization_results_sha256": "5945c8c20d352903b61e562627f1bfcdcfc04257f543d1b5d93921eab27cbe95",
+  "scaling_results_sha256": "8fd3eb7d50d1072f0774d736824daff2fb71b02e67bd21d743b988873452fbfc"
+}

@@ -1,7 +1,26 @@
 # TESS transit search and planet-vs-fake classifier
 
+For the confirmed-label training and discovery experiment, see [the learning pipeline guide](../docs/learning_pipeline.md).
+Step 6 now trains only on signals matched to CP/KP or FP/FA labels. Unmatched signals on every host
+remain unlabeled. The classifier results below describe the earlier experiment, which included
+unmatched signals on false-positive hosts as negatives; rerun step 6 to evaluate the revised labels.
+Legacy step-5 matches use period only; the new pipeline additionally checks transit timing.
+
 Finds repeating dips in TESS 2-min light curves with Transit Least Squares (TLS), then scores each
 dip with a model trained on NASA's expert-labeled TESS candidates (TOIs).
+
+For an executed walkthrough, open [Inside `tls_masked_search`](../notebooks/03_tls_masked_search_walkthrough.ipynb).
+It starts with a census of both datasets, selects TOI-880 from the benchmark, and follows its original
+flux through cleaning, wide TLS, transit-masked flattening, local refinement and a second search.
+It returns that entry to the aggregate benchmark, then traces an actual classifier-dataset entry
+from saved measurements through feature transformations to a freshly computed held-out score,
+before returning to aggregate classifier results. It distinguishes the two cohorts and their search paths.
+The notebook checks its expanded search against `common.two_pass` and compares with saved results.
+
+```bash
+# From the repository root, with the project environment active:
+jupyter lab notebooks/03_tls_masked_search_walkthrough.ipynb
+```
 
 ## The method
 

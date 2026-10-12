@@ -1,0 +1,641 @@
+{
+  "files": [
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2018349182500-s0006-0000000144730053-0126-s_lc.fits",
+      "sha256": "5a76018b0f3f3556058d89f474ae6b56ca2b2d9861e5299cb1dd1b4504cd69f0",
+      "tic": 144730053,
+      "sector": 6
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2019140104343-s0012-0000000286896213-0144-s_lc.fits",
+      "sha256": "4502c5368aab8f48ac3aa26302edfce6623b6395538fb508baea5f85f2b69131",
+      "tic": 286896213,
+      "sector": 12
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2020294194027-s0031-0000000142875660-0198-s_lc.fits",
+      "sha256": "b4209174d69737ba766555143d0bc8476e2b0e12f60796a94ba511f3bb165676",
+      "tic": 142875660,
+      "sector": 31
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2020294194027-s0031-0000000328465904-0198-s_lc.fits",
+      "sha256": "5cfd5511834af0e05b4c02c31ec0262b7a6083c8d130a03c683e80f1b6429639",
+      "tic": 328465904,
+      "sector": 31
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2021014023720-s0034-0000000026045729-0204-s_lc.fits",
+      "sha256": "1c3ab2aff108efa66fefee51884fbd0a94c2ae5ad607d17a786ae53267b1f7eb",
+      "tic": 26045729,
+      "sector": 34
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2021146024351-s0039-0000000380086262-0210-s_lc.fits",
+      "sha256": "399a65c41f10e1d8f4a13da36d012d4fcd4a0d1d95acc8b7d892a90e84456501",
+      "tic": 380086262,
+      "sector": 39
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2021336043614-s0046-0000000094924490-0217-s_lc.fits",
+      "sha256": "d599cee6d6d44acaa22e5c3ba51e0af4efdba3dab3c36ba9a7fd44de51624683",
+      "tic": 94924490,
+      "sector": 46
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2021364111932-s0047-0000000150070085-0218-s_lc.fits",
+      "sha256": "0fb8b00e4df6da6f00defe93a55bdb86473524bf4d44bd1100c286ff14110da6",
+      "tic": 150070085,
+      "sector": 47
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2022027120115-s0048-0000000172954294-0219-s_lc.fits",
+      "sha256": "5ed32d49fb820c625823874ed89329c7b65041e8a97bc866e9b9c08059f45f87",
+      "tic": 172954294,
+      "sector": 48
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2022027120115-s0048-0000000252470070-0219-s_lc.fits",
+      "sha256": "47a2e5a10836063f182d45015412da42dbe53e9c083e1f3ef73cd93b48f1b45a",
+      "tic": 252470070,
+      "sector": 48
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2022085151738-s0050-0000000073540072-0222-s_lc.fits",
+      "sha256": "07805e608b7efdd3a6679452d7bed12f2cab8f0f5408b5f115acc86731513c2e",
+      "tic": 73540072,
+      "sector": 50
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2022273165103-s0057-0000000016917838-0245-s_lc.fits",
+      "sha256": "10629cd8c95bd9cf9666d04559e43e6c032b68889cd9d3ebf2f481887e328a86",
+      "tic": 16917838,
+      "sector": 57
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023124020739-s0065-0000000307606851-0259-s_lc.fits",
+      "sha256": "8bc74ce9513c490d430abccfacf8c22a946db0e3eb6eb0873ec44103dabb1144",
+      "tic": 307606851,
+      "sector": 65
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023237165326-s0069-0000000180871947-0264-s_lc.fits",
+      "sha256": "6a35ddb3c415619a449a2e413bfa35d4e17d73fcd2db56d0a407d16a4f0f8f9a",
+      "tic": 180871947,
+      "sector": 69
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023263165758-s0070-0000000058825110-0265-s_lc.fits",
+      "sha256": "e8ece261dbe7e0a210bedf291cf354d4904a1678f5b7ec3a86454fd48c9949f0",
+      "tic": 58825110,
+      "sector": 70
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023263165758-s0070-0000000244178536-0265-s_lc.fits",
+      "sha256": "917d1a06ba938e9ca5c887c78854c4b5849b2d8afb967178cfb732a2834057cb",
+      "tic": 244178536,
+      "sector": 70
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023289093419-s0071-0000000014227229-0266-s_lc.fits",
+      "sha256": "f8714af9d323207ecb60b57ca4617cb2e9ee42786d0940c46f73169dbd9e3de4",
+      "tic": 14227229,
+      "sector": 71
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023315124025-s0072-0000000026826078-0267-s_lc.fits",
+      "sha256": "6e8f3269ca943ed1d7c2f4ddad9c06fcb32f122c1294a0874c216e0947793308",
+      "tic": 26826078,
+      "sector": 72
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023315124025-s0072-0000000027064468-0267-s_lc.fits",
+      "sha256": "6a3eca07565d8aee16ccd664e2e4287cde95d753714d0d9637bc9415a606cee5",
+      "tic": 27064468,
+      "sector": 72
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2023315124025-s0072-0000000080611440-0267-s_lc.fits",
+      "sha256": "a7252baa9bb766094622ad30203d47c4eef6b4ee29fcf5b1a35ea080ec3ae91a",
+      "tic": 80611440,
+      "sector": 72
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024003055635-s0074-0000000073312938-0269-s_lc.fits",
+      "sha256": "03be542d9818af3fcb991f343415ccf5c8c9192f7fe3ee94ca0f45e2cc97b04e",
+      "tic": 73312938,
+      "sector": 74
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024003055635-s0074-0000000285048486-0269-s_lc.fits",
+      "sha256": "79416fecaf4d9256c9735b97e3b4d8150d16165a43276fe81e4d1f8e1a47f2e6",
+      "tic": 285048486,
+      "sector": 74
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024003055635-s0074-0000000441587756-0269-s_lc.fits",
+      "sha256": "301d85a8d8b204716b3cf9b7ee5880eea55ea04f17f7639e65b131adb6808862",
+      "tic": 441587756,
+      "sector": 74
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024030031500-s0075-0000000148673433-0270-s_lc.fits",
+      "sha256": "f8449bf71df5e7f971796ddc32edf10200525be54775d98e168d6b4c376ff448",
+      "tic": 148673433,
+      "sector": 75
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024030031500-s0075-0000000417931300-0270-s_lc.fits",
+      "sha256": "a808016e82ff876a43c25d9b930db862bb8df2187355e2ae6f39b8e993c765cb",
+      "tic": 417931300,
+      "sector": 75
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024058030222-s0076-0000000053498154-0271-s_lc.fits",
+      "sha256": "d7558055a88f600eb176374b6aa81e1b2ce000483736904d532aedaf7761f4b8",
+      "tic": 53498154,
+      "sector": 76
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024058030222-s0076-0000000159527171-0271-s_lc.fits",
+      "sha256": "4a1dcf1b0a326848e507eb13b9d09988221f2df6a4dbd820c841f07dea286d06",
+      "tic": 159527171,
+      "sector": 76
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024058030222-s0076-0000000180655149-0271-s_lc.fits",
+      "sha256": "6cdbde37d0f5f46936e30649a6c3fc3fabe40ea16425a42b51d4ef7281b692a0",
+      "tic": 180655149,
+      "sector": 76
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024085201119-s0077-0000000293687315-0272-s_lc.fits",
+      "sha256": "ff30b33007bc354060d57def95ea6dfd5fef29cf052e6bf499db949b2c6e8866",
+      "tic": 293687315,
+      "sector": 77
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024142205832-s0079-0000000349488688-0274-s_lc.fits",
+      "sha256": "70995914546fd3ff30c1305eb7e3487146db134a9a6cdcbef3b949ef009d8cb8",
+      "tic": 349488688,
+      "sector": 79
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024142205832-s0079-0000000462553953-0274-s_lc.fits",
+      "sha256": "7a123baca6f4a32c837c622f7afbabebd9fb5827282e910aa50248b1fc31f97d",
+      "tic": 462553953,
+      "sector": 79
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024170053053-s0080-0000000076419763-0275-s_lc.fits",
+      "sha256": "6064ff3c179fc3313e788b9aaba7841725d2d5718b438aa68fc1d5b6d3d2ee4c",
+      "tic": 76419763,
+      "sector": 80
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024196212429-s0081-0000000011499710-0276-s_lc.fits",
+      "sha256": "90c02ff086212f762b24bfc7b7321020154f5188a1a7b1b28767209c3ccb920e",
+      "tic": 11499710,
+      "sector": 81
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024196212429-s0081-0000000042812945-0276-s_lc.fits",
+      "sha256": "aadfaa2dd072b24b6bf49fae3467bbbb884b54101136ca4978481cfff39cd341",
+      "tic": 42812945,
+      "sector": 81
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024196212429-s0081-0000000092300251-0276-s_lc.fits",
+      "sha256": "d6086007b0aee220bef3344155f0c9f960e0c719414479222f0df770b16d040d",
+      "tic": 92300251,
+      "sector": 81
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024196212429-s0081-0000000120826158-0276-s_lc.fits",
+      "sha256": "f59100f2a410566ca0ad97d7f345ce86716b38d06f9cf1b33e36e811b8f75a1a",
+      "tic": 120826158,
+      "sector": 81
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024196212429-s0081-0000000120973167-0276-s_lc.fits",
+      "sha256": "15349680809ddc9ee8d2ac369a661affd061c70b1093adf13aed21013ee02ad7",
+      "tic": 120973167,
+      "sector": 81
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024196212429-s0081-0000000134245358-0276-s_lc.fits",
+      "sha256": "28bfb72972377cf2bf7862c266fe64ed38b94ec7a7c5a7a982e17f76638d047c",
+      "tic": 134245358,
+      "sector": 81
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024223182411-s0082-0000000123357864-0278-s_lc.fits",
+      "sha256": "4c1003454dfe36460d1b0ae27af326c15e046ac7627b37a441ae7034f23b8e02",
+      "tic": 123357864,
+      "sector": 82
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024223182411-s0082-0000000290035649-0278-s_lc.fits",
+      "sha256": "1140796aa08d50a7f4c383f3310f087b7c5548e583c390df9745f7016a7d6996",
+      "tic": 290035649,
+      "sector": 82
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024223182411-s0082-0000000420814525-0278-s_lc.fits",
+      "sha256": "b52cc91c245c66402f996cedc9209da2b1558d52efbf2e743904f1b8b9e27c83",
+      "tic": 420814525,
+      "sector": 82
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024223182411-s0082-0000000466382581-0278-s_lc.fits",
+      "sha256": "aa3ce78ba8c1e1b0dc460bea2582bc359c5e08815d533a73b0802855403c7d35",
+      "tic": 466382581,
+      "sector": 82
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024249191853-s0083-0000000193754373-0280-s_lc.fits",
+      "sha256": "21d0b76b82c285aa22ce21b58f2b3b6bc8093b82637dd81e1894be6e2aadd98e",
+      "tic": 193754373,
+      "sector": 83
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024249191853-s0083-0000000256783784-0280-s_lc.fits",
+      "sha256": "4a19759334edd2c3ec0717ff0bc8511f1109c6933b7bcd4dfdf1cd6151024205",
+      "tic": 256783784,
+      "sector": 83
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024249191853-s0083-0000000336634601-0280-s_lc.fits",
+      "sha256": "6804b8c4db31de8d885e47c175cdb4b8f74e37bbf8fcff064d62439002fca3a7",
+      "tic": 336634601,
+      "sector": 83
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024274222008-s0084-0000000176899385-0281-s_lc.fits",
+      "sha256": "b2985fc2c6d82121394e3f891f55b00a1a05020437f07941e73566ad7089dfdb",
+      "tic": 176899385,
+      "sector": 84
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024274222008-s0084-0000000439943973-0281-s_lc.fits",
+      "sha256": "aad7f8627e227cd8a7f354bd4dadcc418f3e52fd95ec76bfb9d4881ce52ed9e4",
+      "tic": 439943973,
+      "sector": 84
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024300212641-s0085-0000000250707118-0282-s_lc.fits",
+      "sha256": "71756b698c4023abd856e7862baf7f97b5aa616642770fe940af47bd145a3622",
+      "tic": 250707118,
+      "sector": 85
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024300212641-s0085-0000000376637093-0282-s_lc.fits",
+      "sha256": "d906457c31f1410ddb4a2f06b033613739628a748b12576457491ca9279b9649",
+      "tic": 376637093,
+      "sector": 85
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024300212641-s0085-0000000409527090-0282-s_lc.fits",
+      "sha256": "c5c66fbec4741058a21f93f805ee7e907df601b32adc43bd11b8892bfac7f1aa",
+      "tic": 409527090,
+      "sector": 85
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024300212641-s0085-0000000427761355-0282-s_lc.fits",
+      "sha256": "dfc1f6774121797d4a17755a7770e2ffbbcd441df77d1d4cddc647736589fa06",
+      "tic": 427761355,
+      "sector": 85
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024300212641-s0085-0000000470171739-0282-s_lc.fits",
+      "sha256": "2e3126fb365b2b061441f7483645ae45b57afd18b8d556ef6943cb0f72a52724",
+      "tic": 470171739,
+      "sector": 85
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024326142117-s0086-0000000364186197-0283-s_lc.fits",
+      "sha256": "2c409ef1d00919bdcf9cb31c5f201fb30c5ea80cf81f8d03e1704f91854df0ee",
+      "tic": 364186197,
+      "sector": 86
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024326142117-s0086-0000000392681545-0283-s_lc.fits",
+      "sha256": "1764111556469ee720231088f42f389842e4253a289bdddc454747a0344e2686",
+      "tic": 392681545,
+      "sector": 86
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024326142117-s0086-0000000441804565-0283-s_lc.fits",
+      "sha256": "55a7b3e9b1a73580732e74e9f60d62eea3fc5861f61729f1e11b5008bdfcdc49",
+      "tic": 441804565,
+      "sector": 86
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2024353092137-s0087-0000000234928947-0284-s_lc.fits",
+      "sha256": "87e0bff6d8f939cc958ad7be6c6234580d28c8b478bbdab668433adcde753f44",
+      "tic": 234928947,
+      "sector": 87
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025042113628-s0089-0000000083092282-0286-s_lc.fits",
+      "sha256": "1ad82b678513e4a314c12f414e34b7736088380bd5f891e6bada7eec1c89135d",
+      "tic": 83092282,
+      "sector": 89
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025071122000-s0090-0000000460205581-0287-s_lc.fits",
+      "sha256": "99192d63644cd114384f361d9e3b5e0619ebe05879887fb3b6fe47d5d54ab9a6",
+      "tic": 460205581,
+      "sector": 90
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025099153000-s0091-0000000035021200-0288-s_lc.fits",
+      "sha256": "3fcc5cbb50c800282e83f53bdabc13fa26bf2a7bc41d7909c748dbc33e353669",
+      "tic": 35021200,
+      "sector": 91
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025099153000-s0091-0000000068165288-0288-s_lc.fits",
+      "sha256": "933505d6d1d4ea492bb94ac239c7f223aaab088b35915bab012554bc378cdc88",
+      "tic": 68165288,
+      "sector": 91
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025099153000-s0091-0000000203377303-0288-s_lc.fits",
+      "sha256": "36a646bb62f1bb069bc6ca05132d73050419060717047f85bdc3197c55cc9416",
+      "tic": 203377303,
+      "sector": 91
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025099153000-s0091-0000000413948621-0288-s_lc.fits",
+      "sha256": "c2e3dbdd2f134d74a5da3d72a7ceb45118387dde2a9ff5f82b5d8be1111427b5",
+      "tic": 413948621,
+      "sector": 91
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025127075000-s0092-0000000002288734-0289-s_lc.fits",
+      "sha256": "cd0ee1c136c12f4e9274dd70b6dfd7515310be6c140bfacf471e04597098dc8c",
+      "tic": 2288734,
+      "sector": 92
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025127075000-s0092-0000000039554091-0289-s_lc.fits",
+      "sha256": "aa46c1b71224252e18088ceb3a42bdf67aedfecd9e08a41d271fa59e3a3649d3",
+      "tic": 39554091,
+      "sector": 92
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025127075000-s0092-0000000354326161-0289-s_lc.fits",
+      "sha256": "3cfa4b07dcf8bdc712bd45893618fd5360483916021f2c17c1b3e821fdd88edb",
+      "tic": 354326161,
+      "sector": 92
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025127075000-s0092-0000000424934357-0289-s_lc.fits",
+      "sha256": "371a66277b0a9f5002491386390258e7cf6df93cbdf9a1885553fd2adf7cf73a",
+      "tic": 424934357,
+      "sector": 92
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025127075000-s0092-0000000439842788-0289-s_lc.fits",
+      "sha256": "5bf35f1a098a09de3c01d10c6fe9ef13fa41c2436ceb183b3d4d67c84d7c27b2",
+      "tic": 439842788,
+      "sector": 92
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025154050500-s0093-0000000272546396-0290-s_lc.fits",
+      "sha256": "4412ee619d4de5bf320968255b65574a1b9f37d920d831dc7c495a3ea6e4e485",
+      "tic": 272546396,
+      "sector": 93
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025154050500-s0093-0000000407090552-0290-s_lc.fits",
+      "sha256": "c296aada2acfd6635bdadcb890930a764b0090b5e70af4ff723b0e7deff97726",
+      "tic": 407090552,
+      "sector": 93
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025180145000-s0094-0000000300081980-0291-s_lc.fits",
+      "sha256": "a481d4e088eabde61182d0c69d5f8e92114c096656001d8b14d48fc5566fdf8b",
+      "tic": 300081980,
+      "sector": 94
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025180145000-s0094-0000000383390264-0291-s_lc.fits",
+      "sha256": "061125bdee28fade354f29687516c548b2e8bcd3567592b9eda22a406e2ab772",
+      "tic": 383390264,
+      "sector": 94
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025206162959-s0095-0000000029857954-0292-s_lc.fits",
+      "sha256": "db9f4b4d4d33354ca724129b7aa6c010e72f5730bfe8b67439805d08e5b30a6a",
+      "tic": 29857954,
+      "sector": 95
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025206162959-s0095-0000000278523703-0292-s_lc.fits",
+      "sha256": "d17506cbf13d0d0291aaa8f6ea9db525b2854232cb75cc4d146004efbabd1db0",
+      "tic": 278523703,
+      "sector": 95
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025232030459-s0096-0000000009156146-0293-s_lc.fits",
+      "sha256": "d8ccd51c4231f2d216d44f0b465e3ec52fb79b5ee72b5b7cb2914c7e97c92e47",
+      "tic": 9156146,
+      "sector": 96
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025232030459-s0096-0000000052121796-0293-s_lc.fits",
+      "sha256": "0ba0c5261a813d74a1df1f73490b34084733f17f0b66062bf2b252bd2b7476ba",
+      "tic": 52121796,
+      "sector": 96
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025232030459-s0096-0000000169765334-0293-s_lc.fits",
+      "sha256": "55f01d26d50e17aceaeee080388e436c1faf9d64f384dc4dd9327780a29cb3f5",
+      "tic": 169765334,
+      "sector": 96
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025312202959-s0098-0000000004070275-0298-s_lc.fits",
+      "sha256": "7b1c89ba3cd9a73405805c58f66e391be299d284bae573e74f5450ff090cb8ca",
+      "tic": 4070275,
+      "sector": 98
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025312202959-s0098-0000000094945758-0298-s_lc.fits",
+      "sha256": "31c3964c08022e30bd3927b08ceea91a5ab30f0b54a3f42d7b160953cbb445bd",
+      "tic": 94945758,
+      "sector": 98
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025312202959-s0098-0000000150030205-0298-s_lc.fits",
+      "sha256": "b9f0cc16213d1eddd1a634bff996dbe3702c8896959b30cd2e67ea77f8f72dc4",
+      "tic": 150030205,
+      "sector": 98
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025312202959-s0098-0000000260004324-0298-s_lc.fits",
+      "sha256": "ccc35078c2c566d986f79ee5df5d1a2521c6471ab995e61c804ba4624d9a3159",
+      "tic": 260004324,
+      "sector": 98
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2025312202959-s0098-0000000278775625-0298-s_lc.fits",
+      "sha256": "dfe9bce5ec761ee747fd67a1a549815a1a07a24379f2d841c2e2f650e967b19d",
+      "tic": 278775625,
+      "sector": 98
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026005125623-s0099-0000000019342878-0300-s_lc.fits",
+      "sha256": "dc0f6efa06d10fa26615c30418c9debc0f14acb747ba93e03d40d6ad9603ccaf",
+      "tic": 19342878,
+      "sector": 99
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026005125623-s0099-0000000408310006-0300-s_lc.fits",
+      "sha256": "600f2491ca7ee7f2ee339378ed8e61b2b00c94618ccea9f450fab9966abfa83f",
+      "tic": 408310006,
+      "sector": 99
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026033082000-s0100-0000000146172354-0302-s_lc.fits",
+      "sha256": "1354cd8bb7d54bb5d807dc9e2c6bc5e14bc0ab5ab4402f81d20baeacc8e71515",
+      "tic": 146172354,
+      "sector": 100
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026033082000-s0100-0000000293607057-0302-s_lc.fits",
+      "sha256": "f6dd41c47200b4caacd524befab5c9cd77e11b65e9313d66eb3b038df1f9e130",
+      "tic": 293607057,
+      "sector": 100
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026111101500-s0103-0000000327303574-0305-s_lc.fits",
+      "sha256": "9e59412c0bf5fab80d9b716b02f20ad4419d30ce6ad9bc2bae552b1aa9b873fd",
+      "tic": 327303574,
+      "sector": 103
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026111101500-s0103-0000000351534793-0305-s_lc.fits",
+      "sha256": "a3ac86fc99480a34a8c468fd9db99dfd1266c2fe57e366863f6e34992d5a5039",
+      "tic": 351534793,
+      "sector": 103
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026137223500-s0104-0000000194795551-0306-s_lc.fits",
+      "sha256": "a55679de8555ad66a7349a9dd85e7462e701911f14db76154ac088b15c2e6f81",
+      "tic": 194795551,
+      "sector": 104
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026137223500-s0104-0000000372172128-0306-s_lc.fits",
+      "sha256": "19609fe1f3fb6f58e256086098a20febc59067537aa91eda10b51a70ceb15c07",
+      "tic": 372172128,
+      "sector": 104
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026137223500-s0104-0000000406095880-0306-s_lc.fits",
+      "sha256": "7e13b770ac3fab6a3ef6d6b5dae236b9b46dc7148240273e45a2d2b2053f95c5",
+      "tic": 406095880,
+      "sector": 104
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026164183000-s0105-0000000234994474-0307-s_lc.fits",
+      "sha256": "3504e6bbb679ef4f34f340e5350b39e604d0b7b813f95aaab9f215c8756fb42c",
+      "tic": 234994474,
+      "sector": 105
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026164183000-s0105-0000000266980320-0307-s_lc.fits",
+      "sha256": "ad63e13fd9cea3ecbe4e802502822dc1632a22a4bc2bad53e7033d76ba04d60f",
+      "tic": 266980320,
+      "sector": 105
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026164183000-s0105-0000000281575427-0307-s_lc.fits",
+      "sha256": "67db4c2018136503031082112b33facfd3041ee8e03b26660e0593da36efcbe7",
+      "tic": 281575427,
+      "sector": 105
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026192185000-s0106-0000000183985250-0308-s_lc.fits",
+      "sha256": "bdf09495a9a76d545512959e783986dee8fef79442a1692c9cb60abb7f603f9f",
+      "tic": 183985250,
+      "sector": 106
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026221103959-s0107-0000000033692729-0309-s_lc.fits",
+      "sha256": "7324ade0711c397d19eab21dc3e9161097d24005f18c9507526ad7acce4c97ae",
+      "tic": 33692729,
+      "sector": 107
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026221103959-s0107-0000000034077285-0309-s_lc.fits",
+      "sha256": "75d61dd10ad0ac319018216d92202b0e5b37c2377c7bf77857bcc005b2e1b761",
+      "tic": 34077285,
+      "sector": 107
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026221103959-s0107-0000000092226327-0309-s_lc.fits",
+      "sha256": "83e696ce898ffa0983865f0bea131d029f6829594b04468ff8174af21aca72ae",
+      "tic": 92226327,
+      "sector": 107
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026221103959-s0107-0000000142937186-0309-s_lc.fits",
+      "sha256": "1ccf186f62e5496642b60efc9819634d32ab8c8b454de0b6488920a16f8e5318",
+      "tic": 142937186,
+      "sector": 107
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026221103959-s0107-0000000164767175-0309-s_lc.fits",
+      "sha256": "78e8d1aa89ef28372dafb7b39ef388ddb15247d7d446b84007511a656ad50ef3",
+      "tic": 164767175,
+      "sector": 107
+    },
+    {
+      "path": "/Users/mikavohl/Projects/exoplanet/data/raw/benchmark/tess2026221103959-s0107-0000000257605131-0309-s_lc.fits",
+      "sha256": "db8880d0b9d41fdaf0518534c6b0516088c31bd515f4db33d5b8b6026f34a9de",
+      "tic": 257605131,
+      "sector": 107
+    }
+  ],
+  "model_sha256": "fa969c26d721dec84eb6f2792b4cc43b180d3d7abdc150643cb8aefb4f2adf66",
+  "config": {
+    "seed": 42,
+    "positive_dispositions": [
+      "CP"
+    ],
+    "negative_dispositions": [
+      "FP",
+      "FA"
+    ],
+    "period_min_days": 0.5,
+    "period_max_days": 12.0,
+    "search_method": "tls",
+    "maximum_signals": 3,
+    "bin_minutes": 10,
+    "flatten_window_days": 1.4,
+    "split_gap_days": 0.5,
+    "minimum_points": 1000,
+    "period_tolerance": 0.005,
+    "epoch_tolerance_durations": 0.75,
+    "global_bins": 256,
+    "local_bins": 128,
+    "event_bins": 64,
+    "maximum_events": 16,
+    "local_half_width_durations": 2.5,
+    "train_fraction": 0.7,
+    "validation_fraction": 0.15,
+    "target_validation_fpr": 0.1,
+    "width": 16,
+    "epochs": 40,
+    "patience": 10,
+    "batch_size": 32,
+    "learning_rate": 0.001,
+    "torch_threads": 4
+  },
+  "threshold": 0.532637357711792,
+  "note": "Unlabeled means absent/uncertain in this catalog snapshot; not a verified new planet."
+}
