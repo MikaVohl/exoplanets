@@ -5,7 +5,8 @@ trained on NASA's expert-labeled candidates (TOIs). Two pipelines share this rep
 
 ## Owners
 - `tess_hunt/`, `scripts/`, `config/`, `docs/`: Mika (benchmark, learning, scaling, comparison experiments).
-- `tls_masked_search/`, `notebooks/04_*`: Abdullah (masked TLS search, trees, shape model, candidate ranking).
+- `tls_masked_search/`, `notebooks/03_*` (created by Mika, extended by Abdullah): Abdullah (masked TLS search, trees,
+  shape model, candidate ranking).
 - `tess_hunt/comparison/` bridges them: it imports `tls_masked_search/04_build_snapshots.py` and hashes it
   with `02_build_dataset.py` and `common.py`.
 

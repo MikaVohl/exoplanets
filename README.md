@@ -16,7 +16,7 @@ and Abdullah's model on identical clean labels, then scales the selected neural 
 | `AGENTS.md` | Owners, how to run each pipeline, labels and evaluation rules (start here) |
 | `tess_hunt/`, `scripts/`, `config/` | Mika's pipeline: benchmark, learning, scaling and comparison experiments |
 | `tls_masked_search/` | Abdullah's pipeline: masked TLS search, labeled dataset, trees, shape model, candidate ranking ([README](tls_masked_search/README.md)) |
-| `notebooks/` | 01 starter EDA, 02 TOI-880 walkthrough, 03 masked-search walkthrough, 04 shape-model walkthrough |
+| `notebooks/` | 01 starter EDA, 02 TOI-880 walkthrough, 03 `tls_masked_search` walkthrough (search, labels, measurements, models, pixel images, ranking; chaptered) |
 | `docs/` | Guides for Mika's learning, scaling and controlled experiments |
 | `data/benchmark/`, `data/catalogs/`, `data/dataset/` | Committed target lists and catalog snapshots |
 | `data/starter/` | Pi Mensae download manifest and archive search snapshot |
@@ -30,11 +30,10 @@ These are extracted light curves, not detector images. Original FITS files inclu
 
 ## 100-star BLS/TLS benchmark
 
-For Abdullah's alternative TLS search and classifier, open [the masked-search walkthrough](notebooks/03_tls_masked_search_walkthrough.ipynb).
-It starts with a dataset census, zooms in on TOI-880's cleaning and two-signal search, and returns its
-result to the aggregate benchmark. A real classifier-dataset entry then connects labeling and feature
-transformations to a held-out score and the aggregate classifier evaluation. Outputs are
-included in the executed notebook; a local read-only export is in `reports/walkthrough/tls_masked_search.html`.
+For Abdullah's alternative TLS search and classifier, open [the `tls_masked_search` walkthrough](notebooks/03_tls_masked_search_walkthrough.ipynb),
+an executed, chaptered notebook in plain language: the data, TOI-880's cleaning and two-signal search, the
+100-star benchmark, how NASA's verdicts become labels, the 12 measurements and 6 snapshots, the tree and
+shape models and how they are graded, pixel images, "nothing here" stars, the unsure flag and the wrong-star fix.
 
 For a worked example, open [the TOI-880 notebook walkthrough](notebooks/02_toi880_pipeline_walkthrough.ipynb). It reconstructs each preprocessing transformation from the original FITS data, shows BLS/TLS intermediate results, inspects the first signal's warning flags, masks its events, finds a weaker second signal, and only then compares the periods with the catalog. All intermediate tables and figures are included after execution. A read-only export is in `reports/walkthrough/toi880.html`.
 

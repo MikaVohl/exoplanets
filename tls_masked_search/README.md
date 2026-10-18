@@ -9,13 +9,11 @@ Legacy step-2 matches use period only; the new pipeline additionally checks tran
 Finds repeating dips in TESS 2-min light curves with Transit Least Squares (TLS), then scores each
 dip with a model trained on NASA's expert-labeled TESS candidates (TOIs).
 
-For an executed walkthrough, open [Inside `tls_masked_search`](../notebooks/03_tls_masked_search_walkthrough.ipynb).
-It starts with a census of both datasets, selects TOI-880 from the benchmark, and follows its original
-flux through cleaning, wide TLS, transit-masked flattening, local refinement and a second search.
-It returns that entry to the aggregate benchmark, then traces an actual classifier-dataset entry
-from saved measurements through feature transformations to a freshly computed held-out score,
-before returning to aggregate classifier results. It distinguishes the two cohorts and their search paths.
-The notebook checks its expanded search against `common.two_pass` and compares with saved results.
+For an executed walkthrough, open [Inside `tls_masked_search`](../notebooks/03_tls_masked_search_walkthrough.ipynb):
+one chaptered notebook from the raw light curve (TOI-880 through cleaning, wide TLS, masked refit, fine TLS and a
+second search) to the benchmark, labels, the 12 measurements, the snapshots, the trees and shape model and how
+they are graded, then pixel images, "nothing here" (NT) stars, the unsure flag, the wrong-star fix and what was
+tried and dropped. Its `assert`s check its claims against the committed outputs.
 
 ```bash
 # From the repository root, with the project environment active:
